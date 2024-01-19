@@ -1,4 +1,20 @@
 baseURL: http://shiun.me/
 languageCode: zh-tw
 title: Shiun
+paginate: 5
 theme: "PaperMod"
+
+menu:
+  main:
+    - identifier: Blog
+      name: Blog
+      url: /categories/
+      weight: 10
+    - identifier: tags
+      name: tags
+      url: /tags/
+      weight: 20
+    - identifier: About me
+      name: About me
+      url: https://example.org
+      weight: 30
