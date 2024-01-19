@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
 <title>Shiun</title>
-
+<meta name="keywords" content="Blog, Portfolio, PaperMod">
 <meta name="description" content="">
 <meta name="author" content="">
 <link rel="canonical" href="http://shiun.me/">
@@ -28,38 +28,10 @@
         }
 
     </style>
-    <style>
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --theme: rgb(29, 30, 32);
-                --entry: rgb(46, 46, 51);
-                --primary: rgb(218, 218, 219);
-                --secondary: rgb(155, 156, 157);
-                --tertiary: rgb(65, 66, 68);
-                --content: rgb(196, 196, 197);
-                --code-block-bg: rgb(46, 46, 51);
-                --code-bg: rgb(55, 56, 62);
-                --border: rgb(51, 51, 51);
-            }
-
-            .list {
-                background: var(--theme);
-            }
-
-            .list:not(.dark)::-webkit-scrollbar-track {
-                background: 0 0;
-            }
-
-            .list:not(.dark)::-webkit-scrollbar-thumb {
-                border-color: var(--theme);
-            }
-        }
-
-    </style>
 </noscript><meta property="og:title" content="Shiun" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="http://shiun.me/" />
+<meta property="og:url" content="http://shiun.me/" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Shiun"/>
@@ -74,20 +46,16 @@
   "description": "",
   "thumbnailUrl": "http://shiun.me/favicon.ico",
   "sameAs": [
-      
+      "https://github.com/sh1un", "https://www.linkedin.com/in/shiunchiu/"
   ]
 }
 </script>
 </head>
 
-<body class="list" id="top">
+<body class="list dark" id="top">
 <script>
-    if (localStorage.getItem("pref-theme") === "dark") {
-        document.body.classList.add('dark');
-    } else if (localStorage.getItem("pref-theme") === "light") {
+    if (localStorage.getItem("pref-theme") === "light") {
         document.body.classList.remove('dark')
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.body.classList.add('dark');
     }
 
 </script>
@@ -121,17 +89,12 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="http://shiun.me/categories/" title="Blog">
+                <a href="http://shiun.me/blog/" title="Blog">
                     <span>Blog</span>
                 </a>
             </li>
             <li>
-                <a href="http://shiun.me/tags/" title="tags">
-                    <span>tags</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://example.org" title="About me">
+                <a href="https://www.linkedin.com/in/shiunchiu" title="About me">
                     <span>About me</span>&nbsp;
                     <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
                         stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
@@ -145,8 +108,39 @@
     </nav>
 </header>
 <main class="main"> 
+<article class="first-entry home-info">
+    <header class="entry-header">
+        <h1>Hi I&rsquo;m Shiun</h1>
+    </header>
+    <div class="entry-content">
+        Backend, DevOps, Cloud and Cats!!!
+    </div>
+    <footer class="entry-footer">
+        <div class="social-icons" >
+    <a href="https://github.com/sh1un" target="_blank" rel="noopener noreferrer me"
+        title="Github">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+    </path>
+</svg>
+    </a>
+    <a href="https://www.linkedin.com/in/shiunchiu/" target="_blank" rel="noopener noreferrer me"
+        title="Linkedin">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+    <rect x="2" y="9" width="4" height="12"></rect>
+    <circle cx="4" cy="4" r="2"></circle>
+</svg>
+    </a>
+</div>
 
-<article class="first-entry"> 
+    </footer>
+</article>
+
+<article class="post-entry"> 
   <header class="entry-header">
     <h2 class="entry-hint-parent">這個網站的第一篇文章 - 關於我 以及架站的動機
     </h2>
@@ -161,8 +155,8 @@ AWS Educate 5th Cloud Ambassador - Technical Support @AWS Backend Engineer Inter
 AWS Educate 6th Cloud Ambassador Team Lead (技術) @AWS Cloud Engineer Intern @eCloudValley 主要專精於後端與雲端及 DevOps 方面的技術：
 Spring boot Jenkins AWS Docker Selenium Pytest 除此之外，我也很擅長擔任領導者的角色，在求學職涯中，我幾乎都是擔任領導者的職位，像是在大學畢業專題中我也擔任了組長、PM、Product Owner、Backend Development，在畢業專題(作品連結)中上實踐了敏捷式開發(Scrum, Kanban)</p>
   </div>
-  <footer class="entry-footer"><span title='2024-01-19 14:29:30 +0800 CST'>January 19, 2024</span></footer>
-  <a class="entry-link" aria-label="post link to 這個網站的第一篇文章 - 關於我 以及架站的動機" href="http://shiun.me/posts/my-first/"></a>
+  <footer class="entry-footer"><span title='2024-01-19 14:29:30 +0800 CST'>January 19, 2024</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 這個網站的第一篇文章 - 關於我 以及架站的動機" href="http://shiun.me/blog/my-first/"></a>
 </article>
     </main>
     

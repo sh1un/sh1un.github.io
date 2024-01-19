@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Shiun</title>
-    <link>http://shiun.me/</link>
-    <description>Recent content on Shiun</description>
+    <title>Blogs on Shiun</title>
+    <link>http://shiun.me/blog/</link>
+    <description>Recent content in Blogs on Shiun</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
     <lastBuildDate>Fri, 19 Jan 2024 14:29:30 +0800</lastBuildDate>
-    <atom:link href="http://shiun.me/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://shiun.me/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>這個網站的第一篇文章 - 關於我 以及架站的動機</title>
       <link>http://shiun.me/blog/my-first/</link>
