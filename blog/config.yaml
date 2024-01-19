@@ -28,11 +28,7 @@ params:
       url: "https://www.linkedin.com/in/shiunchiu/"
 
   assets:
-    favicon: "/favicon.ico"
-    favicon16x16:  "/favicon-16x16.png"
-    favicon32x32:  "/favicon-32x32.png"
-    apple_touch_icon:  "/apple-touch-icon.png"
-    safari_pinned_tab:  "/safari-pinned-tab.svg"
+    favicon: "https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"
   env: production
   title: Shiun's Blog
   keywords: [Blog, Portfolio, PaperMod]
