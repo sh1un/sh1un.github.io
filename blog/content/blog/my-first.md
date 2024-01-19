@@ -2,8 +2,9 @@
 title: '這個網站的第一篇文章 - 關於我 以及架站的動機'
 date: 2024-01-19T14:29:30+08:00
 draft: false
-description : "My First Blog"
+description: "My First Blog"
 tags: ["First"]
+categories: ["自我成長", "心得"]
 keywords:
 - 個人成長
 - First

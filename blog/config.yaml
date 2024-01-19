@@ -13,22 +13,37 @@ disqus:
 enableRobotsTXT: true
 enableEmoji: true
 
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON
+
 menu:
   main:
     - identifier: Blog
       name: Blog
       url: /Blog/
       weight: 10
+    - identifier: Archive 
+      name: Archives 
+      url: /archives/
+      weight: 20
     - identifier: Tags
       name: Tags
       url: /Tags/
-      weight: 20
+      weight: 30
+    - identifier: Search
+      name: Search
+      url: /search/
+      weight: 40
     - identifier: About me
       name: About me
       url: https://www.linkedin.com/in/shiunchiu
-      weight: 30
+      weight: 50
 
 params:
+  ShareButtons: ["x", "linkedin", "facebook", "telegram"]
   homeInfoParams:
     Title: Hi I'm Shiun
     Content: Backend, DevOps, Cloud and Cats!!!
