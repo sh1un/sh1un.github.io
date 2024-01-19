@@ -4,6 +4,11 @@
     <title>Categories on Shiun</title>
     <link>http://shiun.me/categories/</link>
     <description>Recent content in Categories on Shiun</description>
+    <image>
+      <title>Shiun</title>
+      <url>https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea</url>
+      <link>https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea</link>
+    </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
     <atom:link href="http://shiun.me/categories/index.xml" rel="self" type="application/rss+xml" />

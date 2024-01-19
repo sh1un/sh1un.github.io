@@ -5,6 +5,7 @@ paginate: 5
 theme: "PaperMod"
 
 googleAnalytics: G-RZR8D4ERKG
+disqusShortname: shiun-me
 
 enableRobotsTXT: true
 enableEmoji: true
@@ -33,12 +34,13 @@ params:
       url: "https://github.com/sh1un"
     - name: "linkedin"
       url: "https://www.linkedin.com/in/shiunchiu/"
-
   assets:
     favicon: "https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"
   env: production
   title: Shiun's Blog
   description: "Shiun's Blog"
+  images:
+    - https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea
   keywords: [Blog, Portfolio, PaperMod]
   defaultTheme: dark
   ShowShareButtons: ture
@@ -49,3 +51,4 @@ params:
   ShowPostNavLinks: true
   ShowCodeCopyButtons: true
   ShowPostNavLinks: true
+  comments: true

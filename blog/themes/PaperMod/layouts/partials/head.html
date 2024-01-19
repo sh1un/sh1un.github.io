@@ -128,6 +128,12 @@ site.Params.assets.msapplication_TileColor | default "#2e2e33" }}"> {{- /* RSS
 {{ end -}}
 <!-- Add GA4 support -->
 {{ template "_internal/google_analytics.html" . }}
+
+<!-- Add Open Graph support -->
+{{ template "_internal/opengraph.html" . }}
+
+<!-- Add Twitter Card support -->
+{{ template "_internal/twitter_cards.html" . }}
 <noscript>
   <style>
     #theme-toggle,
