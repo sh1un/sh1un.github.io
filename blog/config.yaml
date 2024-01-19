@@ -5,7 +5,10 @@ paginate: 5
 theme: "PaperMod"
 
 googleAnalytics: G-RZR8D4ERKG
-disqusShortname: shiun-me
+disqus:
+  enable: true
+  shortname: shiun-me
+  count: true
 
 enableRobotsTXT: true
 enableEmoji: true
