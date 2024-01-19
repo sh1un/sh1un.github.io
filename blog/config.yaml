@@ -1,4 +1,4 @@
 baseURL: http://shiun.me/
 languageCode: zh-tw
 title: Shiun
-theme: ["PaperMod"]
+theme: "PaperMod"
