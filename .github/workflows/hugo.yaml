@@ -53,10 +53,10 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v3
-      - name: Get Theme
-        run: cd blog && git submodule update --init --recursive
-      - name: Update theme to Latest commit
-        run: cd blog && git submodule update --remote --merge
+      # - name: Get Theme
+      #   run: cd blog && git submodule update --init --recursive
+      # - name: Update theme to Latest commit
+      #   run: cd blog && git submodule update --remote --merge
       - name: Build with Hugo
         run: |
           cd blog && \
