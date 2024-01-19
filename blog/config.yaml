@@ -4,6 +4,7 @@ title: Shiun
 paginate: 5
 theme: "PaperMod"
 
+enableRobotsTXT: true
 enableEmoji: true
 
 menu:
@@ -12,10 +13,14 @@ menu:
       name: Blog
       url: /Blog/
       weight: 10
+    - identifier: Tags
+      name: Tags
+      url: /Tags/
+      weight: 20
     - identifier: About me
       name: About me
       url: https://www.linkedin.com/in/shiunchiu
-      weight: 20
+      weight: 30
 
 params:
   homeInfoParams:
@@ -31,6 +36,7 @@ params:
     favicon: "https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"
   env: production
   title: Shiun's Blog
+  description: "Shiun's Blog"
   keywords: [Blog, Portfolio, PaperMod]
   defaultTheme: dark
   ShowShareButtons: ture

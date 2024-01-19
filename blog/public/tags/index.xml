@@ -6,6 +6,14 @@
     <description>Recent content in Tags on Shiun</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
+    <lastBuildDate>Fri, 19 Jan 2024 14:29:30 +0800</lastBuildDate>
     <atom:link href="http://shiun.me/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>First</title>
+      <link>http://shiun.me/tags/first/</link>
+      <pubDate>Fri, 19 Jan 2024 14:29:30 +0800</pubDate>
+      <guid>http://shiun.me/tags/first/</guid>
+      <description></description>
+    </item>
   </channel>
 </rss>
