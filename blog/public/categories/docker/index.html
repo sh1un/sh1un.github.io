@@ -9,12 +9,12 @@
 />
 <meta name="robots" content="index, follow" />
 <title>
-  Tags | Shiun
+  Docker | Shiun
 </title>
 <meta
   name="keywords"
   content=""
-/> <meta name="description" content="Shiun&#39;s Blog"> <meta name="author" content=""> <link rel="canonical" href="http://shiun.me/tags/">
+/> <meta name="description" content="Shiun&#39;s Blog"> <meta name="author" content=""> <link rel="canonical" href="http://shiun.me/categories/docker/">
 <link
   crossorigin="anonymous"
   href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css"
@@ -27,7 +27,7 @@ rel="icon" type="image/png" sizes="16x16" href="http://shiun.me/favicon-16x16.pn
 <link rel="apple-touch-icon" href="http://shiun.me/apple-touch-icon.png"> <link rel="mask-icon" href="http://shiun.me/safari-pinned-tab.svg"> <meta name="theme-color" content="#2e2e33"> <meta name="msapplication-TileColor" content="#2e2e33"> <link
   rel="alternate"
   type="application/rss+xml"
-  href="http://shiun.me/tags/index.xml"
+  href="http://shiun.me/categories/docker/index.xml"
 />
 
 
@@ -44,16 +44,16 @@ if (!doNotTrack) {
 
 
 
-<meta property="og:title" content="Tags" />
+<meta property="og:title" content="Docker" />
 <meta property="og:description" content="Shiun&#39;s Blog" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="http://shiun.me/tags/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+<meta property="og:url" content="http://shiun.me/categories/docker/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
 
 
 
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="Tags"/>
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="Docker"/>
 <meta name="twitter:description" content="Shiun&#39;s Blog"/>
 
 
@@ -75,15 +75,15 @@ if (!doNotTrack) {
 	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
 }
 </script>
-<meta property="og:title" content="Tags" />
+<meta property="og:title" content="Docker" />
 <meta property="og:description" content="Shiun&#39;s Blog" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="http://shiun.me/tags/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="og:site_name" content="Shiun&#39;s Blog" />
+<meta property="og:url" content="http://shiun.me/categories/docker/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="og:site_name" content="Shiun&#39;s Blog" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/>
 
-<meta name="twitter:title" content="Tags"/>
+<meta name="twitter:title" content="Docker"/>
 <meta name="twitter:description" content="Shiun&#39;s Blog"/>
 
 </head>
@@ -136,7 +136,7 @@ if (!doNotTrack) {
             </li>
             <li>
                 <a href="http://shiun.me/tags/" title="Tags">
-                    <span class="active">Tags</span>
+                    <span>Tags</span>
                 </a>
             </li>
             <li>
@@ -158,22 +158,28 @@ if (!doNotTrack) {
         </ul>
     </nav>
 </header>
-<main class="main">
-<header class="page-header">
-    <h1>Tags</h1>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="http://shiun.me/">Home</a>&nbsp;»&nbsp;<a href="http://shiun.me/categories/">Categories</a></div>
+  <h1>
+    Docker
+  </h1>
 </header>
 
-<ul class="terms-tags">
-    <li>
-        <a href="http://shiun.me/tags/docker/">Docker <sup><strong><sup>1</sup></strong></sup> </a>
-    </li>
-    <li>
-        <a href="http://shiun.me/tags/e2e/">E2E <sup><strong><sup>1</sup></strong></sup> </a>
-    </li>
-    <li>
-        <a href="http://shiun.me/tags/first/">First <sup><strong><sup>1</sup></strong></sup> </a>
-    </li>
-</ul>
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">一個專案需要多個 Dockerfile - 淺談建構上下文 (build context)
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>最近在寫 E2E 測試遇到一個問題，因 E2E 專案中，除了專案本身的 Docker Image 需要 Build 之外，還有多個測試環境的 Image 也要 Build，這造成了我在這個專案上需要創建多個 Dockerfile
+發生了什麼問題? 我一開始的錯誤處理方式 菜鳥時期的我，以為 Dockerfile 就是一定得命名為&#34;Dockerfile&#34;，這導致了我的沒辦法把在專案根目錄下儲存三個 Dockerfile，因為會導致命名衝突
+那我想出了什麼處理方式？相當簡單，很菜的我，一開始便自然地根據不同環境在專案下創建了不同的目錄，然後在目錄底下存放各自的 Dockerfile 就很類似這種感覺：
+E2Eproject/ ├── testenvironment1/ │ └── Dockerfile ├── testenvironment2/ │ └── Dockerfile ├── requirements.txt └── Dockerfile 接著便接著發生下一個問題 — 錯誤的建構上下文 以其中一個測試環境內的 Dockerfile 為範例，當時我的寫法如下，請特別注意 COPY ../../ /usr/src/app/ 這行
+# Use the official Python base image from the DockerHub. FROM python:3.12 # Set the working directory within the container. WORKDIR /usr/src/app # Set the PYTHONPATH environment variable....</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-01-20 18:54:37 +0800 CST'>January 20, 2024</span>&nbsp;·&nbsp;3 min</footer>
+  <a class="entry-link" aria-label="post link to 一個專案需要多個 Dockerfile - 淺談建構上下文 (build context)" href="http://shiun.me/blog/docker-build-context/"></a>
+</article>
     </main>
     
 <footer class="footer">

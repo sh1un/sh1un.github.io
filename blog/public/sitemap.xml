@@ -3,18 +3,30 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>http://shiun.me/blog/</loc>
-    <lastmod>2024-01-19T14:29:30+08:00</lastmod>
+    <lastmod>2024-01-20T18:54:37+08:00</lastmod>
   </url><url>
     <loc>http://shiun.me/categories/</loc>
-    <lastmod>2024-01-19T14:29:30+08:00</lastmod>
+    <lastmod>2024-01-20T18:54:37+08:00</lastmod>
   </url><url>
-    <loc>http://shiun.me/tags/first/</loc>
-    <lastmod>2024-01-19T14:29:30+08:00</lastmod>
+    <loc>http://shiun.me/tags/docker/</loc>
+    <lastmod>2024-01-20T18:54:37+08:00</lastmod>
+  </url><url>
+    <loc>http://shiun.me/categories/docker/</loc>
+    <lastmod>2024-01-20T18:54:37+08:00</lastmod>
+  </url><url>
+    <loc>http://shiun.me/tags/e2e/</loc>
+    <lastmod>2024-01-20T18:54:37+08:00</lastmod>
   </url><url>
     <loc>http://shiun.me/</loc>
-    <lastmod>2024-01-19T14:29:30+08:00</lastmod>
+    <lastmod>2024-01-20T18:54:37+08:00</lastmod>
   </url><url>
     <loc>http://shiun.me/tags/</loc>
+    <lastmod>2024-01-20T18:54:37+08:00</lastmod>
+  </url><url>
+    <loc>http://shiun.me/blog/docker-build-context/</loc>
+    <lastmod>2024-01-20T18:54:37+08:00</lastmod>
+  </url><url>
+    <loc>http://shiun.me/tags/first/</loc>
     <lastmod>2024-01-19T14:29:30+08:00</lastmod>
   </url><url>
     <loc>http://shiun.me/categories/%E5%BF%83%E5%BE%97/</loc>

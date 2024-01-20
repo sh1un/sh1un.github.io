@@ -11,8 +11,15 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Fri, 19 Jan 2024 14:29:30 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 20 Jan 2024 18:54:37 +0800</lastBuildDate>
     <atom:link href="http://shiun.me/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>一個專案需要多個 Dockerfile - 淺談建構上下文 (build context)</title>
+      <link>http://shiun.me/blog/docker-build-context/</link>
+      <pubDate>Sat, 20 Jan 2024 18:54:37 +0800</pubDate>
+      <guid>http://shiun.me/blog/docker-build-context/</guid>
+      <description>最近在寫 E2E 測試遇到一個問題，因 E2E 專案中，除了專案本身的 Docker Image 需要 Build 之外，還有多個測試環境的 Image 也要 Build，這造成了我在這個專案上需要創建多個 Dockerfile</description>
+    </item>
     <item>
       <title>這個網站的第一篇文章 - 關於我 以及架站的動機</title>
       <link>http://shiun.me/blog/my-first/</link>

@@ -11,8 +11,22 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Fri, 19 Jan 2024 14:29:30 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 20 Jan 2024 18:54:37 +0800</lastBuildDate>
     <atom:link href="http://shiun.me/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Docker</title>
+      <link>http://shiun.me/tags/docker/</link>
+      <pubDate>Sat, 20 Jan 2024 18:54:37 +0800</pubDate>
+      <guid>http://shiun.me/tags/docker/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>E2E</title>
+      <link>http://shiun.me/tags/e2e/</link>
+      <pubDate>Sat, 20 Jan 2024 18:54:37 +0800</pubDate>
+      <guid>http://shiun.me/tags/e2e/</guid>
+      <description></description>
+    </item>
     <item>
       <title>First</title>
       <link>http://shiun.me/tags/first/</link>
