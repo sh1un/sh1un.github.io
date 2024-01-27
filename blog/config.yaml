@@ -60,7 +60,7 @@ params:
   images:
     - https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea
   keywords: [Blog, Portfolio, PaperMod]
-  defaultTheme: dark
+  defaultTheme: auto
   ShowShareButtons: ture
   ShowReadingTime: true
   ShowToc: true
