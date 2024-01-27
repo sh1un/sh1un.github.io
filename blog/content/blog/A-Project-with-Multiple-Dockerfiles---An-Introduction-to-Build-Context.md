@@ -15,7 +15,7 @@ keywords:
 最近在寫 E2E 測試遇到一個問題，因 E2E 專案中，除了專案本身的 Docker Image 需要 Build 之外，還有多個測試環境的 Image 也要 Build，這造成了我在這個專案上需要創建多個 Dockerfile
 
 ## 發生了什麼問題? 我一開始的錯誤處理方式
-菜鳥時期的我，以為 Dockerfile 就是一定得命名為"Dockerfile"，這導致了我的沒辦法在專案根目錄下創建三個 Dockerfile，因為會導致命名衝突
+菜鳥時期的我，以為 Dockerfile 就是一定得命名為"Dockerfile"，這導致了我沒辦法在專案根目錄下創建三個 Dockerfile，因為會導致命名衝突
 
 那我想出了什麼處理方式？相當簡單，很菜的我，一開始便自然地根據不同環境在專案下創建了不同的目錄，然後在目錄底下存放各自的 Dockerfile
 就很類似這種感覺：
