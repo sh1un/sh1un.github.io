@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>心得 on Shiun</title>
-    <link>http://shiun.me/categories/%E5%BF%83%E5%BE%97/</link>
+    <link>https://shiun.me/categories/%E5%BF%83%E5%BE%97/</link>
     <description>Recent content in 心得 on Shiun</description>
     <image>
       <title>Shiun</title>
@@ -12,12 +12,12 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
     <lastBuildDate>Fri, 19 Jan 2024 14:29:30 +0800</lastBuildDate>
-    <atom:link href="http://shiun.me/categories/%E5%BF%83%E5%BE%97/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://shiun.me/categories/%E5%BF%83%E5%BE%97/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>這個網站的第一篇文章 - 關於我 以及架站的動機</title>
-      <link>http://shiun.me/blog/my-first/</link>
+      <link>https://shiun.me/blog/my-first/</link>
       <pubDate>Fri, 19 Jan 2024 14:29:30 +0800</pubDate>
-      <guid>http://shiun.me/blog/my-first/</guid>
+      <guid>https://shiun.me/blog/my-first/</guid>
       <description>My First Blog</description>
     </item>
   </channel>

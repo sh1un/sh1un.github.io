@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>AWS on Shiun</title>
-    <link>http://shiun.me/categories/aws/</link>
+    <link>https://shiun.me/categories/aws/</link>
     <description>Recent content in AWS on Shiun</description>
     <image>
       <title>Shiun</title>
@@ -12,12 +12,12 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
     <lastBuildDate>Sun, 28 Jan 2024 01:31:05 +0800</lastBuildDate>
-    <atom:link href="http://shiun.me/categories/aws/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://shiun.me/categories/aws/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>如何成為 AWS Educate 雲端大使？履歷準備、面試技巧大公開</title>
-      <link>http://shiun.me/blog/aws-educate-6th-cloud-ambassador-resume-and-interview-preparation/</link>
+      <link>https://shiun.me/blog/aws-educate-6th-cloud-ambassador-resume-and-interview-preparation/</link>
       <pubDate>Sun, 28 Jan 2024 01:31:05 +0800</pubDate>
-      <guid>http://shiun.me/blog/aws-educate-6th-cloud-ambassador-resume-and-interview-preparation/</guid>
+      <guid>https://shiun.me/blog/aws-educate-6th-cloud-ambassador-resume-and-interview-preparation/</guid>
       <description>Hi 大家好我是 Shiun, 目前是雲端大使的一員「5th AWS Eduacte 雲端大使 - Technical Support (技術支援)」，在 2024/3 也將上任 「6th AWS Educate 雲端大使 Team Lead - Technical Support (技術支援)」，因此 6th 的技術大使在篩選履歷以及面試時也會經過我這邊一手，當然我們針對履歷和面試在內部是有一個公正的評判標準，這篇文章會以當時我報名 5th 並綜合面試官的角度來撰寫，希望對日後想要申請雲端大使計畫的人有幫助！</description>
     </item>
   </channel>
