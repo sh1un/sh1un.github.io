@@ -64,6 +64,33 @@ if (!doNotTrack) {
       display: none;
     }
   </style>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --theme: rgb(29, 30, 32);
+        --entry: rgb(46, 46, 51);
+        --primary: rgb(218, 218, 219);
+        --secondary: rgb(155, 156, 157);
+        --tertiary: rgb(65, 66, 68);
+        --content: rgb(196, 196, 197);
+        --code-block-bg: rgb(46, 46, 51);
+        --code-bg: rgb(55, 56, 62);
+        --border: rgb(51, 51, 51);
+      }
+
+      .list {
+        background: var(--theme);
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-track {
+        background: 0 0;
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-thumb {
+        border-color: var(--theme);
+      }
+    }
+  </style>
 </noscript>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
 <script>
@@ -88,10 +115,14 @@ if (!doNotTrack) {
 
 </head>
 
-<body class="list dark" id="top">
+<body class="list" id="top">
 <script>
-    if (localStorage.getItem("pref-theme") === "light") {
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
         document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
     }
 
 </script>
@@ -165,7 +196,19 @@ if (!doNotTrack) {
 
 <ul class="terms-tags">
     <li>
+        <a href="http://shiun.me/categories/aws/">AWS <sup><strong><sup>1</sup></strong></sup> </a>
+    </li>
+    <li>
+        <a href="http://shiun.me/categories/aws-educate-cloud-ambassador/">AWS Educate Cloud Ambassador <sup><strong><sup>1</sup></strong></sup> </a>
+    </li>
+    <li>
+        <a href="http://shiun.me/categories/career/">Career <sup><strong><sup>1</sup></strong></sup> </a>
+    </li>
+    <li>
         <a href="http://shiun.me/categories/docker/">Docker <sup><strong><sup>1</sup></strong></sup> </a>
+    </li>
+    <li>
+        <a href="http://shiun.me/categories/resume/">Resume <sup><strong><sup>1</sup></strong></sup> </a>
     </li>
     <li>
         <a href="http://shiun.me/categories/%E5%BF%83%E5%BE%97/">心得 <sup><strong><sup>1</sup></strong></sup> </a>
