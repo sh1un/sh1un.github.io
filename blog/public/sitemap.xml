@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://shiun.me/blog/</loc>
+    <lastmod>2024-01-28T22:07:38+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/blog/docker-overwriting-workdir-contents-with-bind-mounts-at-run-time/</loc>
+    <lastmod>2024-01-28T22:07:38+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/</loc>
+    <lastmod>2024-01-28T22:07:38+08:00</lastmod>
+  </url><url>
     <loc>https://shiun.me/tags/aws/</loc>
     <lastmod>2024-01-28T01:31:05+08:00</lastmod>
   </url><url>
@@ -12,9 +21,6 @@
     <lastmod>2024-01-28T01:31:05+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/categories/aws-educate-cloud-ambassador/</loc>
-    <lastmod>2024-01-28T01:31:05+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/blog/</loc>
     <lastmod>2024-01-28T01:31:05+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/career/</loc>
@@ -33,9 +39,6 @@
     <lastmod>2024-01-28T01:31:05+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/categories/resume/</loc>
-    <lastmod>2024-01-28T01:31:05+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/</loc>
     <lastmod>2024-01-28T01:31:05+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/</loc>
