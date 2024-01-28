@@ -5,10 +5,28 @@
     <loc>https://shiun.me/blog/</loc>
     <lastmod>2024-01-28T22:07:38+08:00</lastmod>
   </url><url>
+    <loc>https://shiun.me/categories/</loc>
+    <lastmod>2024-01-28T22:07:38+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/docker/</loc>
+    <lastmod>2024-01-28T22:07:38+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/docker/</loc>
+    <lastmod>2024-01-28T22:07:38+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/docker-compose/</loc>
+    <lastmod>2024-01-28T22:07:38+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/docker-compose/</loc>
+    <lastmod>2024-01-28T22:07:38+08:00</lastmod>
+  </url><url>
     <loc>https://shiun.me/blog/docker-overwriting-workdir-contents-with-bind-mounts-at-run-time/</loc>
     <lastmod>2024-01-28T22:07:38+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/</loc>
+    <lastmod>2024-01-28T22:07:38+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/</loc>
     <lastmod>2024-01-28T22:07:38+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/aws/</loc>
@@ -29,9 +47,6 @@
     <loc>https://shiun.me/categories/career/</loc>
     <lastmod>2024-01-28T01:31:05+08:00</lastmod>
   </url><url>
-    <loc>https://shiun.me/categories/</loc>
-    <lastmod>2024-01-28T01:31:05+08:00</lastmod>
-  </url><url>
     <loc>https://shiun.me/tags/interview/</loc>
     <lastmod>2024-01-28T01:31:05+08:00</lastmod>
   </url><url>
@@ -41,17 +56,8 @@
     <loc>https://shiun.me/categories/resume/</loc>
     <lastmod>2024-01-28T01:31:05+08:00</lastmod>
   </url><url>
-    <loc>https://shiun.me/tags/</loc>
-    <lastmod>2024-01-28T01:31:05+08:00</lastmod>
-  </url><url>
     <loc>https://shiun.me/blog/aws-educate-6th-cloud-ambassador-resume-and-interview-preparation/</loc>
     <lastmod>2024-01-28T01:31:05+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/docker/</loc>
-    <lastmod>2024-01-20T18:54:37+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/categories/docker/</loc>
-    <lastmod>2024-01-20T18:54:37+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/e2e/</loc>
     <lastmod>2024-01-20T18:54:37+08:00</lastmod>

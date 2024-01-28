@@ -3,10 +3,13 @@ title: 'Docker 踩坑紀錄 - 運行階段 Bind Mount 覆蓋 WORKDIR 的內容'
 date: 2024-01-28T22:07:38+08:00
 draft: false
 description: "目前經手的專案會需要針對不同環境或是測試 Build 不同的 Image，之前在本地 Debug 程式時，docker-compose 使用到 Bind Mount，導致運行階段 Host 目錄下的內容直接覆蓋 WORKDIR 的內容，引發指定檔案找不到的錯誤"
-tags: ["", ""]
-categories: [""]
+tags: ["Docker", "Docker Compose"]
+categories: ["Docker", "Docker Compose"]
 keywords:
-- 
+- Docker
+- Docker Volume
+- Bind Mount
+- Docker Compose
 ---
 
 

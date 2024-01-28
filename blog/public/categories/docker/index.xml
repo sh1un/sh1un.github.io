@@ -11,8 +11,15 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Sat, 20 Jan 2024 18:54:37 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 28 Jan 2024 22:07:38 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/categories/docker/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Docker 踩坑紀錄 - 運行階段 Bind Mount 覆蓋 WORKDIR 的內容</title>
+      <link>https://shiun.me/blog/docker-overwriting-workdir-contents-with-bind-mounts-at-run-time/</link>
+      <pubDate>Sun, 28 Jan 2024 22:07:38 +0800</pubDate>
+      <guid>https://shiun.me/blog/docker-overwriting-workdir-contents-with-bind-mounts-at-run-time/</guid>
+      <description>目前經手的專案會需要針對不同環境或是測試 Build 不同的 Image，之前在本地 Debug 程式時，docker-compose 使用到 Bind Mount，導致運行階段 Host 目錄下的內容直接覆蓋 WORKDIR 的內容，引發指定檔案找不到的錯誤</description>
+    </item>
     <item>
       <title>一個專案需要多個 Dockerfile - 淺談建構上下文 (build context)</title>
       <link>https://shiun.me/blog/a-project-with-multiple-dockerfiles---an-introduction-to-build-context/</link>
