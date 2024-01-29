@@ -161,6 +161,7 @@ Volume 則是由 Docker 管理的一種更加隔離和安全的數據持久化�
 1. **註解掉或移除 docker-compose.yaml 的 volume 指令**，每一次有 code 改動都重新 Build Image
     - 這樣就不會有掛載覆蓋的問題，畢竟我再 Dockerfile 裡面就有把整個專案目錄 COPY 到 WORKDIR
 1. **修改 volumes 設定**：將它改為 `../../`，這樣就會掛載 `E2Eproject` 目錄，而不是僅僅掛載 `E2Eproject/cicd/headless`。
+    - 再次提醒，這邊的相對路徑是基於 `docker-compose.yaml` 的所在目錄
 
 改好的樣子會像這樣：
 

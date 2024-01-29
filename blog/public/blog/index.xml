@@ -11,8 +11,15 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Sun, 28 Jan 2024 22:07:38 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 29 Jan 2024 16:54:01 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Test Sitemap</title>
+      <link>https://shiun.me/blog/test-sitemap/</link>
+      <pubDate>Mon, 29 Jan 2024 16:54:01 +0800</pubDate>
+      <guid>https://shiun.me/blog/test-sitemap/</guid>
+      <description>Test Sitemap</description>
+    </item>
     <item>
       <title>Docker 踩坑紀錄 - 運行階段 Bind Mount 覆蓋 WORKDIR 的內容</title>
       <link>https://shiun.me/blog/docker-overwriting-workdir-contents-with-bind-mounts-at-run-time/</link>
