@@ -3,13 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://shiun.me/blog/</loc>
-    <lastmod>2024-01-29T16:54:01+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/</loc>
-    <lastmod>2024-01-29T16:54:01+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/blog/test-sitemap/</loc>
-    <lastmod>2024-01-29T16:54:01+08:00</lastmod>
+    <lastmod>2024-01-28T22:07:38+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/categories/</loc>
     <lastmod>2024-01-28T22:07:38+08:00</lastmod>
@@ -27,6 +21,9 @@
     <lastmod>2024-01-28T22:07:38+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/blog/docker-overwriting-workdir-contents-with-bind-mounts-at-run-time/</loc>
+    <lastmod>2024-01-28T22:07:38+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/</loc>
     <lastmod>2024-01-28T22:07:38+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/</loc>
