@@ -13,7 +13,7 @@ keywords:
 ---
 
 
-## 我踩到了什麼雷
+## 我踩到了什麼坑
 本文的背景延續自我之前的文章《[一個專案需要多個 Dockerfile - 淺談建構上下文 (build context)](https://shiun.me/blog/a-project-with-multiple-dockerfiles---an-introduction-to-build-context/)》
 
 因為我們目前經手的專案會需要針對不同環境或是測試 Build 不同的 Image，為了讓目錄架構更具組織性且容易理解，我們根據不同的環境把各個環境的 `Dockerfile`, `docker-compose.yaml`, `.sh` 等等放在各個環境的目錄下，現在的目錄架構大概像這樣 ↓：
