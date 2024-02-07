@@ -242,6 +242,21 @@ if (!doNotTrack) {
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">Docker 初學常見問題 - CMD vs ENTRYPOINT 兩者的差異與範例
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>前言 很多人在初學 Docker 時，通常都會知道 CMD 和 ENTRYPOINT 基本上可以互換，但又覺得很疑惑既然兩個指令能互換為什麼要提供兩個指令給我們用? 但其實這兩者是有一些差異的，今天這篇文章就是來帶你了解 Dockerfile 中的 CMD 和 ENTRYPOINT
+CMD vs ENTRYPOINT 我這邊準備了兩個 Dockerfile，分別使用了 CMD 和 ENTRYPOINT
+FROM ubuntu:22.04 CMD [ &#34;echo&#34;, &#34;Hello from CMD&#34; ] FROM ubuntu:22.04 ENTRYPOINT [ &#34;echo&#34;, &#34;Hello from ENTRYPOINT&#34; ] 接著 build 了兩個 docker image，分別取名為 docker-cmd, docker-entrypoint
+$ docker images REPOSITORY TAG IMAGE ID CREATED SIZE docker-entrypoint latest fa8ea026cc54 12 days ago 77.9MB docker-cmd latest bd73abaca1f4 12 days ago 77.9MB CMD 會被覆寫、ENTRYPOINT 則不會 理應來說我用 docker-cmd 這個 image 啟動一個容器，會打印出 Hello from CMD，執行結果確實也是如此:...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-02-07 20:43:51 +0800 CST'>February 7, 2024</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to Docker 初學常見問題 - CMD vs ENTRYPOINT 兩者的差異與範例" href="https://shiun.me/blog/dockerfile-cmd-vs-entrypoint/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">Docker 踩坑紀錄 - 運行階段 Bind Mount 覆蓋 WORKDIR 的內容
     </h2>
   </header>
