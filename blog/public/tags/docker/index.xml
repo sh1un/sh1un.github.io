@@ -11,8 +11,15 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Sun, 28 Jan 2024 22:07:38 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 07 Feb 2024 20:43:51 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Docker 初學常見問題 - CMD vs ENTRYPOINT 兩者的差異與範例</title>
+      <link>https://shiun.me/blog/dockerfile-cmd-vs-entrypoint/</link>
+      <pubDate>Wed, 07 Feb 2024 20:43:51 +0800</pubDate>
+      <guid>https://shiun.me/blog/dockerfile-cmd-vs-entrypoint/</guid>
+      <description>很多人在初學 Docker 時，通常都會知道 CMD 和 ENTRYPOINT 基本上可以互換，但又覺得很疑惑既然兩個指令能互換為什麼要提供兩個指令給我們用? 但其實這兩者是有一些差異的，今天這篇文章就是來帶你了解 Dockerfile 中的 CMD 和 ENTRYPOINT</description>
+    </item>
     <item>
       <title>Docker 踩坑紀錄 - 運行階段 Bind Mount 覆蓋 WORKDIR 的內容</title>
       <link>https://shiun.me/blog/docker-overwriting-workdir-contents-with-bind-mounts-at-run-time/</link>
