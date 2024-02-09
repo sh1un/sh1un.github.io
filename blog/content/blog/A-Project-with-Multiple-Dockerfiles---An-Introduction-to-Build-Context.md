@@ -50,11 +50,8 @@ COPY ../../ /usr/src/app/
 # The --no-cache-dir option is used to disable the cache and reduce the layer size.
 RUN pip install --no-cache-dir -r ../../requirements.txt
 
-# Install additional dependencies for HTML report generation
-RUN pip install --no-cache-dir pytest-html
+# 略 ...
 
-# Copy the start-tests.sh script into the container's work directory.
-COPY start-headless-tests.sh /usr/src/app/
 RUN chmod +x /usr/src/app/start-tests.sh
 
 # The command to run the application.
