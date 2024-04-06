@@ -11,8 +11,85 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Wed, 07 Feb 2024 20:43:51 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 06 Apr 2024 23:45:32 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ACU</title>
+      <link>https://shiun.me/tags/acu/</link>
+      <pubDate>Sat, 06 Apr 2024 23:45:32 +0800</pubDate>
+      <guid>https://shiun.me/tags/acu/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Automated Task</title>
+      <link>https://shiun.me/tags/automated-task/</link>
+      <pubDate>Sat, 06 Apr 2024 23:45:32 +0800</pubDate>
+      <guid>https://shiun.me/tags/automated-task/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>AWS</title>
+      <link>https://shiun.me/tags/aws/</link>
+      <pubDate>Sat, 06 Apr 2024 23:45:32 +0800</pubDate>
+      <guid>https://shiun.me/tags/aws/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>AWS Aurora</title>
+      <link>https://shiun.me/tags/aws-aurora/</link>
+      <pubDate>Sat, 06 Apr 2024 23:45:32 +0800</pubDate>
+      <guid>https://shiun.me/tags/aws-aurora/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>AWS Aurora Serverless V2</title>
+      <link>https://shiun.me/tags/aws-aurora-serverless-v2/</link>
+      <pubDate>Sat, 06 Apr 2024 23:45:32 +0800</pubDate>
+      <guid>https://shiun.me/tags/aws-aurora-serverless-v2/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>AWS EventBridge</title>
+      <link>https://shiun.me/tags/aws-eventbridge/</link>
+      <pubDate>Sat, 06 Apr 2024 23:45:32 +0800</pubDate>
+      <guid>https://shiun.me/tags/aws-eventbridge/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>AWS EventBridge Scheduler</title>
+      <link>https://shiun.me/tags/aws-eventbridge-scheduler/</link>
+      <pubDate>Sat, 06 Apr 2024 23:45:32 +0800</pubDate>
+      <guid>https://shiun.me/tags/aws-eventbridge-scheduler/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>AWS Lambda</title>
+      <link>https://shiun.me/tags/aws-lambda/</link>
+      <pubDate>Sat, 06 Apr 2024 23:45:32 +0800</pubDate>
+      <guid>https://shiun.me/tags/aws-lambda/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Cron</title>
+      <link>https://shiun.me/tags/cron/</link>
+      <pubDate>Sat, 06 Apr 2024 23:45:32 +0800</pubDate>
+      <guid>https://shiun.me/tags/cron/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Serverless</title>
+      <link>https://shiun.me/tags/serverless/</link>
+      <pubDate>Sat, 06 Apr 2024 23:45:32 +0800</pubDate>
+      <guid>https://shiun.me/tags/serverless/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Time-Based Scheduling</title>
+      <link>https://shiun.me/tags/time-based-scheduling/</link>
+      <pubDate>Sat, 06 Apr 2024 23:45:32 +0800</pubDate>
+      <guid>https://shiun.me/tags/time-based-scheduling/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Docker</title>
       <link>https://shiun.me/tags/docker/</link>
@@ -25,13 +102,6 @@
       <link>https://shiun.me/tags/docker-compose/</link>
       <pubDate>Sun, 28 Jan 2024 22:07:38 +0800</pubDate>
       <guid>https://shiun.me/tags/docker-compose/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>AWS</title>
-      <link>https://shiun.me/tags/aws/</link>
-      <pubDate>Sun, 28 Jan 2024 01:31:05 +0800</pubDate>
-      <guid>https://shiun.me/tags/aws/</guid>
       <description></description>
     </item>
     <item>
