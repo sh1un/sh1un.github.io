@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
+<meta name="robots" content="index, follow" />
+<title>
+  如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU | Shiun
+</title>
+<meta
+  name="keywords"
+  content="AWS, AWS EventBridge Scheduler, AWS EventBridge, AWS Lambda, Serverless, AWS Aurora, ACU, Automated Task, Technical Tutorial"
+/> <meta name="description" content="這篇文章將教學如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU"> <meta name="author" content=""> <link rel="canonical" href="https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/">
+<link
+  crossorigin="anonymous"
+  href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css"
+  integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A="
+  rel="preload stylesheet"
+  as="style"
+/> <link rel="icon" href="https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"> <link
+rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://shiun.me/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://shiun.me/apple-touch-icon.png"> <link rel="mask-icon" href="https://shiun.me/safari-pinned-tab.svg"> <meta name="theme-color" content="#2e2e33"> <meta name="msapplication-TileColor" content="#2e2e33"> <link rel="alternate" hreflang="en" href="https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+<meta property="og:title" content="如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU" />
+<meta property="og:description" content="這篇文章將教學如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-04-06T23:45:32+08:00" />
+<meta property="article:modified_time" content="2024-04-06T23:45:32+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU"/>
+<meta name="twitter:description" content="這篇文章將教學如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU"/>
+
+
+<noscript>
+  <style>
+    #theme-toggle,
+    .top-link {
+      display: none;
+    }
+  </style>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --theme: rgb(29, 30, 32);
+        --entry: rgb(46, 46, 51);
+        --primary: rgb(218, 218, 219);
+        --secondary: rgb(155, 156, 157);
+        --tertiary: rgb(65, 66, 68);
+        --content: rgb(196, 196, 197);
+        --code-block-bg: rgb(46, 46, 51);
+        --code-bg: rgb(55, 56, 62);
+        --border: rgb(51, 51, 51);
+      }
+
+      .list {
+        background: var(--theme);
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-track {
+        background: 0 0;
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-thumb {
+        border-color: var(--theme);
+      }
+    }
+  </style>
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU" />
+<meta property="og:description" content="這篇文章將教學如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-04-06T23:45:32+08:00" />
+<meta property="article:modified_time" content="2024-04-06T23:45:32+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/>
+
+<meta name="twitter:title" content="如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU"/>
+<meta name="twitter:description" content="這篇文章將教學如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Blogs",
+      "item": "https://shiun.me/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU",
+      "item": "https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU",
+  "name": "如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU",
+  "description": "這篇文章將教學如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU",
+  "keywords": [
+    "AWS", "AWS EventBridge Scheduler", "AWS EventBridge", "AWS Lambda", "Serverless", "AWS Aurora", "ACU", "Automated Task", "Technical Tutorial"
+  ],
+  "articleBody": "EventBridge 簡介 EventBridge Scheduler 是 AWS 在 2022/11 推出的新服務，相較於傳統事件驅動的 EventBridge，新推出的 Scheduler 是時間驅動的一個服務，你可以很輕易的在上面設置一些排程任務去調用 AWS 的其他服務，截至 2024/04/06，官方文件是顯示可以調用 AWS 超過 270 種服務，就我目前使用下來的心得，真的是相當易用！\n常見的使用場景:\n自動調整服務容量: 如 Amazon ECS 任務的數量或今天要介紹的 Aurora Serverless V2 ACU (今天要示範的) 自動化維護任務: 定時啟動或停止 EC2 Instance，以節省成本或進行系統維護。 SasS 訂閱即將到期通知: 蠻多 SaaS 系統可能會需要在用戶快到期時發送信件通知客戶續訂 架構說明 關於本文，我會預設讀者們對於 AWS 有基本的操作能力和認識，對於一些較瑣碎的動作會省略不講解\n本文要教學的是排程每天固定時間，會透過 EventBridge Scheduler 調用 Lambda Function 然後將 Aurora Serverless V2 的 ACU 降低。\n關於這個動作，我們其實要拆解成兩個部分:\n用 Lambda 去調整 Aurora Serverless v2 ACU 用 EventBridge 去 Trigger Lambda 下圖是從 AWS 官方 Blog 下載下來的架構圖，純示意圖大概讓各位認識 EventBridge 和 Lambda 的配合 整體的步驟大概會是\n創建 IAM Role 創建 Lambda Function 創建 EventBridge Scheduler 創建 IAM Policy 及 IAM Role 這個 IAM Role 將會給我們的 Lambda Function 可以去讀取和修改 Aurora\n創建 IAM Policy { \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Allow\", \"Action\": [ \"rds:DescribeDBClusters\", \"rds:ModifyDBCluster\" ], \"Resource\": \"*\" }, { \"Effect\": \"Allow\", \"Action\": \"logs:CreateLogGroup\", \"Resource\": \"arn:aws:logs:ap-northeast-1:784523829721:*\" }, { \"Effect\": \"Allow\", \"Action\": \"logs:CreateLogStream\", \"Resource\": \"arn:aws:logs:ap-northeast-1:784523829721:log-group:/aws/lambda/AdjustAuroraACU:*\" }, { \"Effect\": \"Allow\", \"Action\": \"logs:PutLogEvents\", \"Resource\": \"arn:aws:logs:ap-northeast-1:784523829721:log-group:/aws/lambda/AdjustAuroraACU:log-stream:*\" } ] } 創建 IAM Role，然後 Attach 剛才所創建的 Policy 創建完畢應該會類似下圖 創建 Lambda Function Runtime: Python 3.12 IAM Role: {你剛才創建的 IAM Role} import boto3 def lambda_handler(event, context): # Extract ACU configuration and cluster identifier from the event min_capacity = event.get('min_capacity') max_capacity = event.get('max_capacity') cluster_identifier = event.get('cluster_identifier') # Ensure cluster_identifier is provided if not cluster_identifier: print(\"Error: 'cluster_identifier' not provided in the event.\") return { 'statusCode': 400, 'body': \"'cluster_identifier' is required.\" } # Modify the capacity for Aurora Serverless v2 modify_aurora_serverless_v2_capacity(cluster_identifier, min_capacity, max_capacity) def modify_aurora_serverless_v2_capacity(cluster_identifier, min_capacity, max_capacity): # Initialize the RDS client rds_client = boto3.client('rds') try: response = rds_client.modify_db_cluster( DBClusterIdentifier=cluster_identifier, ServerlessV2ScalingConfiguration={ 'MinCapacity': min_capacity, 'MaxCapacity': max_capacity }, ApplyImmediately=True ) print(f\"Capacity update successful: {response}\") return { 'statusCode': 200, 'body': f\"Capacity updated to Min: {min_capacity}, Max: {max_capacity} for {cluster_identifier}\" } except Exception as e: print(f\"Error updating capacity: {e}\") return { 'statusCode': 500, 'body': f\"Error updating capacity for {cluster_identifier}: {e}\" } 進到 Configuration - General Configuration 調整 Lambda Timeout，我這邊是改成 10s 創建 EventBridge Scheduler 搜尋 EventBridge 後進入該頁面，側邊選單點選 Scheduler/Schedules\n點擊 “Create Schedule”\n選擇 “Recurring schedule”\nTimezone: (UTC+8) Asia/Taipei Schedule Type: Cron-based schedule Cron Expression: 02 4 * * ? * (這邊請依照你想觸發的特定時間去更動) Next\nTarget Detail\nTarget API: Lambda Invoke: {選擇你剛才創建的 Lambda Function} Payload\n{ \"cluster_identifier\": \"demoAurora\", \"min_capacity\": 1, \"max_capacity\": 1.5 } Next\nPermisison: Create new role for this schedule\nCreate\n照著以上的步驟做到這裡就完成，照理來說應該就沒問題了\nTroubleshooting InvalidParameterCombination 這是我剛開始踩到的坑，原因是 Aurora Serverless V2 必須指定 ServerlessV2ScalingConfiguration\nYou can set the capacity of an Aurora DB instance with the ModifyDBCluster API operation. Specify the ServerlessV2ScalingConfiguration parameter.\nAWS Docs - What is Amazon EventBridge Scheduler?\n相關資料 AWS Docs - What is Amazon EventBridge Scheduler? AWS Docs - Managing Aurora Serverless v2 DB clusters ",
+  "wordCount" : "408",
+  "inLanguage": "en",
+  "datePublished": "2024-04-06T23:45:32+08:00",
+  "dateModified": "2024-04-06T23:45:32+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Shiun",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://shiun.me/" accesskey="h" title="Shiun (Alt + H)">Shiun</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://shiun.me/blog/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.linkedin.com/in/shiunchiu" title="About me">
+                    <span>About me</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://shiun.me/">Home</a>&nbsp;»&nbsp;<a href="https://shiun.me/blog/">Blogs</a></div>
+    <h1 class="post-title entry-hint-parent">
+      如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU
+    </h1>
+    <div class="post-description">
+      這篇文章將教學如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU
+    </div>
+    <div class="post-meta"><span title='2024-04-06 23:45:32 +0800 CST'>April 6, 2024</span>&nbsp;·&nbsp;2 min
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#eventbridge-%e7%b0%a1%e4%bb%8b" aria-label="EventBridge 簡介">EventBridge 簡介</a></li>
+                <li>
+                    <a href="#%e6%9e%b6%e6%a7%8b%e8%aa%aa%e6%98%8e" aria-label="架構說明">架構說明</a></li>
+                <li>
+                    <a href="#%e5%89%b5%e5%bb%ba-iam-policy-%e5%8f%8a-iam-role" aria-label="創建 IAM Policy 及 IAM Role">創建 IAM Policy 及 IAM Role</a></li>
+                <li>
+                    <a href="#%e5%89%b5%e5%bb%ba-lambda-function" aria-label="創建 Lambda Function">創建 Lambda Function</a></li>
+                <li>
+                    <a href="#%e5%89%b5%e5%bb%ba-eventbridge-scheduler" aria-label="創建 EventBridge Scheduler">創建 EventBridge Scheduler</a></li>
+                <li>
+                    <a href="#troubleshooting" aria-label="Troubleshooting">Troubleshooting</a></li>
+                <li>
+                    <a href="#%e7%9b%b8%e9%97%9c%e8%b3%87%e6%96%99" aria-label="相關資料">相關資料</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="eventbridge-簡介">EventBridge 簡介<a hidden class="anchor" aria-hidden="true" href="#eventbridge-簡介">#</a></h2>
+<p>EventBridge Scheduler 是 <a href="https://aws.amazon.com/blogs/compute/introducing-amazon-eventbridge-scheduler/">AWS 在 2022/11 推出的新服務</a>，相較於傳統事件驅動的 EventBridge，新推出的 Scheduler 是時間驅動的一個服務，你可以很輕易的在上面設置一些排程任務去調用 AWS 的其他服務，截至 2024/04/06，官方文件是顯示可以調用 AWS 超過 270 種服務，就我目前使用下來的心得，真的是相當易用！</p>
+<p>常見的使用場景:</p>
+<ul>
+<li>自動調整服務容量: 如 Amazon ECS 任務的數量或今天要介紹的 Aurora Serverless V2 ACU (今天要示範的)</li>
+<li>自動化維護任務: 定時啟動或停止 EC2 Instance，以節省成本或進行系統維護。</li>
+<li>SasS 訂閱即將到期通知: 蠻多 SaaS 系統可能會需要在用戶快到期時發送信件通知客戶續訂</li>
+</ul>
+<hr>
+<h2 id="架構說明">架構說明<a hidden class="anchor" aria-hidden="true" href="#架構說明">#</a></h2>
+<p>關於本文，我會預設讀者們對於 AWS 有基本的操作能力和認識，對於一些較瑣碎的動作會省略不講解</p>
+<p>本文要教學的是排程每天固定時間，會透過 EventBridge Scheduler 調用 Lambda Function 然後將 Aurora Serverless V2 的 ACU 降低。</p>
+<p>關於這個動作，我們其實要拆解成兩個部分:</p>
+<ol>
+<li>用 Lambda 去調整 Aurora Serverless v2 ACU</li>
+<li>用 EventBridge 去 Trigger Lambda</li>
+</ol>
+<p>下圖是從 <a href="https://aws.amazon.com/blogs/compute/introducing-amazon-eventbridge-scheduler/">AWS 官方 Blog</a> 下載下來的架構圖，純示意圖大概讓各位認識 EventBridge 和 Lambda 的配合
+<img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/fbf058d1-4754-4bbb-8e44-9b0f7d8ed3e5" alt="image"  />
+</p>
+<p>整體的步驟大概會是</p>
+<ol>
+<li>創建 IAM Role</li>
+<li>創建 Lambda Function</li>
+<li>創建 EventBridge Scheduler</li>
+</ol>
+<hr>
+<h2 id="創建-iam-policy-及-iam-role">創建 IAM Policy 及 IAM Role<a hidden class="anchor" aria-hidden="true" href="#創建-iam-policy-及-iam-role">#</a></h2>
+<p>這個 IAM Role 將會給我們的 Lambda Function 可以去讀取和修改 Aurora</p>
+<ul>
+<li>創建 IAM Policy
+<img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/898c62da-ce42-43fd-945d-d4c885959fa2" alt="image"  />
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;Version&#34;</span>: <span style="color:#e6db74">&#34;2012-10-17&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;Statement&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;Effect&#34;</span>: <span style="color:#e6db74">&#34;Allow&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;Action&#34;</span>: [
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;rds:DescribeDBClusters&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;rds:ModifyDBCluster&#34;</span>
+</span></span><span style="display:flex;"><span>            ],
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;Resource&#34;</span>: <span style="color:#e6db74">&#34;*&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;Effect&#34;</span>: <span style="color:#e6db74">&#34;Allow&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;Action&#34;</span>: <span style="color:#e6db74">&#34;logs:CreateLogGroup&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;Resource&#34;</span>: <span style="color:#e6db74">&#34;arn:aws:logs:ap-northeast-1:784523829721:*&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;Effect&#34;</span>: <span style="color:#e6db74">&#34;Allow&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;Action&#34;</span>: <span style="color:#e6db74">&#34;logs:CreateLogStream&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;Resource&#34;</span>: <span style="color:#e6db74">&#34;arn:aws:logs:ap-northeast-1:784523829721:log-group:/aws/lambda/AdjustAuroraACU:*&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;Effect&#34;</span>: <span style="color:#e6db74">&#34;Allow&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;Action&#34;</span>: <span style="color:#e6db74">&#34;logs:PutLogEvents&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;Resource&#34;</span>: <span style="color:#e6db74">&#34;arn:aws:logs:ap-northeast-1:784523829721:log-group:/aws/lambda/AdjustAuroraACU:log-stream:*&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>
+<p>創建 IAM Role，然後 Attach 剛才所創建的 Policy
+<img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/2da5ef65-acc6-40af-bf6e-3d666e0705af" alt="image"  />
+</p>
+</li>
+<li>
+<p>創建完畢應該會類似下圖
+<img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/e320acd0-183e-4bc8-9b2f-491ef714a12f" alt="image"  />
+</p>
+</li>
+</ul>
+<h2 id="創建-lambda-function">創建 Lambda Function<a hidden class="anchor" aria-hidden="true" href="#創建-lambda-function">#</a></h2>
+<ul>
+<li>Runtime: Python 3.12</li>
+<li>IAM Role: {你剛才創建的 IAM Role}</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> boto3
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">lambda_handler</span>(event, context):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Extract ACU configuration and cluster identifier from the event</span>
+</span></span><span style="display:flex;"><span>    min_capacity <span style="color:#f92672">=</span> event<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;min_capacity&#39;</span>)
+</span></span><span style="display:flex;"><span>    max_capacity <span style="color:#f92672">=</span> event<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;max_capacity&#39;</span>)
+</span></span><span style="display:flex;"><span>    cluster_identifier <span style="color:#f92672">=</span> event<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;cluster_identifier&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Ensure cluster_identifier is provided</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> cluster_identifier:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;Error: &#39;cluster_identifier&#39; not provided in the event.&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#39;statusCode&#39;</span>: <span style="color:#ae81ff">400</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#39;body&#39;</span>: <span style="color:#e6db74">&#34;&#39;cluster_identifier&#39; is required.&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Modify the capacity for Aurora Serverless v2</span>
+</span></span><span style="display:flex;"><span>    modify_aurora_serverless_v2_capacity(cluster_identifier, min_capacity, max_capacity)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">modify_aurora_serverless_v2_capacity</span>(cluster_identifier, min_capacity, max_capacity):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Initialize the RDS client</span>
+</span></span><span style="display:flex;"><span>    rds_client <span style="color:#f92672">=</span> boto3<span style="color:#f92672">.</span>client(<span style="color:#e6db74">&#39;rds&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        response <span style="color:#f92672">=</span> rds_client<span style="color:#f92672">.</span>modify_db_cluster(
+</span></span><span style="display:flex;"><span>            DBClusterIdentifier<span style="color:#f92672">=</span>cluster_identifier,
+</span></span><span style="display:flex;"><span>            ServerlessV2ScalingConfiguration<span style="color:#f92672">=</span>{
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;MinCapacity&#39;</span>: min_capacity,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;MaxCapacity&#39;</span>: max_capacity
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            ApplyImmediately<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Capacity update successful: </span><span style="color:#e6db74">{</span>response<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#39;statusCode&#39;</span>: <span style="color:#ae81ff">200</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#39;body&#39;</span>: <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Capacity updated to Min: </span><span style="color:#e6db74">{</span>min_capacity<span style="color:#e6db74">}</span><span style="color:#e6db74">, Max: </span><span style="color:#e6db74">{</span>max_capacity<span style="color:#e6db74">}</span><span style="color:#e6db74"> for </span><span style="color:#e6db74">{</span>cluster_identifier<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Error updating capacity: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#39;statusCode&#39;</span>: <span style="color:#ae81ff">500</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#39;body&#39;</span>: <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Error updating capacity for </span><span style="color:#e6db74">{</span>cluster_identifier<span style="color:#e6db74">}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span></code></pre></div><ul>
+<li>進到 Configuration - General Configuration 調整 Lambda Timeout，我這邊是改成 10s
+<img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/34d41b8b-7984-4225-849b-860352e05c85" alt="image"  />
+</li>
+</ul>
+<hr>
+<h2 id="創建-eventbridge-scheduler">創建 EventBridge Scheduler<a hidden class="anchor" aria-hidden="true" href="#創建-eventbridge-scheduler">#</a></h2>
+<ol>
+<li>
+<p>搜尋 EventBridge 後進入該頁面，側邊選單點選 Scheduler/Schedules</p>
+</li>
+<li>
+<p>點擊 &ldquo;Create Schedule&rdquo;</p>
+</li>
+<li>
+<p>選擇 &ldquo;Recurring schedule&rdquo;</p>
+<ul>
+<li>Timezone: (UTC+8) Asia/Taipei</li>
+<li>Schedule Type: Cron-based schedule</li>
+<li>Cron Expression: <code>02 4 * * ? *</code> (這邊請依照你想觸發的特定時間去更動)
+<img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/0310badc-651b-4245-9103-c38dc17a891e" alt="image"  />
+</li>
+</ul>
+</li>
+<li>
+<p>Next</p>
+</li>
+<li>
+<p>Target Detail</p>
+<ul>
+<li>Target API: Lambda</li>
+<li>Invoke: {選擇你剛才創建的 Lambda Function}
+<ul>
+<li>
+<p>Payload</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;cluster_identifier&#34;</span>: <span style="color:#e6db74">&#34;demoAurora&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;min_capacity&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;max_capacity&#34;</span>: <span style="color:#ae81ff">1.5</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/9fdf5bb5-101c-4360-b66d-5fa23cd264c9" alt="image"  />
+</p>
+</li>
+<li>
+<p>Next</p>
+</li>
+<li>
+<p>Permisison: Create new role for this schedule</p>
+</li>
+<li>
+<p>Create</p>
+</li>
+</ol>
+<p>照著以上的步驟做到這裡就完成，照理來說應該就沒問題了</p>
+<hr>
+<h2 id="troubleshooting">Troubleshooting<a hidden class="anchor" aria-hidden="true" href="#troubleshooting">#</a></h2>
+<ol>
+<li>
+<p><strong>InvalidParameterCombination</strong>
+<img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/3b0b51b7-c1c9-4ad4-a272-153c9d1597d6" alt="image"  />
+
+這是我剛開始踩到的坑，原因是 Aurora Serverless V2 必須指定 <code>ServerlessV2ScalingConfiguration</code></p>
+<blockquote>
+<p>You can set the capacity of an Aurora DB instance with the <a href="https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_ModifyDBCluster.html">ModifyDBCluster</a> API operation. Specify the ServerlessV2ScalingConfiguration parameter.</p>
+<p><a href="https://docs.aws.amazon.com/scheduler/latest/UserGuide/what-is-scheduler.html">AWS Docs - What is Amazon EventBridge Scheduler?</a></p>
+</blockquote>
+</li>
+</ol>
+<hr>
+<h2 id="相關資料">相關資料<a hidden class="anchor" aria-hidden="true" href="#相關資料">#</a></h2>
+<ul>
+<li><a href="https://docs.aws.amazon.com/scheduler/latest/UserGuide/what-is-scheduler.html">AWS Docs - What is Amazon EventBridge Scheduler?</a></li>
+<li><a href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2-administration.html">AWS Docs - Managing Aurora Serverless v2 DB clusters</a></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://shiun.me/tags/aws/">AWS</a></li>
+      <li><a href="https://shiun.me/tags/aws-eventbridge/">AWS EventBridge</a></li>
+      <li><a href="https://shiun.me/tags/aws-eventbridge-scheduler/">AWS EventBridge Scheduler</a></li>
+      <li><a href="https://shiun.me/tags/aws-lambda/">AWS Lambda</a></li>
+      <li><a href="https://shiun.me/tags/aws-aurora/">AWS Aurora</a></li>
+      <li><a href="https://shiun.me/tags/acu/">ACU</a></li>
+      <li><a href="https://shiun.me/tags/serverless/">Serverless</a></li>
+      <li><a href="https://shiun.me/tags/cron/">Cron</a></li>
+      <li><a href="https://shiun.me/tags/automated-task/">Automated Task</a></li>
+      <li><a href="https://shiun.me/tags/time-based-scheduling/">Time-Based Scheduling</a></li>
+      <li><a href="https://shiun.me/tags/aws-aurora-serverless-v2/">AWS Aurora Serverless V2</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://shiun.me/blog/dockerfile-cmd-vs-entrypoint/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Docker 初學常見問題 - CMD vs ENTRYPOINT 兩者的差異與範例</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU on x"
+            href="https://x.com/intent/tweet/?text=%e5%a6%82%e4%bd%95%e4%bd%bf%e7%94%a8%20AWS%20EventBridge%20%e5%8f%8a%20Lambda%20%e8%87%aa%e5%8b%95%e6%8e%92%e7%a8%8b%e8%aa%bf%e6%95%b4%20AWS%20Aurora%20Serverless%20V2%20ACU&amp;url=https%3a%2f%2fshiun.me%2fblog%2fhow-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler%2f&amp;hashtags=AWS%2cAWSEventBridge%2cAWSEventBridgeScheduler%2cAWSLambda%2cAWSAurora%2cACU%2cServerless%2cCron%2cAutomatedTask%2cTime-basedScheduling%2cAWSAuroraServerlessV2">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fshiun.me%2fblog%2fhow-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler%2f&amp;title=%e5%a6%82%e4%bd%95%e4%bd%bf%e7%94%a8%20AWS%20EventBridge%20%e5%8f%8a%20Lambda%20%e8%87%aa%e5%8b%95%e6%8e%92%e7%a8%8b%e8%aa%bf%e6%95%b4%20AWS%20Aurora%20Serverless%20V2%20ACU&amp;summary=%e5%a6%82%e4%bd%95%e4%bd%bf%e7%94%a8%20AWS%20EventBridge%20%e5%8f%8a%20Lambda%20%e8%87%aa%e5%8b%95%e6%8e%92%e7%a8%8b%e8%aa%bf%e6%95%b4%20AWS%20Aurora%20Serverless%20V2%20ACU&amp;source=https%3a%2f%2fshiun.me%2fblog%2fhow-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fshiun.me%2fblog%2fhow-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU on telegram"
+            href="https://telegram.me/share/url?text=%e5%a6%82%e4%bd%95%e4%bd%bf%e7%94%a8%20AWS%20EventBridge%20%e5%8f%8a%20Lambda%20%e8%87%aa%e5%8b%95%e6%8e%92%e7%a8%8b%e8%aa%bf%e6%95%b4%20AWS%20Aurora%20Serverless%20V2%20ACU&amp;url=https%3a%2f%2fshiun.me%2fblog%2fhow-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer><div class="disqus markdown"><div id="disqus_thread"></div>
+<script>
+  
+
+  
+
+  (function () {
+    
+    var d = document,
+      s = d.createElement("script");
+    s.src = "https://shiun-me.disqus.com/embed.js";
+    s.setAttribute("data-timestamp", +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript
+  >Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript"
+    >comments powered by Disqus.</a
+  ></noscript
+>
+</div>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://shiun.me/">Shiun</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
