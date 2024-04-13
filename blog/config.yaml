@@ -37,10 +37,14 @@ menu:
       name: Search
       url: /search/
       weight: 40
+    - identifier: Notion
+      name: Notion
+      url: https://shiun.notion.site/Shiun-s-Learning-Journal-ded4cd4a3efd47b2805f2f99dee8f9a1?pvs=4
+      weight: 50
     - identifier: About me
       name: About me
       url: https://www.linkedin.com/in/shiunchiu
-      weight: 50
+      weight: 60
 
 params:
   ShareButtons: ["x", "linkedin", "facebook", "telegram"]
