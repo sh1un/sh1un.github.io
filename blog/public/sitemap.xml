@@ -2,22 +2,46 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://shiun.me/tags/aws/</loc>
+    <lastmod>2024-04-21T01:04:16+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/aws/</loc>
+    <lastmod>2024-04-21T01:04:16+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/blog/internet-gateway-vs-nat-gateway/</loc>
+    <lastmod>2024-04-21T01:04:16+08:00</lastmod>
+  </url><url>
     <loc>https://shiun.me/blog/</loc>
     <lastmod>2024-04-21T01:04:16+08:00</lastmod>
   </url><url>
+    <loc>https://shiun.me/categories/</loc>
+    <lastmod>2024-04-21T01:04:16+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/internet-gateway/</loc>
+    <lastmod>2024-04-21T01:04:16+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/nat-gateway/</loc>
+    <lastmod>2024-04-21T01:04:16+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/network/</loc>
+    <lastmod>2024-04-21T01:04:16+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/network/</loc>
+    <lastmod>2024-04-21T01:04:16+08:00</lastmod>
+  </url><url>
     <loc>https://shiun.me/</loc>
+    <lastmod>2024-04-21T01:04:16+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/</loc>
+    <lastmod>2024-04-21T01:04:16+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/vpc/</loc>
     <lastmod>2024-04-21T01:04:16+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/acu/</loc>
     <lastmod>2024-04-06T23:45:32+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/automated-task/</loc>
-    <lastmod>2024-04-06T23:45:32+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/aws/</loc>
-    <lastmod>2024-04-06T23:45:32+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/categories/aws/</loc>
     <lastmod>2024-04-06T23:45:32+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/aws-aurora/</loc>
@@ -35,9 +59,6 @@
     <loc>https://shiun.me/tags/aws-lambda/</loc>
     <lastmod>2024-04-06T23:45:32+08:00</lastmod>
   </url><url>
-    <loc>https://shiun.me/categories/</loc>
-    <lastmod>2024-04-06T23:45:32+08:00</lastmod>
-  </url><url>
     <loc>https://shiun.me/tags/cron/</loc>
     <lastmod>2024-04-06T23:45:32+08:00</lastmod>
   </url><url>
@@ -48,9 +69,6 @@
     <lastmod>2024-04-06T23:45:32+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/categories/serverless/</loc>
-    <lastmod>2024-04-06T23:45:32+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/</loc>
     <lastmod>2024-04-06T23:45:32+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/time-based-scheduling/</loc>

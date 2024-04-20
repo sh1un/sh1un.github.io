@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>AWS on Shiun</title>
-    <link>https://shiun.me/tags/aws/</link>
-    <description>Recent content in AWS on Shiun</description>
+    <title>Internet Gateway on Shiun</title>
+    <link>https://shiun.me/tags/internet-gateway/</link>
+    <description>Recent content in Internet Gateway on Shiun</description>
     <image>
       <title>Shiun</title>
       <url>https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea</url>
@@ -12,7 +12,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
     <lastBuildDate>Sun, 21 Apr 2024 01:04:16 +0800</lastBuildDate>
-    <atom:link href="https://shiun.me/tags/aws/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://shiun.me/tags/internet-gateway/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>AWS Internet Gateway vs NAT Gateway 及使用心得分享</title>
       <link>https://shiun.me/blog/internet-gateway-vs-nat-gateway/</link>
@@ -24,20 +24,6 @@ Internet Gateway (IGW) IGW 是一種允許 VPC（Virtual Private Cloud）與 Int
 雙向通信支持：允許配有 Public IP 的 Instance 訪問 Internet，同時也能接收來自 Internet 的數據。 高度的可靠性和擴展性：確保無需用戶干預即可維持服務的持續可用。 NAT Gateway NAT Gateway 是一種網路地址轉換服務，允許 Private Subnet 中的 Instance 連接到 VPC 外部的服務，同時阻止外部服務主動連接這些實例。這種設計特別適合需要訪問 Internet 但不需要從 Internet 接受直接訪問的敏感或保密環境。
 NAT Gateway 價錢:
 NAT Gateway 收費 = NAT Gateway 開啟時間 USD 0.</description>
-    </item>
-    <item>
-      <title>如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU</title>
-      <link>https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/</link>
-      <pubDate>Sat, 06 Apr 2024 23:45:32 +0800</pubDate>
-      <guid>https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/</guid>
-      <description>這篇文章將教學如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU</description>
-    </item>
-    <item>
-      <title>如何成為 AWS Educate 雲端大使？履歷準備、面試技巧大公開</title>
-      <link>https://shiun.me/blog/aws-educate-6th-cloud-ambassador-resume-and-interview-preparation/</link>
-      <pubDate>Sun, 28 Jan 2024 01:31:05 +0800</pubDate>
-      <guid>https://shiun.me/blog/aws-educate-6th-cloud-ambassador-resume-and-interview-preparation/</guid>
-      <description>Hi 大家好我是 Shiun, 目前是雲端大使的一員「5th AWS Eduacte 雲端大使 - Technical Support (技術支援)」，在 2024/3 也將上任 「6th AWS Educate 雲端大使 Team Lead - Technical Support (技術支援)」，因此 6th 的技術大使在篩選履歷以及面試時也會經過我這邊一手，當然我們針對履歷和面試在內部是有一個公正的評判標準，這篇文章會以當時我報名 5th 並綜合面試官的角度來撰寫，希望對日後想要申請雲端大使計畫的人有幫助！</description>
     </item>
   </channel>
 </rss>
