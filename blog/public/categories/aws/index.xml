@@ -18,7 +18,7 @@
       <link>https://shiun.me/blog/internet-gateway-vs-nat-gateway/</link>
       <pubDate>Sun, 21 Apr 2024 01:04:16 +0800</pubDate>
       <guid>https://shiun.me/blog/internet-gateway-vs-nat-gateway/</guid>
-      <description>在準備 SAA 的過程中，我覺得最難的部分就是網路，這篇文章主要先介紹一下 IGW 和 NAT Gateway 的差異，接著介紹一下一些使用心得。</description>
+      <description>在準備 SAA 的過程中，我覺得最難的部分就是網路，這篇文章主要先介紹一下 IGW 和 NAT Gateway 的差異，接著介紹一些使用心得。</description>
     </item>
     <item>
       <title>如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU</title>

@@ -2,7 +2,7 @@
 title: 'AWS Internet Gateway vs NAT Gateway 及使用心得分享'
 date: 2024-04-21T01:04:16+08:00
 draft: false
-description: "在準備 SAA 的過程中，我覺得最難的部分就是網路，這篇文章主要先介紹一下 IGW 和 NAT Gateway 的差異，接著介紹一下一些使用心得。"
+description: "在準備 SAA 的過程中，我覺得最難的部分就是網路，這篇文章主要先介紹一下 IGW 和 NAT Gateway 的差異，接著介紹一些使用心得。"
 tags: ["Network", "NAT Gateway", "Internet Gateway", "AWS", "VPC"]
 categories: ["Network", "AWS"]
 keywords:
@@ -13,7 +13,8 @@ keywords:
 - Network
 ---
 
-在準備 SAA 的過程中，我覺得最難的部分就是網路，這篇文章主要先介紹一下 IGW 和 NAT Gateway 的差異，接著介紹一下一些使用心得。
+在準備 SAA 的過程中，我覺得最難的部分就是網路，這篇文章主要先介紹一下 IGW 和 NAT Gateway 的差異，接著介紹一些使用心得。
+
 另外分享一下活動，最近我們大使推出了一個「證照陪跑計畫」，可以透過這個活動拿到 50% 折價券、AWS 贈品、考照學習資源以及加入 DC 社群，一直招募到 2024/04/28，有興趣的讀者可以來報名！([報名表單連結](https://www.surveycake.com/s/nvwem))
 
 ## Internet Gateway (IGW)
