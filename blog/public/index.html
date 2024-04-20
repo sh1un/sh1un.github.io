@@ -255,6 +255,23 @@ if (!doNotTrack) {
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">AWS Internet Gateway vs NAT Gateway 及使用心得分享
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>在準備 SAA 的過程中，我覺得最難的部分就是網路，這篇文章主要先介紹一下 IGW 和 NAT Gateway 的差異，接著介紹一下一些使用心得。 另外分享一下活動，最近我們大使推出了一個「證照陪跑計畫」，可以透過這個活動拿到 50% 折價券、AWS 贈品、考照學習資源以及加入 DC 社群，一直招募到 2024/04/28，有興趣的讀者可以來報名！(報名表單連結)
+Internet Gateway (IGW) IGW 是一種允許 VPC（Virtual Private Cloud）與 Internet 之間通信的 VPC組件。它能讓 VPC 內的資源如 EC2 Instance 直接訪問 Internet，同時也能讓Internet 上的使用者訪問 VPC 內的資源。
+主要功能包括：
+雙向通信支持：允許配有 Public IP 的 Instance 訪問 Internet，同時也能接收來自 Internet 的數據。 高度的可靠性和擴展性：確保無需用戶干預即可維持服務的持續可用。 NAT Gateway NAT Gateway 是一種網路地址轉換服務，允許 Private Subnet 中的 Instance 連接到 VPC 外部的服務，同時阻止外部服務主動連接這些實例。這種設計特別適合需要訪問 Internet 但不需要從 Internet 接受直接訪問的敏感或保密環境。
+NAT Gateway 價錢:
+NAT Gateway 收費 = NAT Gateway 開啟時間 USD 0....</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-04-21 01:04:16 +0800 CST'>April 21, 2024</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to AWS Internet Gateway vs NAT Gateway 及使用心得分享" href="https://shiun.me/blog/internet-gateway-vs-nat-gateway/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU
     </h2>
   </header>
@@ -319,22 +336,6 @@ AI Data Analysis DevOps … 展現你的 Leadership 和 Ownership
   </div>
   <footer class="entry-footer"><span title='2024-01-28 01:31:05 +0800 CST'>January 28, 2024</span>&nbsp;·&nbsp;1 min</footer>
   <a class="entry-link" aria-label="post link to 如何成為 AWS Educate 雲端大使？履歷準備、面試技巧大公開" href="https://shiun.me/blog/aws-educate-6th-cloud-ambassador-resume-and-interview-preparation/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">一個專案需要多個 Dockerfile - 淺談建構上下文 (build context)
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>最近在寫 E2E 測試遇到一個問題，因 E2E 專案中，除了專案本身的 Docker Image 需要 Build 之外，還有多個測試環境的 Image 也要 Build，這造成了我在這個專案上需要創建多個 Dockerfile
-發生了什麼問題? 我一開始的錯誤處理方式 菜鳥時期的我，以為 Dockerfile 就是一定得命名為&#34;Dockerfile&#34;，這導致了我沒辦法在專案根目錄下創建三個 Dockerfile，因為會導致命名衝突
-那我想出了什麼處理方式？相當簡單，很菜的我，一開始便自然地根據不同環境在專案下創建了不同的目錄，然後在目錄底下存放各自的 Dockerfile 就很類似這種感覺：
-E2Eproject/ ├── testenvironment1/ │ └── Dockerfile ├── testenvironment2/ │ └── Dockerfile ├── requirements.txt └── Dockerfile 接著便接著發生下一個問題 — 錯誤的建構上下文 以其中一個測試環境內的 Dockerfile 為範例，當時我的寫法如下，請特別注意 COPY ../../ /usr/src/app/ 這行
-# Use the official Python base image from the DockerHub. FROM python:3.12 # Set the working directory within the container. WORKDIR /usr/src/app # Set the PYTHONPATH environment variable....</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-01-20 18:54:37 +0800 CST'>January 20, 2024</span>&nbsp;·&nbsp;3 min</footer>
-  <a class="entry-link" aria-label="post link to 一個專案需要多個 Dockerfile - 淺談建構上下文 (build context)" href="https://shiun.me/blog/a-project-with-multiple-dockerfiles---an-introduction-to-build-context/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

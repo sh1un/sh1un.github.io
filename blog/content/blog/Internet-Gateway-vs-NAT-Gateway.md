@@ -1,7 +1,7 @@
 ---
 title: 'AWS Internet Gateway vs NAT Gateway 及使用心得分享'
 date: 2024-04-21T01:04:16+08:00
-draft: true
+draft: false
 description: ""
 tags: ["Network", "NAT Gateway", "Internet Gateway", "AWS", "VPC"]
 categories: ["Network", "AWS"]

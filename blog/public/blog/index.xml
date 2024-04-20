@@ -14,6 +14,18 @@
     <lastBuildDate>Sun, 21 Apr 2024 01:04:16 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>AWS Internet Gateway vs NAT Gateway 及使用心得分享</title>
+      <link>https://shiun.me/blog/internet-gateway-vs-nat-gateway/</link>
+      <pubDate>Sun, 21 Apr 2024 01:04:16 +0800</pubDate>
+      <guid>https://shiun.me/blog/internet-gateway-vs-nat-gateway/</guid>
+      <description>在準備 SAA 的過程中，我覺得最難的部分就是網路，這篇文章主要先介紹一下 IGW 和 NAT Gateway 的差異，接著介紹一下一些使用心得。 另外分享一下活動，最近我們大使推出了一個「證照陪跑計畫」，可以透過這個活動拿到 50% 折價券、AWS 贈品、考照學習資源以及加入 DC 社群，一直招募到 2024/04/28，有興趣的讀者可以來報名！(報名表單連結)
+Internet Gateway (IGW) IGW 是一種允許 VPC（Virtual Private Cloud）與 Internet 之間通信的 VPC組件。它能讓 VPC 內的資源如 EC2 Instance 直接訪問 Internet，同時也能讓Internet 上的使用者訪問 VPC 內的資源。
+主要功能包括：
+雙向通信支持：允許配有 Public IP 的 Instance 訪問 Internet，同時也能接收來自 Internet 的數據。 高度的可靠性和擴展性：確保無需用戶干預即可維持服務的持續可用。 NAT Gateway NAT Gateway 是一種網路地址轉換服務，允許 Private Subnet 中的 Instance 連接到 VPC 外部的服務，同時阻止外部服務主動連接這些實例。這種設計特別適合需要訪問 Internet 但不需要從 Internet 接受直接訪問的敏感或保密環境。
+NAT Gateway 價錢:
+NAT Gateway 收費 = NAT Gateway 開啟時間 USD 0.</description>
+    </item>
+    <item>
       <title>如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU</title>
       <link>https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/</link>
       <pubDate>Sat, 06 Apr 2024 23:45:32 +0800</pubDate>
