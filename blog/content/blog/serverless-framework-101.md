@@ -76,7 +76,7 @@ https://app.serverless.com?client=cli&transactionId=x6r7NmzVa-ExeVdCyQZV2
 ✔ Your project is ready to be deployed to Serverless Dashboard (org: "shiunchiu", app: "serverless-framework-101")
 ```
 
-進入你的工作目錄，然後開啟 VSCode
+進入你的工作目錄，然後開啟 VS Code
 
 ```bash
 $ cd your-service-name
