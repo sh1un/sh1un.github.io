@@ -11,8 +11,15 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Sun, 21 Apr 2024 01:04:16 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 28 Apr 2024 04:27:23 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda</title>
+      <link>https://shiun.me/blog/serverless-framework-101/</link>
+      <pubDate>Sun, 28 Apr 2024 04:27:23 +0800</pubDate>
+      <guid>https://shiun.me/blog/serverless-framework-101/</guid>
+      <description>學習如何透過 Serverless Framework 來開發並部署你的 AWS Lambda</description>
+    </item>
     <item>
       <title>AWS Internet Gateway vs NAT Gateway 及使用心得分享</title>
       <link>https://shiun.me/blog/internet-gateway-vs-nat-gateway/</link>

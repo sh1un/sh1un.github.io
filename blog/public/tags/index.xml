@@ -11,8 +11,29 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Sun, 21 Apr 2024 01:04:16 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 28 Apr 2024 04:27:23 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AWS Lambda</title>
+      <link>https://shiun.me/tags/aws-lambda/</link>
+      <pubDate>Sun, 28 Apr 2024 04:27:23 +0800</pubDate>
+      <guid>https://shiun.me/tags/aws-lambda/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Serverless</title>
+      <link>https://shiun.me/tags/serverless/</link>
+      <pubDate>Sun, 28 Apr 2024 04:27:23 +0800</pubDate>
+      <guid>https://shiun.me/tags/serverless/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Serverless Framework</title>
+      <link>https://shiun.me/tags/serverless-framework/</link>
+      <pubDate>Sun, 28 Apr 2024 04:27:23 +0800</pubDate>
+      <guid>https://shiun.me/tags/serverless-framework/</guid>
+      <description></description>
+    </item>
     <item>
       <title>AWS</title>
       <link>https://shiun.me/tags/aws/</link>
@@ -91,24 +112,10 @@
       <description></description>
     </item>
     <item>
-      <title>AWS Lambda</title>
-      <link>https://shiun.me/tags/aws-lambda/</link>
-      <pubDate>Sat, 06 Apr 2024 23:45:32 +0800</pubDate>
-      <guid>https://shiun.me/tags/aws-lambda/</guid>
-      <description></description>
-    </item>
-    <item>
       <title>Cron</title>
       <link>https://shiun.me/tags/cron/</link>
       <pubDate>Sat, 06 Apr 2024 23:45:32 +0800</pubDate>
       <guid>https://shiun.me/tags/cron/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Serverless</title>
-      <link>https://shiun.me/tags/serverless/</link>
-      <pubDate>Sat, 06 Apr 2024 23:45:32 +0800</pubDate>
-      <guid>https://shiun.me/tags/serverless/</guid>
       <description></description>
     </item>
     <item>
