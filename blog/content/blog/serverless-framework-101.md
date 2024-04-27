@@ -107,7 +107,7 @@ C:.
 
 ![Untitled 1](https://github.com/sh1un/sh1un.github.io/assets/85695943/62345dba-ddcf-4acd-aab3-78f840711d1c)
 
-按下 Connect AWS Provider 後，會跳轉到 AWS CloudFormation 頁面，直接下滑到底，打勾 “**I acknowledge that AWS CloudFormation might create IAM resources with custom names.**” → Create Stack
+按下 "Connect AWS Provider" 後，會跳轉到 AWS CloudFormation 頁面，直接下滑到底，打勾 “**I acknowledge that AWS CloudFormation might create IAM resources with custom names.**” → Create Stack
 ![Untitled 2](https://github.com/sh1un/sh1un.github.io/assets/85695943/b4d432f5-1efb-4ab0-867a-1b62e5e16158)
 
 等待一下，等 Stack 創建好我們可以去看一下這個 Stack，其實他就是幫你自動創建一個 IAM Role
@@ -120,6 +120,7 @@ Stack 創建好後，跳轉到 Serverless Framework Dashboard，就會看到創�
 ---
 
 ## 寫好 Code，把你的 Code 部署到 AWS
+當我們寫好 Code 之後，就要把 Code 部署到 AWS 上面，這部分就來教學如何透過 Serverless Framework CLI 來部署
 
 ```bash
 $ serverless deploy # or sls deploy
@@ -203,23 +204,21 @@ END Duration: 4.13 ms Memory Used: 57 MB
 
 其實我們還可以讓我們的 Log 在 Terminal 串流，我會在 VS Code 開啟兩個 Terminal 來示範
 
-在 VS Code 打開一個 Terminal ( 快捷鍵: Ctrl + `)
-
-輸入以下指令
+在 VS Code 打開一個 Terminal ( 快捷鍵: Ctrl + `)，然後輸入以下指令
 
 ```bash
 $ serverless logs -f hello --tail
 ```
 
-我們再接著建立一個新的 Terminal
+我們再接著建立一個新的 Terminal，依照下圖所示按下 "+"
 
 ![Untitled 8](https://github.com/sh1un/sh1un.github.io/assets/85695943/d80b1691-0134-47f1-ad2d-fd9d2037da74)
 
-配置一下版面，依照下圖拖曳 Terminal 到上面
+配置一下 VS Code 版面，依照下圖拖曳 Terminal 到上面
 
 ![Untitled 9](https://github.com/sh1un/sh1un.github.io/assets/85695943/3854409b-009f-41e1-9baf-8fea47113a06)
 
-然後使用下方的 Terminal 來調用 Lambda Function
+配置好版面，我們將使用下方的 Terminal 來調用 Lambda Function
 
 ```bash
 $ serverless invoke -f hello
@@ -233,6 +232,8 @@ $ serverless invoke -f hello
 直接看下方的 gif 圖感受一下吧！ (這 gif 圖長達 27s 敬請耐心等待)
 
 ![ServerlessFramework101LambdaStreamLogs](https://github.com/sh1un/sh1un.github.io/assets/85695943/99bec5de-f18a-44ca-a07b-d0460cab396d)
+
+透過今天的教學，我們學習到如何透過 Serverless Framework 來部署及開發 AWS Lambda，Serverless Framework 提供了一種高效且靈活的方式來運行和管理無服務器應用！
 
 ---
 
