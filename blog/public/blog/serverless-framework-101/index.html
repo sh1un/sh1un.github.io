@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
+<meta name="robots" content="index, follow" />
+<title>
+  Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda | Shiun
+</title>
+<meta
+  name="keywords"
+  content="AWS, AWS Lambda, Lambda, SAM, AWS SAM, Serverless, Serverless Framework, 無服務器部署, CloudWatch Logs, Python"
+/> <meta name="description" content="學習如何透過 Serverless Framework 來開發並部署你的 AWS Lambda"> <meta name="author" content=""> <link rel="canonical" href="https://shiun.me/blog/serverless-framework-101/">
+<link
+  crossorigin="anonymous"
+  href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css"
+  integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A="
+  rel="preload stylesheet"
+  as="style"
+/> <link rel="icon" href="https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"> <link
+rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://shiun.me/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://shiun.me/apple-touch-icon.png"> <link rel="mask-icon" href="https://shiun.me/safari-pinned-tab.svg"> <meta name="theme-color" content="#2e2e33"> <meta name="msapplication-TileColor" content="#2e2e33"> <link rel="alternate" hreflang="en" href="https://shiun.me/blog/serverless-framework-101/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+<meta property="og:title" content="Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda" />
+<meta property="og:description" content="學習如何透過 Serverless Framework 來開發並部署你的 AWS Lambda" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/serverless-framework-101/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-04-28T04:27:23+08:00" />
+<meta property="article:modified_time" content="2024-04-28T04:27:23+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda"/>
+<meta name="twitter:description" content="學習如何透過 Serverless Framework 來開發並部署你的 AWS Lambda"/>
+
+
+<noscript>
+  <style>
+    #theme-toggle,
+    .top-link {
+      display: none;
+    }
+  </style>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --theme: rgb(29, 30, 32);
+        --entry: rgb(46, 46, 51);
+        --primary: rgb(218, 218, 219);
+        --secondary: rgb(155, 156, 157);
+        --tertiary: rgb(65, 66, 68);
+        --content: rgb(196, 196, 197);
+        --code-block-bg: rgb(46, 46, 51);
+        --code-bg: rgb(55, 56, 62);
+        --border: rgb(51, 51, 51);
+      }
+
+      .list {
+        background: var(--theme);
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-track {
+        background: 0 0;
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-thumb {
+        border-color: var(--theme);
+      }
+    }
+  </style>
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda" />
+<meta property="og:description" content="學習如何透過 Serverless Framework 來開發並部署你的 AWS Lambda" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/serverless-framework-101/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-04-28T04:27:23+08:00" />
+<meta property="article:modified_time" content="2024-04-28T04:27:23+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/>
+
+<meta name="twitter:title" content="Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda"/>
+<meta name="twitter:description" content="學習如何透過 Serverless Framework 來開發並部署你的 AWS Lambda"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Blogs",
+      "item": "https://shiun.me/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda",
+      "item": "https://shiun.me/blog/serverless-framework-101/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda",
+  "name": "Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda",
+  "description": "學習如何透過 Serverless Framework 來開發並部署你的 AWS Lambda",
+  "keywords": [
+    "AWS", "AWS Lambda", "Lambda", "SAM", "AWS SAM", "Serverless", "Serverless Framework", "無服務器部署", "CloudWatch Logs", "Python"
+  ],
+  "articleBody": "Serverless Framework 簡介 Serverless Framework 是一個開源的無服務器應用框架，它允許開發者快速建立、部署和管理在 AWS Lambda、Google Cloud Functions、Azure Functions 等雲平台上運行的無服務器應用。這個框架使用一個簡潔的配置文件（通常是 serverless.yml），在其中定義了應用的所有資源和設定，讓開發者可以專注於編寫業務邏輯而非管理基礎設施。\n安裝 Serverless Framework Prerequisites:\n需要有 npm，若你的電腦沒有 npm，請去下載 NodeJS $ npm install -g serverless 創建一個 Service $ serverless ? What do you want to make? AWS - Node.js - Starter AWS - Node.js - HTTP API AWS - Node.js - Scheduled Task AWS - Node.js - SQS Worker AWS - Node.js - Express API AWS - Node.js - Express API with DynamoDB AWS - Python - Starter \u003e AWS - Python - HTTP API AWS - Python - Scheduled Task AWS - Python - SQS Worker AWS - Python - Flask API AWS - Python - Flask API with DynamoDB Other 輸入指令後透過方向鍵選取你要的 Template，本文將已 AWS - Python HTTP API 示範\n如果這些模板沒有你滿意的，可以到 serverless/examples 找你要的模板，然後指令輸入 serverless --template-url=https://github.com/serverless/examples/tree/v3/...\n? What do you want to call this project? serverless-framework-101 ✔ Project successfully created in serverless-framework-101 folder ? Register or Login to Serverless Framework Yes Logging into the Serverless Framework via the browser If your browser does not open automatically, please open this URL: https://app.serverless.com?client=cli\u0026transactionId=x6r7NmzVa-ExeVdCyQZV2 ✔ You are now logged into the Serverless Framework ✔ Your project is ready to be deployed to Serverless Dashboard (org: \"shiunchiu\", app: \"serverless-framework-101\") 進入你的工作目錄，然後開啟 VS Code\n$ cd your-service-name $ code . 現在的目錄架構應該會長這樣\nC:. .gitignore handler.py README.md serverless.yml 配置 Provider 登入 AWS 帳號 請先登入你的 AWS 帳號\n到 Serverless Framework Dashboard 配置 Provider 按下 “Connect AWS Provider” 後，會跳轉到 AWS CloudFormation 頁面，直接下滑到底，打勾 “I acknowledge that AWS CloudFormation might create IAM resources with custom names.” → Create Stack 等待一下，等 Stack 創建好我們可以去看一下這個 Stack，其實他就是幫你自動創建一個 IAM Role Stack 創建好後，跳轉到 Serverless Framework Dashboard，就會看到創建好的 Provider\n寫好 Code，把你的 Code 部署到 AWS 當我們寫好 Code 之後，就要把 Code 部署到 AWS 上面，這部分就來教學如何透過 Serverless Framework CLI 來部署\n$ serverless deploy # or sls deploy Deploying serverless-framework-101 to stage dev (us-east-1, \"serverless-framework-101-dev\" provider) Warning: Serverless Framework observability features do not support the following runtime: python3.11 ✔ Serverless Framework's Observability features being set up on your AWS account (one-time set-up). An email will be sent upon completion, or view progress within the Dashboard: https://app.serverless.com/shiunchiu/settings/integrations ✔ Serverless Framework Observability is enabled ✔ Service deployed to stack serverless-framework-101-dev (173s) dashboard: https://app.serverless.com/shiunchiu/apps/serverless-framework-101/serverless-framework-101/dev/us-east-1 endpoint: GET - https://1ibju7jfc9.execute-api.us-east-1.amazonaws.com/ functions: hello: serverless-framework-101-dev-hello (2 kB) 如果比較懶想使用 sls deploy 指令，但你又使用 Powershell ，有可能會如果看到這種輸出，這是因為 PowerShell 將 sls 誤認為是 Select-String 的別名，這是 PowerShell 中用於搜索字符串的內建命令。建議換個 git bash 或是就乖乖打完整指令\n$ sls deploy cmdlet Select-String at command pipeline position 1 Supply values for the following parameters: Path[0]: 到 AWS Console 查看部署結果 我們可以先到 Lambda 頁面，可以看到部署上去的 function\n因為 Serverless Framework 其實是透過 CloudFormation 來部署，現在我們到 CloudFormation 頁面查看，也會看到有新的 Stack\n調用 Lambda Function 當我們部署好之後，就可以來調用看看!\n$ serverless invoke -f hello { \"statusCode\": 200, \"body\": \"{\\\"message\\\": \\\"Go Serverless v3.0! Your function executed successfully!\\\", \\\"input\\\": {}}\" } 透過 serverless invoke 指令就可以調用我們部署上去的 Lambda\n但需要特別注意 -f 後面的值是要根據你在 serverless.yml 上面所配置的 function name 來設定，並非已經部署上去的 Lambda Function name\n現在我們上去 CloudWatch 看 Log，會看到我們剛剛的調用\n有時候我們會想要直接在 Local 看到 log，那可以剛剛的 serverless invoke 指令加上 --log ，這樣就不用到 AWS Console 查看了\n$ serverless invoke -f hello --log { \"statusCode\": 200, \"body\": \"{\\\"message\\\": \\\"Go Serverless v3.0! Your function executed successfully!\\\", \\\"input\\\": {}}\" } -------------------------------------------------------------------- START SERVERLESS_TELEMETRY.TZ.H4sIAPFVLWYC/43QMUoDQRTGcSO4wpYBEbcxhIAYmGVmZ+bNTDoFG7EzlSA6+2aWhGyyYTduIuIhvELO4B0EC4/gBSy8glELLYTYveLBx+8f1mEHEETmPRLDJCUCHRAjE0pMmjqQjnKPNmpXvqx9mfuqIllpx35elCPCKCPO12Tg87zodsO9X192XpHcjlNnSeVGzS0a8ziJguntbFBMoqdG2NKWKp6i4AoFGOtQayW4BKe4FYkRzVaK4JGjlhI48NRpzsAw7TMJic5k1g5XK/H3yuHB69v+Y+95l928vH8dPVwG18vgMgwWGq5AHP8DcdqRzBoEikQ50ESwhBNNVzkSoaSXVFum+MV25+yof3Lenzaih08JNZDwjHMljKCrmg5TipkU1BrnwKyXRGtrtHd+rPFwUhdoZ8Ni8gd7o7t5d/8BvrD25toBAAA= END Duration: 4.13 ms Memory Used: 57 MB Stream Logs 其實我們還可以讓我們的 Log 在 Terminal 串流，我會在 VS Code 開啟兩個 Terminal 來示範\n在 VS Code 打開一個 Terminal ( 快捷鍵: Ctrl + `)，然後輸入以下指令\n$ serverless logs -f hello --tail 我們再接著建立一個新的 Terminal，依照下圖所示按下 “+”\n配置一下 VS Code 版面，依照下圖拖曳 Terminal 到上面\n配置好版面，我們將使用下方的 Terminal 來調用 Lambda Function\n$ serverless invoke -f hello { \"statusCode\": 200, \"body\": \"{\\\"message\\\": \\\"Go Serverless v3.0! Your function executed successfully!\\\", \\\"input\\\": {}}\" } 直接看下方的 gif 圖感受一下吧！ (這 gif 圖長達 27s 敬請耐心等待)\n透過今天的教學，我們學習到如何透過 Serverless Framework 來部署及開發 AWS Lambda，Serverless Framework 提供了一種高效且靈活的方式來運行和管理無服務器應用！\n參考資料 Serverless Framework - Setting Up Serverless Framework With AWS Serverless Framework - Providers GitHub - serverless/examples ",
+  "wordCount" : "588",
+  "inLanguage": "en",
+  "datePublished": "2024-04-28T04:27:23+08:00",
+  "dateModified": "2024-04-28T04:27:23+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://shiun.me/blog/serverless-framework-101/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Shiun",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://shiun.me/" accesskey="h" title="Shiun (Alt + H)">Shiun</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://shiun.me/blog/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.notion.site/Shiun-s-Learning-Journal-ded4cd4a3efd47b2805f2f99dee8f9a1?pvs=4" title="Notion">
+                    <span>Notion</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.linkedin.com/in/shiunchiu" title="About me">
+                    <span>About me</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://shiun.me/">Home</a>&nbsp;»&nbsp;<a href="https://shiun.me/blog/">Blogs</a></div>
+    <h1 class="post-title entry-hint-parent">
+      Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda
+    </h1>
+    <div class="post-description">
+      學習如何透過 Serverless Framework 來開發並部署你的 AWS Lambda
+    </div>
+    <div class="post-meta"><span title='2024-04-28 04:27:23 +0800 CST'>April 28, 2024</span>&nbsp;·&nbsp;3 min
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#serverless-framework-%e7%b0%a1%e4%bb%8b" aria-label="Serverless Framework 簡介">Serverless Framework 簡介</a></li>
+                <li>
+                    <a href="#%e5%ae%89%e8%a3%9d-serverless-framework" aria-label="安裝 Serverless Framework">安裝 Serverless Framework</a></li>
+                <li>
+                    <a href="#%e5%89%b5%e5%bb%ba%e4%b8%80%e5%80%8b-service" aria-label="創建一個 Service">創建一個 Service</a></li>
+                <li>
+                    <a href="#%e9%85%8d%e7%bd%ae-provider" aria-label="配置 Provider">配置 Provider</a><ul>
+                        
+                <li>
+                    <a href="#%e7%99%bb%e5%85%a5-aws-%e5%b8%b3%e8%99%9f" aria-label="登入 AWS 帳號">登入 AWS 帳號</a></li>
+                <li>
+                    <a href="#%e5%88%b0-serverless-framework-dashboard-%e9%85%8d%e7%bd%ae-provider" aria-label="到 Serverless Framework Dashboard 配置 Provider">到 Serverless Framework Dashboard 配置 Provider</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%af%ab%e5%a5%bd-code%e6%8a%8a%e4%bd%a0%e7%9a%84-code-%e9%83%a8%e7%bd%b2%e5%88%b0-aws" aria-label="寫好 Code，把你的 Code 部署到 AWS">寫好 Code，把你的 Code 部署到 AWS</a><ul>
+                        
+                <li>
+                    <a href="#%e5%88%b0-aws-console-%e6%9f%a5%e7%9c%8b%e9%83%a8%e7%bd%b2%e7%b5%90%e6%9e%9c" aria-label="到 AWS Console 查看部署結果">到 AWS Console 查看部署結果</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e8%aa%bf%e7%94%a8-lambda-function" aria-label="調用 Lambda Function">調用 Lambda Function</a></li>
+                <li>
+                    <a href="#stream-logs" aria-label="Stream Logs">Stream Logs</a></li>
+                <li>
+                    <a href="#%e5%8f%83%e8%80%83%e8%b3%87%e6%96%99" aria-label="參考資料">參考資料</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="serverless-framework-簡介">Serverless Framework 簡介<a hidden class="anchor" aria-hidden="true" href="#serverless-framework-簡介">#</a></h2>
+<p>Serverless Framework 是一個開源的無服務器應用框架，它允許開發者快速建立、部署和管理在 AWS Lambda、Google Cloud Functions、Azure Functions 等雲平台上運行的無服務器應用。這個框架使用一個簡潔的配置文件（通常是 <code>serverless.yml</code>），在其中定義了應用的所有資源和設定，讓開發者可以專注於編寫業務邏輯而非管理基礎設施。</p>
+<hr>
+<h2 id="安裝-serverless-framework">安裝 Serverless Framework<a hidden class="anchor" aria-hidden="true" href="#安裝-serverless-framework">#</a></h2>
+<p><strong>Prerequisites:</strong></p>
+<ul>
+<li>需要有 npm，若你的電腦沒有 npm，請去下載 <a href="https://nodejs.org/en">NodeJS</a></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ npm install -g serverless
+</span></span></code></pre></div><hr>
+<h2 id="創建一個-service">創建一個 Service<a hidden class="anchor" aria-hidden="true" href="#創建一個-service">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ serverless
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>? What <span style="color:#66d9ef">do</span> you want to make?
+</span></span><span style="display:flex;"><span>  AWS - Node.js - Starter
+</span></span><span style="display:flex;"><span>  AWS - Node.js - HTTP API
+</span></span><span style="display:flex;"><span>  AWS - Node.js - Scheduled Task
+</span></span><span style="display:flex;"><span>  AWS - Node.js - SQS Worker
+</span></span><span style="display:flex;"><span>  AWS - Node.js - Express API
+</span></span><span style="display:flex;"><span>  AWS - Node.js - Express API with DynamoDB
+</span></span><span style="display:flex;"><span>  AWS - Python - Starter
+</span></span><span style="display:flex;"><span>&gt; AWS - Python - HTTP API
+</span></span><span style="display:flex;"><span>  AWS - Python - Scheduled Task
+</span></span><span style="display:flex;"><span>  AWS - Python - SQS Worker
+</span></span><span style="display:flex;"><span>  AWS - Python - Flask API
+</span></span><span style="display:flex;"><span>  AWS - Python - Flask API with DynamoDB
+</span></span><span style="display:flex;"><span>  Other
+</span></span></code></pre></div><p>輸入指令後透過方向鍵選取你要的 Template，本文將已 AWS - Python HTTP API 示範</p>
+<p>如果這些模板沒有你滿意的，可以到 <a href="https://github.com/serverless/examples">serverless/examples</a> 找你要的模板，然後指令輸入 <code>serverless --template-url=https://github.com/serverless/examples/tree/v3/...</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>? What <span style="color:#66d9ef">do</span> you want to call this project? serverless-framework-101
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>✔ Project successfully created in serverless-framework-101 folder
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>? Register or Login to Serverless Framework Yes
+</span></span><span style="display:flex;"><span>Logging into the Serverless Framework via the browser
+</span></span><span style="display:flex;"><span>If your browser does not open automatically, please open this URL:
+</span></span><span style="display:flex;"><span>https://app.serverless.com?client<span style="color:#f92672">=</span>cli&amp;transactionId<span style="color:#f92672">=</span>x6r7NmzVa-ExeVdCyQZV2
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>✔ You are now logged into the Serverless Framework
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>✔ Your project is ready to be deployed to Serverless Dashboard <span style="color:#f92672">(</span>org: <span style="color:#e6db74">&#34;shiunchiu&#34;</span>, app: <span style="color:#e6db74">&#34;serverless-framework-101&#34;</span><span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>進入你的工作目錄，然後開啟 VS Code</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cd your-service-name
+</span></span><span style="display:flex;"><span>$ code .
+</span></span></code></pre></div><p>現在的目錄架構應該會長這樣</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>C:.
+</span></span><span style="display:flex;"><span>    .gitignore
+</span></span><span style="display:flex;"><span>    handler.py
+</span></span><span style="display:flex;"><span>    README.md
+</span></span><span style="display:flex;"><span>    serverless.yml
+</span></span></code></pre></div><hr>
+<h2 id="配置-provider">配置 Provider<a hidden class="anchor" aria-hidden="true" href="#配置-provider">#</a></h2>
+<h3 id="登入-aws-帳號">登入 AWS 帳號<a hidden class="anchor" aria-hidden="true" href="#登入-aws-帳號">#</a></h3>
+<p>請先<a href="https://signin.aws.amazon.com/signin?redirect_uri=https%3A%2F%2Fconsole.aws.amazon.com%2Fconsole%2Fhome%3FhashArgs%3D%2523%26isauthcode%3Dtrue%26nc2%3Dh_ct%26src%3Dheader-signin%26state%3DhashArgsFromTB_ap-southeast-2_19e02f31a8db0977&amp;client_id=arn%3Aaws%3Asignin%3A%3A%3Aconsole%2Fcanvas&amp;forceMobileApp=0&amp;code_challenge=ptcq9Yh1TsOUWf-Kpzcitdm1y-90fE2tuRRHKxZCj-4&amp;code_challenge_method=SHA-256">登入你的 AWS 帳號</a></p>
+<h3 id="到-serverless-framework-dashboard-配置-provider">到 Serverless Framework Dashboard 配置 Provider<a hidden class="anchor" aria-hidden="true" href="#到-serverless-framework-dashboard-配置-provider">#</a></h3>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/8447f951-149f-4b92-af94-731b48e3f538" alt="Untitled"  />
+</p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/62345dba-ddcf-4acd-aab3-78f840711d1c" alt="Untitled 1"  />
+</p>
+<p>按下 &ldquo;Connect AWS Provider&rdquo; 後，會跳轉到 AWS CloudFormation 頁面，直接下滑到底，打勾 “<strong>I acknowledge that AWS CloudFormation might create IAM resources with custom names.</strong>” → Create Stack
+<img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/b4d432f5-1efb-4ab0-867a-1b62e5e16158" alt="Untitled 2"  />
+</p>
+<p>等待一下，等 Stack 創建好我們可以去看一下這個 Stack，其實他就是幫你自動創建一個 IAM Role
+<img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/1f1af2da-64cb-4858-ad1d-0b13ba418f40" alt="Untitled 3"  />
+</p>
+<p>Stack 創建好後，跳轉到 Serverless Framework Dashboard，就會看到創建好的 Provider</p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/d58792bd-166b-4997-be89-cb9d14db908d" alt="Untitled 4"  />
+</p>
+<hr>
+<h2 id="寫好-code把你的-code-部署到-aws">寫好 Code，把你的 Code 部署到 AWS<a hidden class="anchor" aria-hidden="true" href="#寫好-code把你的-code-部署到-aws">#</a></h2>
+<p>當我們寫好 Code 之後，就要把 Code 部署到 AWS 上面，這部分就來教學如何透過 Serverless Framework CLI 來部署</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ serverless deploy <span style="color:#75715e"># or sls deploy</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Deploying serverless-framework-101 to stage dev <span style="color:#f92672">(</span>us-east-1, <span style="color:#e6db74">&#34;serverless-framework-101-dev&#34;</span> provider<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Warning: Serverless Framework observability features <span style="color:#66d9ef">do</span> not support the following runtime: python3.11
+</span></span><span style="display:flex;"><span>✔ Serverless Framework<span style="color:#960050;background-color:#1e0010">&#39;</span>s Observability features being set up on your AWS account <span style="color:#f92672">(</span>one-time set-up<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>  An email will be sent upon completion, or view progress within the Dashboard:
+</span></span><span style="display:flex;"><span>  https://app.serverless.com/shiunchiu/settings/integrations
+</span></span><span style="display:flex;"><span>✔ Serverless Framework Observability is enabled
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>✔ Service deployed to stack serverless-framework-101-dev <span style="color:#f92672">(</span>173s<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dashboard: https://app.serverless.com/shiunchiu/apps/serverless-framework-101/serverless-framework-101/dev/us-east-1
+</span></span><span style="display:flex;"><span>endpoint: GET - https://1ibju7jfc9.execute-api.us-east-1.amazonaws.com/
+</span></span><span style="display:flex;"><span>functions:
+</span></span><span style="display:flex;"><span>  hello: serverless-framework-101-dev-hello <span style="color:#f92672">(</span><span style="color:#ae81ff">2</span> kB<span style="color:#f92672">)</span>
+</span></span></code></pre></div><blockquote>
+<p>如果比較懶想使用 sls deploy 指令，但你又使用 Powershell ，有可能會如果看到這種輸出，這是因為 PowerShell 將 <strong><code>sls</code></strong> 誤認為是 <strong><code>Select-String</code></strong> 的別名，這是 PowerShell 中用於搜索字符串的內建命令。建議換個 git bash 或是就乖乖打完整指令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sls deploy
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cmdlet Select-String at command pipeline position <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>Supply values <span style="color:#66d9ef">for</span> the following parameters:
+</span></span><span style="display:flex;"><span>Path<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>:
+</span></span></code></pre></div></blockquote>
+<h3 id="到-aws-console-查看部署結果">到 AWS Console 查看部署結果<a hidden class="anchor" aria-hidden="true" href="#到-aws-console-查看部署結果">#</a></h3>
+<p>我們可以先到 Lambda 頁面，可以看到部署上去的 function</p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/9200f546-028f-466f-8ac5-524378667d5a" alt="Untitled 5"  />
+</p>
+<p>因為 Serverless Framework 其實是透過 CloudFormation 來部署，現在我們到 CloudFormation 頁面查看，也會看到有新的 Stack</p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/a1ce9ca5-77f0-4df6-90d6-877e3fc43898" alt="Untitled 6"  />
+</p>
+<hr>
+<h2 id="調用-lambda-function">調用 Lambda Function<a hidden class="anchor" aria-hidden="true" href="#調用-lambda-function">#</a></h2>
+<p>當我們部署好之後，就可以來調用看看!</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ serverless invoke -f hello
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;statusCode&#34;</span>: 200,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;body&#34;</span>: <span style="color:#e6db74">&#34;{\&#34;message\&#34;: \&#34;Go Serverless v3.0! Your function executed successfully!\&#34;, \&#34;input\&#34;: {}}&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>透過 <code>serverless invoke</code> 指令就可以調用我們部署上去的 Lambda</p>
+<p>但需要特別注意 <code>-f</code> 後面的值是要根據你在 <code>serverless.yml</code> 上面所配置的 function name 來設定，並非已經部署上去的 Lambda Function name</p>
+<p>現在我們上去 CloudWatch 看 Log，會看到我們剛剛的調用</p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/f9936abd-17dc-4505-8f0a-f999057a1e74" alt="Untitled 7"  />
+</p>
+<p>有時候我們會想要直接在 Local 看到 log，那可以剛剛的 <code>serverless invoke</code> 指令加上 <code>--log</code> ，這樣就不用到 AWS Console 查看了</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ serverless invoke -f hello --log
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;statusCode&#34;</span>: 200,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;body&#34;</span>: <span style="color:#e6db74">&#34;{\&#34;message\&#34;: \&#34;Go Serverless v3.0! Your function executed successfully!\&#34;, \&#34;input\&#34;: {}}&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>--------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>START
+</span></span><span style="display:flex;"><span>SERVERLESS_TELEMETRY.TZ.H4sIAPFVLWYC/43QMUoDQRTGcSO4wpYBEbcxhIAYmGVmZ+bNTDoFG7EzlSA6+2aWhGyyYTduIuIhvELO4B0EC4/gBSy8glELLYTYveLBx+8f1mEHEETmPRLDJCUCHRAjE0pMmjqQjnKPNmpXvqx9mfuqIllpx35elCPCKCPO12Tg87zodsO9X192XpHcjlNnSeVGzS0a8ziJguntbFBMoqdG2NKWKp6i4AoFGOtQayW4BKe4FYkRzVaK4JGjlhI48NRpzsAw7TMJic5k1g5XK/H3yuHB69v+Y+95l928vH8dPVwG18vgMgwWGq5AHP8DcdqRzBoEikQ50ESwhBNNVzkSoaSXVFum+MV25+yof3Lenzaih08JNZDwjHMljKCrmg5TipkU1BrnwKyXRGtrtHd+rPFwUhdoZ8Ni8gd7o7t5d/8BvrD25toBAAA<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>END Duration: 4.13 ms Memory Used: <span style="color:#ae81ff">57</span> MB
+</span></span></code></pre></div><hr>
+<h2 id="stream-logs">Stream Logs<a hidden class="anchor" aria-hidden="true" href="#stream-logs">#</a></h2>
+<p>其實我們還可以讓我們的 Log 在 Terminal 串流，我會在 VS Code 開啟兩個 Terminal 來示範</p>
+<p>在 VS Code 打開一個 Terminal ( 快捷鍵: Ctrl + `)，然後輸入以下指令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ serverless logs -f hello --tail
+</span></span></code></pre></div><p>我們再接著建立一個新的 Terminal，依照下圖所示按下 &ldquo;+&rdquo;</p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/d80b1691-0134-47f1-ad2d-fd9d2037da74" alt="Untitled 8"  />
+</p>
+<p>配置一下 VS Code 版面，依照下圖拖曳 Terminal 到上面</p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/3854409b-009f-41e1-9baf-8fea47113a06" alt="Untitled 9"  />
+</p>
+<p>配置好版面，我們將使用下方的 Terminal 來調用 Lambda Function</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ serverless invoke -f hello
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;statusCode&#34;</span>: 200,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;body&#34;</span>: <span style="color:#e6db74">&#34;{\&#34;message\&#34;: \&#34;Go Serverless v3.0! Your function executed successfully!\&#34;, \&#34;input\&#34;: {}}&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>直接看下方的 gif 圖感受一下吧！ (這 gif 圖長達 27s 敬請耐心等待)</p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/99bec5de-f18a-44ca-a07b-d0460cab396d" alt="ServerlessFramework101LambdaStreamLogs"  />
+</p>
+<p>透過今天的教學，我們學習到如何透過 Serverless Framework 來部署及開發 AWS Lambda，Serverless Framework 提供了一種高效且靈活的方式來運行和管理無服務器應用！</p>
+<hr>
+<h2 id="參考資料">參考資料<a hidden class="anchor" aria-hidden="true" href="#參考資料">#</a></h2>
+<ul>
+<li><a href="https://www.serverless.com/framework/docs/getting-started">Serverless Framework - Setting Up Serverless Framework With AWS</a></li>
+<li><a href="https://www.serverless.com/framework/docs/guides/providers">Serverless Framework - Providers</a></li>
+<li><a href="https://github.com/serverless/examples">GitHub - serverless/examples</a></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://shiun.me/tags/aws-lambda/">AWS Lambda</a></li>
+      <li><a href="https://shiun.me/tags/serverless-framework/">Serverless Framework</a></li>
+      <li><a href="https://shiun.me/tags/serverless/">Serverless</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://shiun.me/blog/internet-gateway-vs-nat-gateway/">
+    <span class="title">Next »</span>
+    <br>
+    <span>AWS Internet Gateway vs NAT Gateway 及使用心得分享</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda on x"
+            href="https://x.com/intent/tweet/?text=Serverless%20Framework%20101%20-%20%e8%bc%95%e9%ac%86%e9%96%8b%e7%99%bc%e4%b8%a6%e5%bf%ab%e9%80%9f%e9%83%a8%e7%bd%b2%e4%bd%a0%e7%9a%84%20AWS%20Lambda&amp;url=https%3a%2f%2fshiun.me%2fblog%2fserverless-framework-101%2f&amp;hashtags=AWSLambda%2cServerlessFramework%2cServerless">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fshiun.me%2fblog%2fserverless-framework-101%2f&amp;title=Serverless%20Framework%20101%20-%20%e8%bc%95%e9%ac%86%e9%96%8b%e7%99%bc%e4%b8%a6%e5%bf%ab%e9%80%9f%e9%83%a8%e7%bd%b2%e4%bd%a0%e7%9a%84%20AWS%20Lambda&amp;summary=Serverless%20Framework%20101%20-%20%e8%bc%95%e9%ac%86%e9%96%8b%e7%99%bc%e4%b8%a6%e5%bf%ab%e9%80%9f%e9%83%a8%e7%bd%b2%e4%bd%a0%e7%9a%84%20AWS%20Lambda&amp;source=https%3a%2f%2fshiun.me%2fblog%2fserverless-framework-101%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fshiun.me%2fblog%2fserverless-framework-101%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda on telegram"
+            href="https://telegram.me/share/url?text=Serverless%20Framework%20101%20-%20%e8%bc%95%e9%ac%86%e9%96%8b%e7%99%bc%e4%b8%a6%e5%bf%ab%e9%80%9f%e9%83%a8%e7%bd%b2%e4%bd%a0%e7%9a%84%20AWS%20Lambda&amp;url=https%3a%2f%2fshiun.me%2fblog%2fserverless-framework-101%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer><div class="disqus markdown"><div id="disqus_thread"></div>
+<script>
+  
+
+  
+
+  (function () {
+    
+    var d = document,
+      s = d.createElement("script");
+    s.src = "https://shiun-me.disqus.com/embed.js";
+    s.setAttribute("data-timestamp", +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript
+  >Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript"
+    >comments powered by Disqus.</a
+  ></noscript
+>
+</div>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://shiun.me/">Shiun</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
