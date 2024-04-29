@@ -28,7 +28,7 @@ keywords:
 4. 安裝 AWS CLI
 5. 配置 AWS credentials
 
-以上詳細請件官方文檔: [prerequisites](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/prerequisites.html)
+以上詳細內容請查看官方文檔: [prerequisites](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/prerequisites.html)
 
 ---
 
