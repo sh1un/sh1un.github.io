@@ -590,8 +590,7 @@ Deleted successfully
 ```
 
 ## 其他資源
-
-- Shiun Blog - Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda
-- [[AWS Workshop Studio - AWS SAM](https://catalog.workshops.aws/complete-aws-sam/en-US)](https://catalog.workshops.aws/complete-aws-sam/en-US)
-- [[Serverless Patterns Collection](https://serverlessland.com/patterns?framework=SAM)](https://serverlessland.com/patterns?framework=SAM)
-- [[AWS Docs - Working with nested stacks](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html)](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html)
+- [Shiun Blog - Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda](https://shiun.me/blog/serverless-framework-101/)
+- [AWS Workshop Studio - AWS SAM](https://catalog.workshops.aws/complete-aws-sam/en-US)
+- [Serverless Patterns Collection](https://serverlessland.com/patterns?framework=SAM)
+- [AWS Docs - Working with nested stacks](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html)
