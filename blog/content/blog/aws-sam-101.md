@@ -1,84 +1,36 @@
 ---
-title: 'Aws Sam 101'
+title: 'AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda'
 date: 2024-04-29T23:47:09+08:00
 draft: false
-description: "最近在學習 AWS SAM，這篇文章將帶你從安裝 AWS SAM 到部署一個 Hello World Application，本文主要參考 AWS 官方文件步驟來撰寫，除此之外還包含了我練習過程中的一些筆記，以及一些除錯紀錄"
-tags: ["", ""]
-categories: [""]
+description: "這篇文章將帶你從安裝 AWS SAM 到部署一個 Hello World Application，本文主要參考 AWS 官方文件步驟來撰寫，除此之外還包含了我練習過程中的一些筆記，以及一些除錯紀錄"
+tags: ["AWS SAM", "AWS SAM CLI", "Serverless", "AWS Lambda", "AWS", "IaC"]
+categories: ["AWS SAM", "Serverless", "AWS Lambda", "AWS", "IaC"]
 keywords:
-- 
+- AWS SAM
+- AWS SAM 101
+- Technical Tutorial
+- Serverless
+- IaC
+- AWS Lambda
+- AWS
+- Serverless Framework
 ---
 
-# AWS SAM 101
+![image](https://github.com/sh1un/sh1un.github.io/assets/85695943/443687d7-a59a-4da7-8167-ec9121f7b276)
 
-![Untitled](20240428%20-%20%E5%AF%A6%E7%BF%92%E6%97%A5%E8%AA%8C%209419901e5d47459e95ee99810479fc01/Untitled%2011.png)
-
-## Q&A
-
-- AWS 尋找 Cred 的順序是什麼?
-    
-    [Using temporary credentials with AWS resources - AWS Identity and Access Management](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html#using-temp-creds-sdk-cli)
-    
-    AWS CLI 在尋找認證資料（Credentials）時，會按照一定的順序來搜尋，這個順序確保了不同設定之間的適當優先級。以下是 AWS CLI 尋找認證資料的順序：
-    
-    1. **命令列選項**：可以直接在 AWS CLI 命令中指定 `-profile` 來使用特定的配置文件中的認證，或使用 `-access-key`, `-secret-key`, 和 `-session-token` 來直接指定認證。
-    2. **環境變數**：AWS CLI 會檢查是否設定了以下環境變數：
-        - `AWS_ACCESS_KEY_ID`、`AWS_SECRET_ACCESS_KEY`、`AWS_SESSION_TOKEN`（用於臨時認證）
-    3. **CLI 配置檔案**：CLI 配置檔案通常位於 `~/.aws/credentials`（Linux 或 macOS）或 `C:\\Users\\USERNAME\\.aws\\credentials`（Windows）。您可以在這些檔案中配置一或多個配置文件。
-    4. **CLI 配置檔案中的配置檔案**：除了認證檔案外，CLI 還會查看配置檔案（位於 `~/.aws/config`），這裡可以包含一個 `profile` 的預設區域和輸出格式設定。
-    5. **容器認證**：如果您的應用運行在 Amazon ECS 上並使用了角色，AWS CLI 可以透過容器認證提供者來獲取認證。
-    6. **EC2 實例角色**：如果您的應用運行在 EC2 實例上，且該實例具有 IAM 角色，則 AWS CLI 將使用該角色提供的認證。這是通過實例元數據服務來實現的。
-    
-    以上這些方式提供了靈活的配置選項，允許您根據不同的使用情景來選擇合適的認證配置方法。
-    
-- .reg 檔是什麼
-    
-    `.reg` 檔案是一種 Windows 註冊表檔案，用於在 Windows 註冊表中新增、修改或刪除註冊表項目。這些檔案是以純文字格式儲存，通常被用來快速配置系統設定或解決特定的系統問題。
-    
-    當你雙擊或通過命令行運行 `.reg` 檔案時，檔案中的設定將會自動應用到 Windows 註冊表中。這種檔案常被用於批量更新註冊表設定，便於用戶或系統管理員快速部署多台機器的註冊表變更。
-    
-    `.reg` 檔案內容通常包括以下幾個部分：
-    
-    - **Windows Registry Editor Version**：這是檔案的首行，指明檔案遵循的註冊表編輯器版本。
-    - **註冊表路徑**：指定要更改的註冊表鍵的完整路徑。
-    - **鍵值對**：設定的名稱和值，指定要添加或修改的具體註冊表設定。
-    
-    以下是一個簡單的 `.reg` 檔案的例子，用於設定長路徑行為：
-    
-    ```
-    Windows Registry Editor Version 5.00
-    
-    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\FileSystem]
-    "LongPathsEnabled"=dword:00000001
-    
-    ```
-    
-    在這個例子中，`LongPathsEnabled` 設為 `1`，啟用了對長路徑的支持
-    
-    。這個設定告訴 Windows 允許超過 260 個字符的文件路徑。要使用此 `.reg` 檔案，你只需將上述內容儲存為 `.reg` 檔案，然後雙擊它來應用設定，或在管理員模式下的命令提示符或 PowerShell 中運行它。這是一種非常方便快速地修改系統設定的方法。
-    
-- [Windows Registry 註冊表(登錄檔)是什麼](https://zh.wikipedia.org/zh-tw/%E6%B3%A8%E5%86%8C%E8%A1%A8)
-    
-    Windows 註冊表是一個用於儲存系統設定和配置資料的資料庫，它包含了操作系統、已安裝的應用程式和硬體設備的重要資訊。註冊表中的資訊被組織在稱為「鍵」的階層結構中，每個鍵可以包含子鍵和值，並可用來控制系統和應用程式的行為。
-    
-    註冊表是 Windows 系統中一個非常核心的部分，因此，對註冊表的修改應該非常謹慎，錯誤的修改可能會導致系統不穩定或無法啟動。這也是為什麼有時會使用 `.reg` 檔案來精確控制註冊表修改的原因，因為它們可以提供一個確定的、可以被複查的修改過程。
-    
-    在 Windows 系統中，你可以透過註冊表編輯器（Regedit）來查看和修改註冊表，這是一個內建的工具，可以讓你訪問和修改註冊表中的鍵和值。
-    
-
-[什麼是 AWS Serverless Application Model (AWS SAM)？ - AWS Serverless Application Model](https://docs.aws.amazon.com/zh_tw/serverless-application-model/latest/developerguide/what-is-sam.html)
-
-![Untitled](20240428%20-%20%E5%AF%A6%E7%BF%92%E6%97%A5%E8%AA%8C%209419901e5d47459e95ee99810479fc01/Untitled%2012.png)
+前幾天寫了一篇 [Serverless Framework 101](https://shiun.me/blog/serverless-framework-101/)，今天就來寫寫 AWS SAM 的教學，這兩個都是用來部署及管理 Serverless 應用的框架，兩者可以說是競爭對手關係！待之後有空再來寫一篇這兩個產品的比較
 
 ## Prerequisites
 
-Complete all [prerequisites](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/prerequisites.html) in the previous section before moving forward. This includes:
+1. 註冊 AWS 帳戶
+2. 建立 Admin IAM User
+3. 建立 access key ID and secret access key
+4. 安裝 AWS CLI
+5. 配置 AWS credentials
 
-1. Signing up for an AWS account.
-2. Creating an administrative IAM user.
-3. Creating an access key ID and secret access key.
-4. Installing the AWS CLI.
-5. Configuring AWS credentials.
+以上詳細請件官方文檔: [prerequisites](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/prerequisites.html)
+
+---
 
 ## 安裝 AWS SAM CLI
 
@@ -90,7 +42,7 @@ Mac 的用戶要注意一下，從 2023/9 開始，[AWS 不會在維護 AWS SAM 
 
 Windows 安裝相當簡單，只要去[官方文檔](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html#install-sam-cli-instructions)裡面下載 MSI File，接著無腦的 Next 按按按就裝好了 XD
 
-![Untitled](20240428%20-%20%E5%AF%A6%E7%BF%92%E6%97%A5%E8%AA%8C%209419901e5d47459e95ee99810479fc01/Untitled%2013.png)
+![Untitled 13](https://github.com/sh1un/sh1un.github.io/assets/85695943/3d2faa5c-b813-4fe3-bc72-bbae3d2c9ccd)
 
 下載好之後，輸入指令 `sam --version` 檢查是否安裝成功
 
@@ -101,19 +53,16 @@ SAM CLI, version 1.115.0
 
 ### Windows 啟用 **`LongPathsEnabled`**
 
-到這邊還沒有結束，對於 Windows 用戶，Windows 系統的最大路徑限制（MAX_PATH）通常是 260 個字符，請一定要啟用 **`LongPathsEnabled` ，不然在 sam 的某些指令執行後會因為文件路徑過長出現 Error，例如: `sam init`** 
+到這邊還沒有結束，對於 Windows 用戶，Windows 系統的最大路徑限制（MAX_PATH）通常是 260 個字符，請一定要啟用 **`LongPathsEnabled` ，不然在 sam 的某些指令執行後會因為文件路徑過長出現 Error，例如: `sam init`**
 
 > Starting in Windows 10, version 1607, **MAX_PATH** limitations have been removed from common Win32 file and directory functions. However, you must opt-in to the new behavior.
+>
+> 資料來源: [Maximum Path Length Limitation - Win32 apps](https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=powershell#enable-long-paths-in-windows-10-version-1607-and-later)
 
-資料來源: [https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=powershell#enable-long-paths-in-windows-10-version-1607-and-later](https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=powershell#enable-long-paths-in-windows-10-version-1607-and-later)
-> 
-> 
-> [Maximum Path Length Limitation - Win32 apps](https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=powershell#enable-long-paths-in-windows-10-version-1607-and-later)
-> 
 
 請你以系統管理員身分打開你的 Powershell，這邊我使用 Powershell 版本為 7.4.2
 
-![Untitled](20240428%20-%20%E5%AF%A6%E7%BF%92%E6%97%A5%E8%AA%8C%209419901e5d47459e95ee99810479fc01/Untitled%2014.png)
+![Untitled 14](https://github.com/sh1un/sh1un.github.io/assets/85695943/8fa62b1f-2c98-4a73-9281-07cae395726c)
 
 輸入指令:
 
@@ -129,6 +78,8 @@ PSProvider       : Microsoft.PowerShell.Core\Registry
 ```
 
 因為有些 process 可能在設置此鍵之前就已經緩存，為了讓系統上的所有應用程序識別這個鍵的值，**請重新開機！**
+
+---
 
 ## Hello World Application
 
@@ -246,7 +197,7 @@ $ tree
 
 接下來我們就要來打包我們專案了，但因為我想要使用 Python 3.11，所以我先到 `template.yaml` 把 Runtime 改成 3.11
 
-![Untitled](20240428%20-%20%E5%AF%A6%E7%BF%92%E6%97%A5%E8%AA%8C%209419901e5d47459e95ee99810479fc01/Untitled%2015.png)
+![Untitled 15](https://github.com/sh1un/sh1un.github.io/assets/85695943/52914eee-6890-4901-a796-6e7a47db22b2)
 
 接著輸入以下指令
 
@@ -429,9 +380,9 @@ Successfully created/updated stack - aws-sam-101 in ap-northeast-1
 
 我們到 AWS Console 查看一下 Lambda 和 CloudFormation
 
-![Untitled](20240428%20-%20%E5%AF%A6%E7%BF%92%E6%97%A5%E8%AA%8C%209419901e5d47459e95ee99810479fc01/Untitled%2016.png)
+![Untitled 16](https://github.com/sh1un/sh1un.github.io/assets/85695943/0fe92d28-1707-4705-a591-e60aebb349f0)
 
-![Untitled](20240428%20-%20%E5%AF%A6%E7%BF%92%E6%97%A5%E8%AA%8C%209419901e5d47459e95ee99810479fc01/Untitled%2017.png)
+![Untitled 17](https://github.com/sh1un/sh1un.github.io/assets/85695943/19e82b89-b962-4a44-abdb-e8ea557e41cd)
 
 而 `sam deploy` 這個指令背後執行的具體步驟如下:
 
@@ -449,7 +400,8 @@ Successfully created/updated stack - aws-sam-101 in ap-northeast-1
 
 現在我們可以來測試看看 API Endpoint，到剛剛的 Lambda，點擊 API Gateway 找到 Endpoint
 
-![Untitled](20240428%20-%20%E5%AF%A6%E7%BF%92%E6%97%A5%E8%AA%8C%209419901e5d47459e95ee99810479fc01/Untitled%2018.png)
+![Untitled 18](https://github.com/sh1un/sh1un.github.io/assets/85695943/a89f7b7c-222d-4384-b988-b335184f6e19)
+
 
 ```bash
 $ curl {YOUR_API_ENDPOINT}
@@ -488,9 +440,8 @@ $ sam list endpoints --output json
 - 但請特別注意，invoke 後面所接的參數，是你在 `template.yaml` 中所定義的 Resources 名稱，也就是 HelloWorldFunction，這跟 Serverless Framework 的 `serverless invoke` 指令概念一樣
     
     > 關於上述提到的 Serverless Framework，我有寫一篇教學文章，裡面有提到 `serverless invoke` 指令 ([連結](https://shiun.me/blog/serverless-framework-101/#%E8%AA%BF%E7%94%A8-lambda-function))
-    > 
 
-![Untitled](20240428%20-%20%E5%AF%A6%E7%BF%92%E6%97%A5%E8%AA%8C%209419901e5d47459e95ee99810479fc01/Untitled%2019.png)
+![Untitled 19](https://github.com/sh1un/sh1un.github.io/assets/85695943/95147343-fefa-4e40-9a94-dd4cd51fcfc0)
 
 ```bash
 $ sam remote invoke HelloWorldFunction
@@ -506,7 +457,7 @@ REPORT RequestId: 1ec7cb08-1066-4f23-b4fd-b542a97ef27b  Duration: 2.30 ms       
 
 現在我們來稍微修改一下 Lambda 程式碼，我把 `hello world` 改成 →  `hello shiun`
 
-![Untitled](20240428%20-%20%E5%AF%A6%E7%BF%92%E6%97%A5%E8%AA%8C%209419901e5d47459e95ee99810479fc01/Untitled%2020.png)
+![Untitled 20](https://github.com/sh1un/sh1un.github.io/assets/85695943/3d79b0a1-f568-4a76-8178-069491c759ba)
 
 也許第一時間我們會想說可以用 `sam deploy` 這個指令把最新的變更部署上去，但是 AWS SAM CLI 還提供了一個指令 — `sam snyc` ，當正在開發 AWS Lambda 函數或其他 AWS 資源並且需要頻繁進行小的更改時，`sam sync` 可以讓您快速將這些更改推送到 AWS
 
@@ -599,19 +550,19 @@ Infra sync completed.
 
 現在我們上去 AWS Console 查看一下 Lambda 和 CloudFormation 的變更
 
-![Untitled](20240428%20-%20%E5%AF%A6%E7%BF%92%E6%97%A5%E8%AA%8C%209419901e5d47459e95ee99810479fc01/Untitled%2021.png)
+![Untitled 21](https://github.com/sh1un/sh1un.github.io/assets/85695943/ea8ab3aa-8917-4611-bc71-2acc7113dd44)
 
-![Untitled](20240428%20-%20%E5%AF%A6%E7%BF%92%E6%97%A5%E8%AA%8C%209419901e5d47459e95ee99810479fc01/Untitled%2022.png)
+![Untitled 22](https://github.com/sh1un/sh1un.github.io/assets/85695943/2128258c-0e9d-4bc2-bc77-fb0886d0c6d4)
 
 Lambda 已經成功修改這部分我想沒什麼問題，那 CloudFormation 的 Stack 顯示 "NESTED” 這是什麼？由於此文章主要以 AWS SAM 入門教學為主，我這邊簡單解釋：
 
 - 在 AWS CloudFormation 中，Nested Stack 就是在一個主要的 Stack（想像成一個大的項目列表）裡面，可以創建和管理多個小 Stack（就像是項目列表中的子列表）。這樣做的好處是，當你有很多相似的設置或配置需要重複使用時，你可以把這些配置做成一個小 Stack，然後在其他項目中引用它，這樣就不需要每次都重寫相同的配置，可以讓整個結構更清晰，也更容易管理。
 - 承上，由於這個特性，我們可以重用配置，這也是為什麼 sam sync 比較適合開發快速迭代，而且部署速度較快
-    
-    > 詳細請見 AWS 官方文檔: [https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html)
-    > 
 
-![Untitled](20240428%20-%20%E5%AF%A6%E7%BF%92%E6%97%A5%E8%AA%8C%209419901e5d47459e95ee99810479fc01/Untitled%2023.png)
+    > 詳細請見 AWS 官方文檔: [https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html)
+
+![Untitled 23](https://github.com/sh1un/sh1un.github.io/assets/85695943/b62eb74e-568d-4f0c-ab5e-b25dc6eb8b1e)
+
 
 再次調用一次，看看變更
 
@@ -637,3 +588,10 @@ Are you sure you want to delete the stack aws-sam-101 in the region ap-northeast
 
 Deleted successfully
 ```
+
+## 其他資源
+
+- Shiun Blog - Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda
+- [[AWS Workshop Studio - AWS SAM](https://catalog.workshops.aws/complete-aws-sam/en-US)](https://catalog.workshops.aws/complete-aws-sam/en-US)
+- [[Serverless Patterns Collection](https://serverlessland.com/patterns?framework=SAM)](https://serverlessland.com/patterns?framework=SAM)
+- [[AWS Docs - Working with nested stacks](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html)](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html)
