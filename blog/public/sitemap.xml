@@ -2,38 +2,59 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://shiun.me/tags/aws/</loc>
+    <lastmod>2024-04-29T23:47:09+08:00</lastmod>
+  </url><url>
     <loc>https://shiun.me/categories/aws/</loc>
-    <lastmod>2024-04-28T04:27:23+08:00</lastmod>
+    <lastmod>2024-04-29T23:47:09+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/aws-lambda/</loc>
-    <lastmod>2024-04-28T04:27:23+08:00</lastmod>
+    <lastmod>2024-04-29T23:47:09+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/aws-lambda/</loc>
+    <lastmod>2024-04-29T23:47:09+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/aws-sam/</loc>
+    <lastmod>2024-04-29T23:47:09+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/aws-sam/</loc>
+    <lastmod>2024-04-29T23:47:09+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/blog/aws-sam-101/</loc>
+    <lastmod>2024-04-29T23:47:09+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/aws-sam-cli/</loc>
+    <lastmod>2024-04-29T23:47:09+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/blog/</loc>
-    <lastmod>2024-04-28T04:27:23+08:00</lastmod>
+    <lastmod>2024-04-29T23:47:09+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/categories/</loc>
-    <lastmod>2024-04-28T04:27:23+08:00</lastmod>
+    <lastmod>2024-04-29T23:47:09+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/iac/</loc>
+    <lastmod>2024-04-29T23:47:09+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/iac/</loc>
+    <lastmod>2024-04-29T23:47:09+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/serverless/</loc>
-    <lastmod>2024-04-28T04:27:23+08:00</lastmod>
+    <lastmod>2024-04-29T23:47:09+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/categories/serverless/</loc>
-    <lastmod>2024-04-28T04:27:23+08:00</lastmod>
+    <lastmod>2024-04-29T23:47:09+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/</loc>
+    <lastmod>2024-04-29T23:47:09+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/</loc>
+    <lastmod>2024-04-29T23:47:09+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/serverless-framework/</loc>
     <lastmod>2024-04-28T04:27:23+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/blog/serverless-framework-101/</loc>
     <lastmod>2024-04-28T04:27:23+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/</loc>
-    <lastmod>2024-04-28T04:27:23+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/</loc>
-    <lastmod>2024-04-28T04:27:23+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/aws/</loc>
-    <lastmod>2024-04-21T01:04:16+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/blog/internet-gateway-vs-nat-gateway/</loc>
     <lastmod>2024-04-21T01:04:16+08:00</lastmod>
