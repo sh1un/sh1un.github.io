@@ -2,7 +2,7 @@
 title: 'Aws Sam 101'
 date: 2024-04-29T23:47:09+08:00
 draft: false
-description: "最近在學習 AWS SAM，本文"
+description: "最近在學習 AWS SAM，這篇文章將帶你從安裝 AWS SAM 到部署一個 Hello World Application，本文主要參考 AWS 官方文件步驟來撰寫，除此之外還包含了我練習過程中的一些筆記，以及一些除錯紀錄"
 tags: ["", ""]
 categories: [""]
 keywords:
