@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
+<meta name="robots" content="index, follow" />
+<title>
+  AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda | Shiun
+</title>
+<meta
+  name="keywords"
+  content="AWS SAM, AWS SAM 101, Technical Tutorial, Serverless, IaC, AWS Lambda, AWS, Serverless Framework"
+/> <meta name="description" content="這篇文章將帶你從安裝 AWS SAM 到部署一個 Hello World Application，本文主要參考 AWS 官方文件步驟來撰寫，除此之外還包含了我練習過程中的一些筆記，以及一些除錯紀錄"> <meta name="author" content=""> <link rel="canonical" href="https://shiun.me/blog/aws-sam-101/">
+<link
+  crossorigin="anonymous"
+  href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css"
+  integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A="
+  rel="preload stylesheet"
+  as="style"
+/> <link rel="icon" href="https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"> <link
+rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://shiun.me/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://shiun.me/apple-touch-icon.png"> <link rel="mask-icon" href="https://shiun.me/safari-pinned-tab.svg"> <meta name="theme-color" content="#2e2e33"> <meta name="msapplication-TileColor" content="#2e2e33"> <link rel="alternate" hreflang="en" href="https://shiun.me/blog/aws-sam-101/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+<meta property="og:title" content="AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda" />
+<meta property="og:description" content="這篇文章將帶你從安裝 AWS SAM 到部署一個 Hello World Application，本文主要參考 AWS 官方文件步驟來撰寫，除此之外還包含了我練習過程中的一些筆記，以及一些除錯紀錄" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/aws-sam-101/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-04-29T23:47:09+08:00" />
+<meta property="article:modified_time" content="2024-04-29T23:47:09+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda"/>
+<meta name="twitter:description" content="這篇文章將帶你從安裝 AWS SAM 到部署一個 Hello World Application，本文主要參考 AWS 官方文件步驟來撰寫，除此之外還包含了我練習過程中的一些筆記，以及一些除錯紀錄"/>
+
+
+<noscript>
+  <style>
+    #theme-toggle,
+    .top-link {
+      display: none;
+    }
+  </style>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --theme: rgb(29, 30, 32);
+        --entry: rgb(46, 46, 51);
+        --primary: rgb(218, 218, 219);
+        --secondary: rgb(155, 156, 157);
+        --tertiary: rgb(65, 66, 68);
+        --content: rgb(196, 196, 197);
+        --code-block-bg: rgb(46, 46, 51);
+        --code-bg: rgb(55, 56, 62);
+        --border: rgb(51, 51, 51);
+      }
+
+      .list {
+        background: var(--theme);
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-track {
+        background: 0 0;
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-thumb {
+        border-color: var(--theme);
+      }
+    }
+  </style>
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda" />
+<meta property="og:description" content="這篇文章將帶你從安裝 AWS SAM 到部署一個 Hello World Application，本文主要參考 AWS 官方文件步驟來撰寫，除此之外還包含了我練習過程中的一些筆記，以及一些除錯紀錄" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/aws-sam-101/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-04-29T23:47:09+08:00" />
+<meta property="article:modified_time" content="2024-04-29T23:47:09+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/>
+
+<meta name="twitter:title" content="AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda"/>
+<meta name="twitter:description" content="這篇文章將帶你從安裝 AWS SAM 到部署一個 Hello World Application，本文主要參考 AWS 官方文件步驟來撰寫，除此之外還包含了我練習過程中的一些筆記，以及一些除錯紀錄"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Blogs",
+      "item": "https://shiun.me/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda",
+      "item": "https://shiun.me/blog/aws-sam-101/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda",
+  "name": "AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda",
+  "description": "這篇文章將帶你從安裝 AWS SAM 到部署一個 Hello World Application，本文主要參考 AWS 官方文件步驟來撰寫，除此之外還包含了我練習過程中的一些筆記，以及一些除錯紀錄",
+  "keywords": [
+    "AWS SAM", "AWS SAM 101", "Technical Tutorial", "Serverless", "IaC", "AWS Lambda", "AWS", "Serverless Framework"
+  ],
+  "articleBody": " 前幾天寫了一篇 Serverless Framework 101，今天就來寫寫 AWS SAM 的教學，這兩個都是用來部署及管理 Serverless 應用的框架，兩者可以說是競爭對手關係！待之後有空再來寫一篇這兩個產品的比較\nPrerequisites 註冊 AWS 帳戶 建立 Admin IAM User 建立 access key ID and secret access key 安裝 AWS CLI 配置 AWS credentials 以上詳細請件官方文檔: prerequisites\n安裝 AWS SAM CLI Mac 的用戶要注意一下，從 2023/9 開始，AWS 不會在維護 AWS SAM CLI 的 Homebrew Installer\n由於我現在是使用 Windows 作業系統的電腦，今天示範如何在 Windows 安裝 AWS SAM CLI\nWindows 安裝 Windows 安裝相當簡單，只要去官方文檔裡面下載 MSI File，接著無腦的 Next 按按按就裝好了 XD\n下載好之後，輸入指令 sam --version 檢查是否安裝成功\n$ sam --version SAM CLI, version 1.115.0 Windows 啟用 LongPathsEnabled 到這邊還沒有結束，對於 Windows 用戶，Windows 系統的最大路徑限制（MAX_PATH）通常是 260 個字符，請一定要啟用 LongPathsEnabled ，不然在 sam 的某些指令執行後會因為文件路徑過長出現 Error，例如: sam init\nStarting in Windows 10, version 1607, MAX_PATH limitations have been removed from common Win32 file and directory functions. However, you must opt-in to the new behavior.\n資料來源: Maximum Path Length Limitation - Win32 apps\n請你以系統管理員身分打開你的 Powershell，這邊我使用 Powershell 版本為 7.4.2\n輸入指令:\n$ New-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\FileSystem\" -Name \"LongPathsEnabled\" -Value 1 -PropertyType DWORD -Force LongPathsEnabled : 1 PSPath : Microsoft.PowerShell.Core\\Registry::HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\FileSystem PSParentPath : Microsoft.PowerShell.Core\\Registry::HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control PSChildName : FileSystem PSDrive : HKLM PSProvider : Microsoft.PowerShell.Core\\Registry 因為有些 process 可能在設置此鍵之前就已經緩存，為了讓系統上的所有應用程序識別這個鍵的值，請重新開機！\nHello World Application 建立一個 Project 首先我們先建立一個 Project\n$ sam init SAM CLI now collects telemetry to better understand customer needs. You can OPT OUT and disable telemetry collection by setting the environment variable SAM_CLI_TELEMETRY=0 in your shell. Thanks for your help! Learn More: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-telemetry.html You can preselect a particular runtime or package type when using the `sam init` experience. Call `sam init --help` to learn more. Which template source would you like to use? 1 - AWS Quick Start Templates 2 - Custom Template Location Choice: 1 Choose an AWS Quick Start application template 1 - Hello World Example 2 - Data processing 3 - Hello World Example with Powertools for AWS Lambda 4 - Multi-step workflow 5 - Scheduled task 6 - Standalone function 7 - Serverless API 8 - Infrastructure event management 9 - Lambda Response Streaming 10 - Serverless Connector Hello World Example 11 - Multi-step workflow with Connectors 12 - GraphQLApi Hello World Example 13 - Full Stack 14 - Lambda EFS example 15 - DynamoDB Example 16 - Machine Learning Template: 1 Use the most popular runtime and package type? (Python and zip) [y/N]: y Would you like to enable X-Ray tracing on the function(s) in your application? [y/N]: Would you like to enable monitoring using CloudWatch Application Insights? For more info, please view https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch-application-insights.html [y/N]: Would you like to set Structured Logging in JSON format on your Lambda functions? [y/N]: Project name [sam-app]: aws-sam-101 Cloning from https://github.com/aws/aws-sam-cli-app-templates (process may take a moment) ----------------------- Generating application: ----------------------- Name: aws-sam-101 Runtime: python3.9 Architectures: x86_64 Dependency Manager: pip Application Template: hello-world Output Directory: . Configuration file: aws-sam-101\\samconfig.toml Next steps can be found in the README file at aws-sam-101\\README.md Commands you can use next ========================= [*] Create pipeline: cd aws-sam-101 \u0026\u0026 sam pipeline init --bootstrap [*] Validate SAM template: cd aws-sam-101 \u0026\u0026 sam validate [*] Test Function in the Cloud: cd aws-sam-101 \u0026\u0026 sam sync --stack-name {stack-name} --watch 現在我們已經成功建立好專案\n我們進到裡面看一下\n$ cd aws-sam-101 $ tree │ .gitignore │ README.md │ samconfig.toml # 存參數 │ template.yaml # AWS 根據此檔案配置你的 Infra │ __init__.py │ ├─events │ event.json │ ├─hello_world │ app.py # 你的 Lanbda Function 寫在這 │ requirements.txt │ __init__.py │ └─tests │ requirements.txt │ __init__.py │ ├─integration │ test_api_gateway.py │ __init__.py │ └─unit test_handler.py __init__.py Build 接下來我們就要來打包我們專案了，但因為我想要使用 Python 3.11，所以我先到 template.yaml 把 Runtime 改成 3.11\n接著輸入以下指令\n$ sam build Starting Build use cache Manifest file is changed (new hash: 3298f13049d19cffaa37ca931dd4d421) or dependency folder (.aws-sam\\deps\\ab6747e1-a68c-4fab-ae91-fa1c4dcd23e1) is missing for (HelloWorldFunction), downloading dependencies and copying/building source Building codeuri: C:\\GitHub\\aws-sam-101\\hello_world runtime: python3.11 metadata: {} architecture: x86_64 functions: HelloWorldFunction Running PythonPipBuilder:CleanUp Running PythonPipBuilder:ResolveDependencies Running PythonPipBuilder:CopySource Running PythonPipBuilder:CopySource Build Succeeded Built Artifacts : .aws-sam\\build Built Template : .aws-sam\\build\\template.yaml Commands you can use next ========================= [*] Validate SAM template: sam validate [*] Invoke Function: sam local invoke [*] Test Function in the Cloud: sam sync --stack-name {{stack-name}} --watch [*] Deploy: sam deploy --guided 如指令 output 所示，你會發現你的 .aws-sam 目錄下多了 build 這個目錄\n.aws-sam ├── build │ ├── HelloWorldFunction │ │ ├── __init__.py │ │ ├── app.py # Lambda Function │ │ └── requirements.txt │ └── template.yaml └── build.toml Deploy 在這個部份，你需要配置你的 AWS Credentials，我已經事先創建好一個 IAM User 來暫時用，詳細如何配置你的 AWS Credentials 請自行翻閱官方文檔，本文預設讀者已具備操作 AWS 的基本能力\n輸入以下指令來部署你的 Lambda\n$ sam deploy --guided Configuring SAM deploy ====================== Looking for config file [samconfig.toml] : Found Reading default arguments : Success Setting default arguments for 'sam deploy' ========================================= Stack Name [aws-sam-101]: AWS Region [ap-northeast-1]: #Shows you resources changes to be deployed and require a 'Y' to initiate deploy Confirm changes before deploy [Y/n]: n #SAM needs permission to be able to create roles to connect to the resources in your template Allow SAM CLI IAM role creation [Y/n]: #Preserves the state of previously provisioned resources when an operation fails Disable rollback [y/N]: HelloWorldFunction has no authentication. Is this okay? [y/N]: y Save arguments to configuration file [Y/n]: SAM configuration file [samconfig.toml]: SAM configuration environment [default]: Looking for resources needed for deployment: Creating the required resources... Successfully created! Managed S3 bucket: aws-sam-cli-managed-default-samclisourcebucket-jptiw4noplqk A different default S3 bucket can be set in samconfig.toml and auto resolution of buckets turned off by setting resolve_s3=False Parameter \"stack_name=aws-sam-101\" in [default.deploy.parameters] is defined as a global parameter [default.global.parameters]. This parameter will be only saved under [default.global.parameters] in C:\\GitHub\\aws-sam-101\\samconfig.toml. Saved arguments to config file Running 'sam deploy' for future deployments will use the parameters saved above. The above parameters can be changed by modifying samconfig.toml Learn more about samconfig.toml syntax at https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-config.html Uploading to aws-sam-101/37624213qqc910da9321690a64a28 554765 / 554765 (100.00%) Deploying with following values =============================== Stack name : aws-sam-101 Region : ap-northeast-1 Confirm changeset : False Disable rollback : False Deployment s3 bucket : aws-sam-cli-managed-default-samclisourcebucket-jptiw4noplqk Capabilities : [\"CAPABILITY_IAM\"] Parameter overrides : {} Signing Profiles : {} Initiating deployment ===================== Uploading to aws-sam-101/dbd54debe319zaa19577cbf2egaj4.template 1257 / 1257 (100.00%) Waiting for changeset to be created.. CloudFormation stack changeset ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- Operation LogicalResourceId ResourceType Replacement ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- + Add HelloWorldFunctionHelloWorldPermissionPro AWS::Lambda::Permission N/A d + Add HelloWorldFunctionRole AWS::IAM::Role N/A + Add HelloWorldFunction AWS::Lambda::Function N/A + Add ServerlessRestApiDeployment47fcad5f9d AWS::ApiGateway::Deployment N/A + Add ServerlessRestApiProdStage AWS::ApiGateway::Stage N/A + Add ServerlessRestApi AWS::ApiGateway::RestApi N/A ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- Changeset created successfully. arn:aws:cloudformation:ap-northeast-1:1234556781:changeSet/samcli-deploy17144221345/7ac52521a5-34ce-432f-bb1e-64521743e8g 2024-04-28 21:27:31 - Waiting for stack create/update to complete CloudFormation events from stack operations (refresh every 5.0 seconds) ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- ResourceStatus ResourceType LogicalResourceId ResourceStatusReason ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- CREATE_IN_PROGRESS AWS::CloudFormation::Stack aws-sam-101 User Initiated CREATE_IN_PROGRESS AWS::IAM::Role HelloWorldFunctionRole - CREATE_IN_PROGRESS AWS::IAM::Role HelloWorldFunctionRole Resource creation Initiated CREATE_COMPLETE AWS::IAM::Role HelloWorldFunctionRole - CREATE_IN_PROGRESS AWS::Lambda::Function HelloWorldFunction - CREATE_IN_PROGRESS AWS::Lambda::Function HelloWorldFunction Resource creation Initiated CREATE_IN_PROGRESS AWS::Lambda::Function HelloWorldFunction Eventual consistency check initiated CREATE_IN_PROGRESS AWS::ApiGateway::RestApi ServerlessRestApi - CREATE_IN_PROGRESS AWS::ApiGateway::RestApi ServerlessRestApi Resource creation Initiated CREATE_COMPLETE AWS::ApiGateway::RestApi ServerlessRestApi - CREATE_IN_PROGRESS AWS::ApiGateway::Deployment ServerlessRestApiDeployment432d5f9d - CREATE_IN_PROGRESS AWS::Lambda::Permission HelloWorldFunctionHelloWorldPermissionPro - d CREATE_COMPLETE AWS::Lambda::Function HelloWorldFunction - CREATE_IN_PROGRESS AWS::Lambda::Permission HelloWorldFunctionHelloWorldPermissionPro Resource creation Initiated d CREATE_IN_PROGRESS AWS::ApiGateway::Deployment ServerlessRestApiDeployment4715f9d Resource creation Initiated CREATE_COMPLETE AWS::Lambda::Permission HelloWorldFunctionHelloWorldPermissionPro - d CREATE_COMPLETE AWS::ApiGateway::Deployment ServerlessRestApiDeployment12d5f9d - CREATE_IN_PROGRESS AWS::ApiGateway::Stage ServerlessRestApiProdStage - CREATE_IN_PROGRESS AWS::ApiGateway::Stage ServerlessRestApiProdStage Resource creation Initiated CREATE_COMPLETE AWS::ApiGateway::Stage ServerlessRestApiProdStage - CREATE_COMPLETE AWS::CloudFormation::Stack aws-sam-101 - ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- CloudFormation outputs from deployed stack -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- Outputs -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- Key HelloWorldFunctionIamRole Description Implicit IAM Role created for Hello World function Value arn:aws:iam::1234566781:role/aws-sam-101-HelloWorldFunctionRole-WAAUK9mx1X1E Key HelloWorldApi Description API Gateway endpoint URL for Prod stage for Hello World function Value https://ffj14dx1k.execute-api.ap-northeast-1.amazonaws.com/Prod/hello/ Key HelloWorldFunction Description Hello World Lambda Function ARN Value arn:aws:lambda:ap-northeast-1:1234567890:function:aws-sam-101-HelloWorldFunction-714agg15dlfg -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- Successfully created/updated stack - aws-sam-101 in ap-northeast-1 當你看到 Successfully created/updated stack - aws-sam-101 in ap-northeast-1 就是完成囉\n我們到 AWS Console 查看一下 Lambda 和 CloudFormation\n而 sam deploy 這個指令背後執行的具體步驟如下:\n創建 Amazon S3 存儲桶並上傳 .aws-sam 目錄： AWS SAM CLI 首先創建一個 Amazon S3 存儲桶（如果沒有指定現有的存儲桶）。這個存儲桶用於存儲部署過程中需要的所有文件。 接著，AWS SAM CLI 將你的 .aws-sam 目錄上傳到這個新建的 S3 存儲桶中。.aws-sam 目錄通常包含編譯和打包後的應用程序代碼及其依賴文件，這些是部署到 AWS 的必需資源。 將 AWS SAM 模板轉換為 AWS CloudFormation 並上傳： AWS SAM 模板是一種描述你的服務器無應用架構的文件，它使用 YAML 或 JSON 格式編寫。AWS SAM CLI 會將這個模板轉換成 AWS CloudFormation 模板。CloudFormation 是 AWS 提供的一個服務，允許用戶通過編寫模板來模型化和設定整個 AWS 資源堆棧。 轉換後的模板隨後被上傳到 AWS CloudFormation 服務。這個步驟是為了準備資源的配置和管理。 AWS CloudFormation 佈置資源： 一旦模板上傳到 AWS CloudFormation 服務，CloudFormation 便開始根據模板中的定義來創建和配置所需的 AWS 資源。這包括設定如函數、資料庫、網絡設置等必要的組件。 CloudFormation 確保所有資源都按照模板中定義的依賴關係和參數設定正確部署，並管理資源的整個生命周期。 調用部署上去的 Lambda Function 現在我們可以來測試看看 API Endpoint，到剛剛的 Lambda，點擊 API Gateway 找到 Endpoint\n$ curl {YOUR_API_ENDPOINT} {\"message\": \"hello world\"} 除了直接到 AWS Console 查看 API Endpoint 之外，sam 還有提供指令來查看 API Endpoints\n$ sam list endpoints --output json [ { \"LogicalResourceId\": \"HelloWorldFunction\", \"PhysicalResourceId\": \"aws-sam-101-HelloWorldFunction-7111ffa\", \"CloudEndpoint\": \"-\", \"Methods\": \"-\" }, { \"LogicalResourceId\": \"ServerlessRestApi\", \"PhysicalResourceId\": \"123j013dx3i\", \"CloudEndpoint\": [ \"https://12313d13i.execute-api.ap-northeast-1.amazonaws.com/Prod\", \"https://12313d13i.execute-api.ap-northeast-1.amazonaws.com/Stage\" ], \"Methods\": [ \"/hello['get']\" ] } ] 另外我們也可以使用 sam remote invoke 指令來調用部署 AWS 上的 Lambda\n但請特別注意，invoke 後面所接的參數，是你在 template.yaml 中所定義的 Resources 名稱，也就是 HelloWorldFunction，這跟 Serverless Framework 的 serverless invoke 指令概念一樣\n關於上述提到的 Serverless Framework，我有寫一篇教學文章，裡面有提到 serverless invoke 指令 (連結)\n$ sam remote invoke HelloWorldFunction Invoking Lambda Function HelloWorldFunction START RequestId: 1ec7cb08-1066-4f23-b4fd-b542a97ef27b Version: $LATEST END RequestId: 1ec7cb08-1066-4f23-b4fd-b542a97ef27b REPORT RequestId: 1ec7cb08-1066-4f23-b4fd-b542a97ef27b Duration: 2.30 ms Billed Duration: 3 ms Memory Size: 128 MB Max Memory Used: 33 MB Init Duration: 85.18 ms {\"statusCode\": 200, \"body\": \"{\\\"message\\\": \\\"hello world\\\"}\"} 對程式碼做個小更改，並快速部署最新變更至 AWS 現在我們來稍微修改一下 Lambda 程式碼，我把 hello world 改成 → hello shiun\n也許第一時間我們會想說可以用 sam deploy 這個指令把最新的變更部署上去，但是 AWS SAM CLI 還提供了一個指令 — sam snyc ，當正在開發 AWS Lambda 函數或其他 AWS 資源並且需要頻繁進行小的更改時，sam sync 可以讓您快速將這些更改推送到 AWS\nsam deploy vs sam sync sam sync 允許開發者快速將本地更改同步到已部署的應用，特別是對於代碼和配置的小修改。這對於快速開發周期非常有用，因為它大幅減少了等待時間，開發者可以即時看到他們更改的效果 只更新有變更的資源，避免了不必要的重複部署過程，這樣可以節省時間和成本，尤其是在開發階段的頻繁更新中 sam deploy： 進行完整的部署，包括重新打包應用、上傳到 S3，並通過 AWS CloudFormation 更新整個 Stack。這個過程通常比較耗時，對於小幅度的迭代來說可能效率不高 每次部署都可能涉及重建和重啟所有資源，即使是未更改的部分也一樣，這會導致更高的時間和成本消耗 綜合以上，我們這裡修改了程式碼，比較好的做法是使用 sam sync 指令來部署最新變更\n$ sam sync --watch The SAM CLI will use the AWS Lambda, Amazon API Gateway, and AWS StepFunctions APIs to upload your code without performing a CloudFormation deployment. This will cause drift in your CloudFormation stack. **The sync command should only be used against a development stack**. Confirm that you are synchronizing a development stack. Enter Y to proceed with the command, or enter N to cancel: [Y/n]: Y Queued infra sync. Waiting for in progress code syncs to complete... Starting infra sync. Manifest is not changed for (HelloWorldFunction), running incremental build Building codeuri: C:\\GitHub\\aws-sam-101\\hello_world runtime: python3.11 metadata: {} architecture: x86_64 functions: HelloWorldFunction Running PythonPipBuilder:CopySource Build Succeeded Successfully packaged artifacts and wrote output template to file C:\\Users\\Shiun\\AppData\\Local\\Temp\\tmpve9a9m2j. Execute the following command to deploy the packaged template sam deploy --template-file C:\\Users\\Shiun\\AppData\\Local\\Temp\\tmpveam2j --stack-name Deploying with following values =============================== Stack name : aws-sam-101 Region : ap-northeast-1 Disable rollback : False Deployment s3 bucket : aws-sam-cli-managed-default-samclisourcebucket-jptialqk Capabilities : [\"CAPABILITY_NAMED_IAM\", \"CAPABILITY_AUTO_EXPAND\"] Parameter overrides : {} Signing Profiles : null Initiating deployment ===================== 2024-04-28 22:15:56 - Waiting for stack create/update to complete CloudFormation events from stack operations (refresh every 0.5 seconds) ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- ResourceStatus ResourceType LogicalResourceId ResourceStatusReason ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- UPDATE_IN_PROGRESS AWS::CloudFormation::Stack aws-sam-101 User Initiated UPDATE_IN_PROGRESS AWS::CloudFormation::Stack aws-sam-101 Transformation succeeded CREATE_IN_PROGRESS AWS::CloudFormation::Stack AwsSamAutoDependencyLayerNestedStack - CREATE_IN_PROGRESS AWS::CloudFormation::Stack AwsSamAutoDependencyLayerNestedStack Resource creation Initiated CREATE_COMPLETE AWS::CloudFormation::Stack AwsSamAutoDependencyLayerNestedStack - UPDATE_IN_PROGRESS AWS::Lambda::Function HelloWorldFunction - UPDATE_COMPLETE AWS::Lambda::Function HelloWorldFunction - UPDATE_COMPLETE_CLEANUP_IN_PROGRESS AWS::CloudFormation::Stack aws-sam-101 - UPDATE_COMPLETE AWS::CloudFormation::Stack aws-sam-101 - ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- CloudFormation outputs from deployed stack -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- Outputs -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- Key HelloWorldFunctionIamRole Description Implicit IAM Role created for Hello World function Value arn:aws:iam::1234567890:role/aws-sam-101-HelloWorldFunctionRole-WAAUK9mx1X1E Key HelloWorldApi Description API Gateway endpoint URL for Prod stage for Hello World function Value https://g13i1111.execute-api.ap-northeast-1.amazonaws.com/Prod/hello/ Key HelloWorldFunction Description Hello World Lambda Function ARN Value arn:aws:lambda:ap-northeast-1:1234567890:function:aws-sam-101-HelloWorldFunction-7i6w81lfg -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- Stack update succeeded. Sync infra completed. CodeTrigger not created as CodeUri or DefinitionUri is missing for ServerlessRestApi. Infra sync completed. 現在我們上去 AWS Console 查看一下 Lambda 和 CloudFormation 的變更\nLambda 已經成功修改這部分我想沒什麼問題，那 CloudFormation 的 Stack 顯示 “NESTED” 這是什麼？由於此文章主要以 AWS SAM 入門教學為主，我這邊簡單解釋：\n在 AWS CloudFormation 中，Nested Stack 就是在一個主要的 Stack（想像成一個大的項目列表）裡面，可以創建和管理多個小 Stack（就像是項目列表中的子列表）。這樣做的好處是，當你有很多相似的設置或配置需要重複使用時，你可以把這些配置做成一個小 Stack，然後在其他項目中引用它，這樣就不需要每次都重寫相同的配置，可以讓整個結構更清晰，也更容易管理。\n承上，由於這個特性，我們可以重用配置，這也是為什麼 sam sync 比較適合開發快速迭代，而且部署速度較快\n詳細請見 AWS 官方文檔: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html\n再次調用一次，看看變更\n$ curl {YOUR_API_ENDPOINT} {\"message\": \"hello shiun\"} 透過 AWS SAM CLI 刪除部署在 AWS 上的資源 CloudFormation 的特性就是可以刪除 Stack 來把當初透過這個 Stack 創建出來的資源刪乾淨，而 AWS SAM 身為 CloudFormation 的拓展，也提供了 sam delete 這個指令來刪除該專案部署在雲端上的資源\n$ sma delete Are you sure you want to delete the stack aws-sam-101 in the region ap-northeast-1 ? [y/N]: y Do you want to delete the template file 3141123123abc82d45ef55faf04.template in S3? [y/N]: y - Deleting S3 object with key 4c36d2ab78169da9e38fe8339b80626a - Deleting S3 object with key bd8e9f5130e915b480c3b2279a8baedb.template - Deleting S3 object with key 21410647a9e8cabc82d45e5556b6a804.template - Deleting Cloudformation stack aws-sam-101 Deleted successfully 其他資源 Shiun Blog - Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda [AWS Workshop Studio - AWS SAM](https://catalog.workshops.aws/complete-aws-sam/en-US) [Serverless Patterns Collection](https://serverlessland.com/patterns?framework=SAM) [AWS Docs - Working with nested stacks](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html) ",
+  "wordCount" : "1905",
+  "inLanguage": "en",
+  "datePublished": "2024-04-29T23:47:09+08:00",
+  "dateModified": "2024-04-29T23:47:09+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://shiun.me/blog/aws-sam-101/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Shiun",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://shiun.me/" accesskey="h" title="Shiun (Alt + H)">Shiun</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://shiun.me/blog/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.notion.site/Shiun-s-Learning-Journal-ded4cd4a3efd47b2805f2f99dee8f9a1?pvs=4" title="Notion">
+                    <span>Notion</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.linkedin.com/in/shiunchiu" title="About me">
+                    <span>About me</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://shiun.me/">Home</a>&nbsp;»&nbsp;<a href="https://shiun.me/blog/">Blogs</a></div>
+    <h1 class="post-title entry-hint-parent">
+      AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda
+    </h1>
+    <div class="post-description">
+      這篇文章將帶你從安裝 AWS SAM 到部署一個 Hello World Application，本文主要參考 AWS 官方文件步驟來撰寫，除此之外還包含了我練習過程中的一些筆記，以及一些除錯紀錄
+    </div>
+    <div class="post-meta"><span title='2024-04-29 23:47:09 +0800 CST'>April 29, 2024</span>&nbsp;·&nbsp;9 min
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#prerequisites" aria-label="Prerequisites">Prerequisites</a></li>
+                <li>
+                    <a href="#%e5%ae%89%e8%a3%9d-aws-sam-cli" aria-label="安裝 AWS SAM CLI">安裝 AWS SAM CLI</a><ul>
+                        
+                <li>
+                    <a href="#windows-%e5%ae%89%e8%a3%9d" aria-label="Windows 安裝">Windows 安裝</a></li>
+                <li>
+                    <a href="#windows-%e5%95%9f%e7%94%a8-longpathsenabled" aria-label="Windows 啟用 LongPathsEnabled">Windows 啟用 LongPathsEnabled</a></li></ul>
+                </li>
+                <li>
+                    <a href="#hello-world-application" aria-label="Hello World Application">Hello World Application</a><ul>
+                        
+                <li>
+                    <a href="#%e5%bb%ba%e7%ab%8b%e4%b8%80%e5%80%8b-project" aria-label="建立一個 Project">建立一個 Project</a></li>
+                <li>
+                    <a href="#build" aria-label="Build">Build</a></li>
+                <li>
+                    <a href="#deploy" aria-label="Deploy">Deploy</a></li>
+                <li>
+                    <a href="#%e8%aa%bf%e7%94%a8%e9%83%a8%e7%bd%b2%e4%b8%8a%e5%8e%bb%e7%9a%84-lambda-function" aria-label="調用部署上去的 Lambda Function">調用部署上去的 Lambda Function</a></li>
+                <li>
+                    <a href="#%e5%b0%8d%e7%a8%8b%e5%bc%8f%e7%a2%bc%e5%81%9a%e5%80%8b%e5%b0%8f%e6%9b%b4%e6%94%b9%e4%b8%a6%e5%bf%ab%e9%80%9f%e9%83%a8%e7%bd%b2%e6%9c%80%e6%96%b0%e8%ae%8a%e6%9b%b4%e8%87%b3-aws" aria-label="對程式碼做個小更改，並快速部署最新變更至 AWS">對程式碼做個小更改，並快速部署最新變更至 AWS</a></li>
+                <li>
+                    <a href="#sam-deploy-vs-sam-sync" aria-label="sam deploy vs sam sync">sam deploy vs sam sync</a></li>
+                <li>
+                    <a href="#%e9%80%8f%e9%81%8e-aws-sam-cli-%e5%88%aa%e9%99%a4%e9%83%a8%e7%bd%b2%e5%9c%a8-aws-%e4%b8%8a%e7%9a%84%e8%b3%87%e6%ba%90" aria-label="透過 AWS SAM CLI 刪除部署在 AWS 上的資源">透過 AWS SAM CLI 刪除部署在 AWS 上的資源</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%85%b6%e4%bb%96%e8%b3%87%e6%ba%90" aria-label="其他資源">其他資源</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/443687d7-a59a-4da7-8167-ec9121f7b276" alt="image"  />
+</p>
+<p>前幾天寫了一篇 <a href="https://shiun.me/blog/serverless-framework-101/">Serverless Framework 101</a>，今天就來寫寫 AWS SAM 的教學，這兩個都是用來部署及管理 Serverless 應用的框架，兩者可以說是競爭對手關係！待之後有空再來寫一篇這兩個產品的比較</p>
+<h2 id="prerequisites">Prerequisites<a hidden class="anchor" aria-hidden="true" href="#prerequisites">#</a></h2>
+<ol>
+<li>註冊 AWS 帳戶</li>
+<li>建立 Admin IAM User</li>
+<li>建立 access key ID and secret access key</li>
+<li>安裝 AWS CLI</li>
+<li>配置 AWS credentials</li>
+</ol>
+<p>以上詳細請件官方文檔: <a href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/prerequisites.html">prerequisites</a></p>
+<hr>
+<h2 id="安裝-aws-sam-cli">安裝 AWS SAM CLI<a hidden class="anchor" aria-hidden="true" href="#安裝-aws-sam-cli">#</a></h2>
+<p>Mac 的用戶要注意一下，從 2023/9 開始，<a href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html">AWS 不會在維護 AWS SAM CLI 的 Homebrew Installer</a></p>
+<p>由於我現在是使用 Windows 作業系統的電腦，今天示範如何在 Windows 安裝 AWS SAM CLI</p>
+<h3 id="windows-安裝">Windows 安裝<a hidden class="anchor" aria-hidden="true" href="#windows-安裝">#</a></h3>
+<p>Windows 安裝相當簡單，只要去<a href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html#install-sam-cli-instructions">官方文檔</a>裡面下載 MSI File，接著無腦的 Next 按按按就裝好了 XD</p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/3d2faa5c-b813-4fe3-bc72-bbae3d2c9ccd" alt="Untitled 13"  />
+</p>
+<p>下載好之後，輸入指令 <code>sam --version</code> 檢查是否安裝成功</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sam --version
+</span></span><span style="display:flex;"><span>SAM CLI, version 1.115.0
+</span></span></code></pre></div><h3 id="windows-啟用-longpathsenabled">Windows 啟用 <strong><code>LongPathsEnabled</code></strong><a hidden class="anchor" aria-hidden="true" href="#windows-啟用-longpathsenabled">#</a></h3>
+<p>到這邊還沒有結束，對於 Windows 用戶，Windows 系統的最大路徑限制（MAX_PATH）通常是 260 個字符，請一定要啟用 <strong><code>LongPathsEnabled</code> ，不然在 sam 的某些指令執行後會因為文件路徑過長出現 Error，例如: <code>sam init</code></strong></p>
+<blockquote>
+<p>Starting in Windows 10, version 1607, <strong>MAX_PATH</strong> limitations have been removed from common Win32 file and directory functions. However, you must opt-in to the new behavior.</p>
+<p>資料來源: <a href="https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=powershell#enable-long-paths-in-windows-10-version-1607-and-later">Maximum Path Length Limitation - Win32 apps</a></p>
+</blockquote>
+<p>請你以系統管理員身分打開你的 Powershell，這邊我使用 Powershell 版本為 7.4.2</p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/8fa62b1f-2c98-4a73-9281-07cae395726c" alt="Untitled 14"  />
+</p>
+<p>輸入指令:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ New-ItemProperty -Path <span style="color:#e6db74">&#34;HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem&#34;</span> -Name <span style="color:#e6db74">&#34;LongPathsEnabled&#34;</span> -Value <span style="color:#ae81ff">1</span> -PropertyType DWORD -Force
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>LongPathsEnabled : <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>PSPath           : Microsoft.PowerShell.Core<span style="color:#ae81ff">\R</span>egistry::HKEY_LOCAL_MACHINE<span style="color:#ae81ff">\S</span>YSTEM<span style="color:#ae81ff">\C</span>urrentControlSet<span style="color:#ae81ff">\C</span>ontrol<span style="color:#ae81ff">\F</span>ileSystem
+</span></span><span style="display:flex;"><span>PSParentPath     : Microsoft.PowerShell.Core<span style="color:#ae81ff">\R</span>egistry::HKEY_LOCAL_MACHINE<span style="color:#ae81ff">\S</span>YSTEM<span style="color:#ae81ff">\C</span>urrentControlSet<span style="color:#ae81ff">\C</span>ontrol
+</span></span><span style="display:flex;"><span>PSChildName      : FileSystem
+</span></span><span style="display:flex;"><span>PSDrive          : HKLM
+</span></span><span style="display:flex;"><span>PSProvider       : Microsoft.PowerShell.Core<span style="color:#ae81ff">\R</span>egistry
+</span></span></code></pre></div><p>因為有些 process 可能在設置此鍵之前就已經緩存，為了讓系統上的所有應用程序識別這個鍵的值，<strong>請重新開機！</strong></p>
+<hr>
+<h2 id="hello-world-application">Hello World Application<a hidden class="anchor" aria-hidden="true" href="#hello-world-application">#</a></h2>
+<h3 id="建立一個-project">建立一個 Project<a hidden class="anchor" aria-hidden="true" href="#建立一個-project">#</a></h3>
+<p>首先我們先建立一個 Project</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sam init
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        SAM CLI now collects telemetry to better understand customer needs.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        You can OPT OUT and disable telemetry collection by setting the
+</span></span><span style="display:flex;"><span>        environment variable SAM_CLI_TELEMETRY<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> in your shell.
+</span></span><span style="display:flex;"><span>        Thanks <span style="color:#66d9ef">for</span> your help!
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Learn More: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-telemetry.html
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>You can preselect a particular runtime or package type when using the <span style="color:#e6db74">`</span>sam init<span style="color:#e6db74">`</span> experience.
+</span></span><span style="display:flex;"><span>Call <span style="color:#e6db74">`</span>sam init --help<span style="color:#e6db74">`</span> to learn more.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Which template source would you like to use?
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">1</span> - AWS Quick Start Templates
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">2</span> - Custom Template Location
+</span></span><span style="display:flex;"><span>Choice: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Choose an AWS Quick Start application template
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">1</span> - Hello World Example
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">2</span> - Data processing
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">3</span> - Hello World Example with Powertools <span style="color:#66d9ef">for</span> AWS Lambda
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">4</span> - Multi-step workflow
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">5</span> - Scheduled task
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">6</span> - Standalone <span style="color:#66d9ef">function</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">7</span> - Serverless API
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">8</span> - Infrastructure event management
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">9</span> - Lambda Response Streaming
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">10</span> - Serverless Connector Hello World Example
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">11</span> - Multi-step workflow with Connectors
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">12</span> - GraphQLApi Hello World Example
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">13</span> - Full Stack
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">14</span> - Lambda EFS example
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">15</span> - DynamoDB Example
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">16</span> - Machine Learning
+</span></span><span style="display:flex;"><span>Template: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Use the most popular runtime and package type? <span style="color:#f92672">(</span>Python and zip<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>y/N<span style="color:#f92672">]</span>: y
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Would you like to enable X-Ray tracing on the <span style="color:#66d9ef">function</span><span style="color:#f92672">(</span>s<span style="color:#f92672">)</span> in your application?  <span style="color:#f92672">[</span>y/N<span style="color:#f92672">]</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Would you like to enable monitoring using CloudWatch Application Insights?
+</span></span><span style="display:flex;"><span>For more info, please view https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch-application-insights.html <span style="color:#f92672">[</span>y/N<span style="color:#f92672">]</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Would you like to set Structured Logging in JSON format on your Lambda functions?  <span style="color:#f92672">[</span>y/N<span style="color:#f92672">]</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Project name <span style="color:#f92672">[</span>sam-app<span style="color:#f92672">]</span>: aws-sam-101
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Cloning from https://github.com/aws/aws-sam-cli-app-templates <span style="color:#f92672">(</span>process may take a moment<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    -----------------------
+</span></span><span style="display:flex;"><span>    Generating application:
+</span></span><span style="display:flex;"><span>    -----------------------
+</span></span><span style="display:flex;"><span>    Name: aws-sam-101
+</span></span><span style="display:flex;"><span>    Runtime: python3.9
+</span></span><span style="display:flex;"><span>    Architectures: x86_64
+</span></span><span style="display:flex;"><span>    Dependency Manager: pip
+</span></span><span style="display:flex;"><span>    Application Template: hello-world
+</span></span><span style="display:flex;"><span>    Output Directory: .
+</span></span><span style="display:flex;"><span>    Configuration file: aws-sam-101<span style="color:#ae81ff">\s</span>amconfig.toml
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Next steps can be found in the README file at aws-sam-101<span style="color:#ae81ff">\R</span>EADME.md
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Commands you can use next
+</span></span><span style="display:flex;"><span><span style="color:#f92672">=========================</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Create pipeline: cd aws-sam-101 <span style="color:#f92672">&amp;&amp;</span> sam pipeline init --bootstrap
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Validate SAM template: cd aws-sam-101 <span style="color:#f92672">&amp;&amp;</span> sam validate
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Test Function in the Cloud: cd aws-sam-101 <span style="color:#f92672">&amp;&amp;</span> sam sync --stack-name <span style="color:#f92672">{</span>stack-name<span style="color:#f92672">}</span> --watch
+</span></span></code></pre></div><p>現在我們已經成功建立好專案</p>
+<p>我們進到裡面看一下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cd aws-sam-101
+</span></span><span style="display:flex;"><span>$ tree
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>│  .gitignore
+</span></span><span style="display:flex;"><span>│  README.md
+</span></span><span style="display:flex;"><span>│  samconfig.toml <span style="color:#75715e"># 存參數</span>
+</span></span><span style="display:flex;"><span>│  template.yaml <span style="color:#75715e"># AWS 根據此檔案配置你的 Infra</span>
+</span></span><span style="display:flex;"><span>│  __init__.py
+</span></span><span style="display:flex;"><span>│
+</span></span><span style="display:flex;"><span>├─events
+</span></span><span style="display:flex;"><span>│      event.json
+</span></span><span style="display:flex;"><span>│
+</span></span><span style="display:flex;"><span>├─hello_world
+</span></span><span style="display:flex;"><span>│      app.py <span style="color:#75715e"># 你的 Lanbda Function 寫在這</span>
+</span></span><span style="display:flex;"><span>│      requirements.txt
+</span></span><span style="display:flex;"><span>│      __init__.py
+</span></span><span style="display:flex;"><span>│
+</span></span><span style="display:flex;"><span>└─tests
+</span></span><span style="display:flex;"><span>    │  requirements.txt
+</span></span><span style="display:flex;"><span>    │  __init__.py
+</span></span><span style="display:flex;"><span>    │
+</span></span><span style="display:flex;"><span>    ├─integration
+</span></span><span style="display:flex;"><span>    │      test_api_gateway.py
+</span></span><span style="display:flex;"><span>    │      __init__.py
+</span></span><span style="display:flex;"><span>    │
+</span></span><span style="display:flex;"><span>    └─unit
+</span></span><span style="display:flex;"><span>            test_handler.py
+</span></span><span style="display:flex;"><span>            __init__.py
+</span></span></code></pre></div><h3 id="build">Build<a hidden class="anchor" aria-hidden="true" href="#build">#</a></h3>
+<p>接下來我們就要來打包我們專案了，但因為我想要使用 Python 3.11，所以我先到 <code>template.yaml</code> 把 Runtime 改成 3.11</p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/52914eee-6890-4901-a796-6e7a47db22b2" alt="Untitled 15"  />
+</p>
+<p>接著輸入以下指令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sam build
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Starting Build use cache
+</span></span><span style="display:flex;"><span>Manifest file is changed <span style="color:#f92672">(</span>new hash: 3298f13049d19cffaa37ca931dd4d421<span style="color:#f92672">)</span> or dependency folder
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>.aws-sam<span style="color:#ae81ff">\d</span>eps<span style="color:#ae81ff">\a</span>b6747e1-a68c-4fab-ae91-fa1c4dcd23e1<span style="color:#f92672">)</span> is missing <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>HelloWorldFunction<span style="color:#f92672">)</span>, downloading dependencies and
+</span></span><span style="display:flex;"><span>copying/building source
+</span></span><span style="display:flex;"><span>Building codeuri: C:<span style="color:#ae81ff">\G</span>itHub<span style="color:#ae81ff">\a</span>ws-sam-101<span style="color:#ae81ff">\h</span>ello_world runtime: python3.11 metadata: <span style="color:#f92672">{}</span> architecture: x86_64 functions:
+</span></span><span style="display:flex;"><span>HelloWorldFunction
+</span></span><span style="display:flex;"><span> Running PythonPipBuilder:CleanUp
+</span></span><span style="display:flex;"><span> Running PythonPipBuilder:ResolveDependencies
+</span></span><span style="display:flex;"><span> Running PythonPipBuilder:CopySource
+</span></span><span style="display:flex;"><span> Running PythonPipBuilder:CopySource
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Build Succeeded
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Built Artifacts  : .aws-sam<span style="color:#ae81ff">\b</span>uild
+</span></span><span style="display:flex;"><span>Built Template   : .aws-sam<span style="color:#ae81ff">\b</span>uild<span style="color:#ae81ff">\t</span>emplate.yaml
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Commands you can use next
+</span></span><span style="display:flex;"><span><span style="color:#f92672">=========================</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Validate SAM template: sam validate
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Invoke Function: sam local invoke
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Test Function in the Cloud: sam sync --stack-name <span style="color:#f92672">{{</span>stack-name<span style="color:#f92672">}}</span> --watch
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Deploy: sam deploy --guided
+</span></span></code></pre></div><p>如指令 output 所示，你會發現你的 .aws-sam 目錄下多了 build 這個目錄</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>.aws-sam
+</span></span><span style="display:flex;"><span>├── build
+</span></span><span style="display:flex;"><span>│   ├── HelloWorldFunction 
+</span></span><span style="display:flex;"><span>│   │   ├── __init__.py
+</span></span><span style="display:flex;"><span>│   │   ├── app.py <span style="color:#75715e"># Lambda Function</span>
+</span></span><span style="display:flex;"><span>│   │   └── requirements.txt
+</span></span><span style="display:flex;"><span>│   └── template.yaml
+</span></span><span style="display:flex;"><span>└── build.toml
+</span></span></code></pre></div><h3 id="deploy">Deploy<a hidden class="anchor" aria-hidden="true" href="#deploy">#</a></h3>
+<p>在這個部份，你需要配置你的 AWS Credentials，我已經事先創建好一個 IAM User 來暫時用，詳細如何<a href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/prerequisites.html#prerequisites-configure-credentials">配置你的 AWS Credentials 請自行翻閱官方文檔</a>，本文預設讀者已具備操作 AWS 的基本能力</p>
+<p>輸入以下指令來部署你的 Lambda</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sam deploy --guided
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Configuring SAM deploy
+</span></span><span style="display:flex;"><span><span style="color:#f92672">======================</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Looking <span style="color:#66d9ef">for</span> config file <span style="color:#f92672">[</span>samconfig.toml<span style="color:#f92672">]</span> :  Found
+</span></span><span style="display:flex;"><span>        Reading default arguments  :  Success
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Setting default arguments <span style="color:#66d9ef">for</span> <span style="color:#e6db74">&#39;sam deploy&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">=========================================</span>
+</span></span><span style="display:flex;"><span>        Stack Name <span style="color:#f92672">[</span>aws-sam-101<span style="color:#f92672">]</span>:
+</span></span><span style="display:flex;"><span>        AWS Region <span style="color:#f92672">[</span>ap-northeast-1<span style="color:#f92672">]</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">#Shows you resources changes to be deployed and require a &#39;Y&#39; to initiate deploy</span>
+</span></span><span style="display:flex;"><span>        Confirm changes before deploy <span style="color:#f92672">[</span>Y/n<span style="color:#f92672">]</span>: n
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">#SAM needs permission to be able to create roles to connect to the resources in your template</span>
+</span></span><span style="display:flex;"><span>        Allow SAM CLI IAM role creation <span style="color:#f92672">[</span>Y/n<span style="color:#f92672">]</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">#Preserves the state of previously provisioned resources when an operation fails</span>
+</span></span><span style="display:flex;"><span>        Disable rollback <span style="color:#f92672">[</span>y/N<span style="color:#f92672">]</span>:
+</span></span><span style="display:flex;"><span>        HelloWorldFunction has no authentication. Is this okay? <span style="color:#f92672">[</span>y/N<span style="color:#f92672">]</span>: y
+</span></span><span style="display:flex;"><span>        Save arguments to configuration file <span style="color:#f92672">[</span>Y/n<span style="color:#f92672">]</span>:
+</span></span><span style="display:flex;"><span>        SAM configuration file <span style="color:#f92672">[</span>samconfig.toml<span style="color:#f92672">]</span>:
+</span></span><span style="display:flex;"><span>        SAM configuration environment <span style="color:#f92672">[</span>default<span style="color:#f92672">]</span>:
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Looking <span style="color:#66d9ef">for</span> resources needed <span style="color:#66d9ef">for</span> deployment:
+</span></span><span style="display:flex;"><span>        Creating the required resources...
+</span></span><span style="display:flex;"><span>        Successfully created!
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Managed S3 bucket: aws-sam-cli-managed-default-samclisourcebucket-jptiw4noplqk
+</span></span><span style="display:flex;"><span>        A different default S3 bucket can be set in samconfig.toml and auto resolution of buckets turned off by setting resolve_s3<span style="color:#f92672">=</span>False
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Parameter <span style="color:#e6db74">&#34;stack_name=aws-sam-101&#34;</span> in <span style="color:#f92672">[</span>default.deploy.parameters<span style="color:#f92672">]</span> is defined as a global parameter <span style="color:#f92672">[</span>default.global.parameters<span style="color:#f92672">]</span>.
+</span></span><span style="display:flex;"><span>        This parameter will be only saved under <span style="color:#f92672">[</span>default.global.parameters<span style="color:#f92672">]</span> in C:<span style="color:#ae81ff">\G</span>itHub<span style="color:#ae81ff">\a</span>ws-sam-101<span style="color:#ae81ff">\s</span>amconfig.toml.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Saved arguments to config file
+</span></span><span style="display:flex;"><span>        Running <span style="color:#e6db74">&#39;sam deploy&#39;</span> <span style="color:#66d9ef">for</span> future deployments will use the parameters saved above.
+</span></span><span style="display:flex;"><span>        The above parameters can be changed by modifying samconfig.toml
+</span></span><span style="display:flex;"><span>        Learn more about samconfig.toml syntax at
+</span></span><span style="display:flex;"><span>        https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-config.html
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Uploading to aws-sam-101/37624213qqc910da9321690a64a28  <span style="color:#ae81ff">554765</span> / <span style="color:#ae81ff">554765</span>  <span style="color:#f92672">(</span>100.00%<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Deploying with following values
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">===============================</span>
+</span></span><span style="display:flex;"><span>        Stack name                   : aws-sam-101
+</span></span><span style="display:flex;"><span>        Region                       : ap-northeast-1
+</span></span><span style="display:flex;"><span>        Confirm changeset            : False
+</span></span><span style="display:flex;"><span>        Disable rollback             : False
+</span></span><span style="display:flex;"><span>        Deployment s3 bucket         : aws-sam-cli-managed-default-samclisourcebucket-jptiw4noplqk
+</span></span><span style="display:flex;"><span>        Capabilities                 : <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;CAPABILITY_IAM&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>        Parameter overrides          : <span style="color:#f92672">{}</span>
+</span></span><span style="display:flex;"><span>        Signing Profiles             : <span style="color:#f92672">{}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Initiating deployment
+</span></span><span style="display:flex;"><span><span style="color:#f92672">=====================</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Uploading to aws-sam-101/dbd54debe319zaa19577cbf2egaj4.template  <span style="color:#ae81ff">1257</span> / <span style="color:#ae81ff">1257</span>  <span style="color:#f92672">(</span>100.00%<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Waiting <span style="color:#66d9ef">for</span> changeset to be created..
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>CloudFormation stack changeset
+</span></span><span style="display:flex;"><span>-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>Operation                                   LogicalResourceId                           ResourceType                                Replacement
+</span></span><span style="display:flex;"><span>-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>+ Add                                       HelloWorldFunctionHelloWorldPermissionPro   AWS::Lambda::Permission                     N/A
+</span></span><span style="display:flex;"><span>                                            d
+</span></span><span style="display:flex;"><span>+ Add                                       HelloWorldFunctionRole                      AWS::IAM::Role                              N/A
+</span></span><span style="display:flex;"><span>+ Add                                       HelloWorldFunction                          AWS::Lambda::Function                       N/A
+</span></span><span style="display:flex;"><span>+ Add                                       ServerlessRestApiDeployment47fcad5f9d       AWS::ApiGateway::Deployment                 N/A
+</span></span><span style="display:flex;"><span>+ Add                                       ServerlessRestApiProdStage                  AWS::ApiGateway::Stage                      N/A
+</span></span><span style="display:flex;"><span>+ Add                                       ServerlessRestApi                           AWS::ApiGateway::RestApi                    N/A
+</span></span><span style="display:flex;"><span>-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Changeset created successfully. arn:aws:cloudformation:ap-northeast-1:1234556781:changeSet/samcli-deploy17144221345/7ac52521a5-34ce-432f-bb1e-64521743e8g
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>2024-04-28 21:27:31 - Waiting <span style="color:#66d9ef">for</span> stack create/update to complete
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>CloudFormation events from stack operations <span style="color:#f92672">(</span>refresh every 5.0 seconds<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>ResourceStatus                              ResourceType                                LogicalResourceId                           ResourceStatusReason
+</span></span><span style="display:flex;"><span>-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>CREATE_IN_PROGRESS                          AWS::CloudFormation::Stack                  aws-sam-101                                 User Initiated
+</span></span><span style="display:flex;"><span>CREATE_IN_PROGRESS                          AWS::IAM::Role                              HelloWorldFunctionRole                      -
+</span></span><span style="display:flex;"><span>CREATE_IN_PROGRESS                          AWS::IAM::Role                              HelloWorldFunctionRole                      Resource creation Initiated
+</span></span><span style="display:flex;"><span>CREATE_COMPLETE                             AWS::IAM::Role                              HelloWorldFunctionRole                      -
+</span></span><span style="display:flex;"><span>CREATE_IN_PROGRESS                          AWS::Lambda::Function                       HelloWorldFunction                          -
+</span></span><span style="display:flex;"><span>CREATE_IN_PROGRESS                          AWS::Lambda::Function                       HelloWorldFunction                          Resource creation Initiated
+</span></span><span style="display:flex;"><span>CREATE_IN_PROGRESS                          AWS::Lambda::Function                       HelloWorldFunction                          Eventual consistency check initiated
+</span></span><span style="display:flex;"><span>CREATE_IN_PROGRESS                          AWS::ApiGateway::RestApi                    ServerlessRestApi                           -
+</span></span><span style="display:flex;"><span>CREATE_IN_PROGRESS                          AWS::ApiGateway::RestApi                    ServerlessRestApi                           Resource creation Initiated
+</span></span><span style="display:flex;"><span>CREATE_COMPLETE                             AWS::ApiGateway::RestApi                    ServerlessRestApi                           -
+</span></span><span style="display:flex;"><span>CREATE_IN_PROGRESS                          AWS::ApiGateway::Deployment                 ServerlessRestApiDeployment432d5f9d       -
+</span></span><span style="display:flex;"><span>CREATE_IN_PROGRESS                          AWS::Lambda::Permission                     HelloWorldFunctionHelloWorldPermissionPro   -
+</span></span><span style="display:flex;"><span>                                                                                        d
+</span></span><span style="display:flex;"><span>CREATE_COMPLETE                             AWS::Lambda::Function                       HelloWorldFunction                          -
+</span></span><span style="display:flex;"><span>CREATE_IN_PROGRESS                          AWS::Lambda::Permission                     HelloWorldFunctionHelloWorldPermissionPro   Resource creation Initiated
+</span></span><span style="display:flex;"><span>                                                                                        d
+</span></span><span style="display:flex;"><span>CREATE_IN_PROGRESS                          AWS::ApiGateway::Deployment                 ServerlessRestApiDeployment4715f9d       Resource creation Initiated
+</span></span><span style="display:flex;"><span>CREATE_COMPLETE                             AWS::Lambda::Permission                     HelloWorldFunctionHelloWorldPermissionPro   -
+</span></span><span style="display:flex;"><span>                                                                                        d
+</span></span><span style="display:flex;"><span>CREATE_COMPLETE                             AWS::ApiGateway::Deployment                 ServerlessRestApiDeployment12d5f9d       -
+</span></span><span style="display:flex;"><span>CREATE_IN_PROGRESS                          AWS::ApiGateway::Stage                      ServerlessRestApiProdStage                  -
+</span></span><span style="display:flex;"><span>CREATE_IN_PROGRESS                          AWS::ApiGateway::Stage                      ServerlessRestApiProdStage                  Resource creation Initiated
+</span></span><span style="display:flex;"><span>CREATE_COMPLETE                             AWS::ApiGateway::Stage                      ServerlessRestApiProdStage                  -
+</span></span><span style="display:flex;"><span>CREATE_COMPLETE                             AWS::CloudFormation::Stack                  aws-sam-101                                 -
+</span></span><span style="display:flex;"><span>-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>CloudFormation outputs from deployed stack
+</span></span><span style="display:flex;"><span>--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>Outputs
+</span></span><span style="display:flex;"><span>--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>Key                 HelloWorldFunctionIamRole
+</span></span><span style="display:flex;"><span>Description         Implicit IAM Role created <span style="color:#66d9ef">for</span> Hello World <span style="color:#66d9ef">function</span>
+</span></span><span style="display:flex;"><span>Value               arn:aws:iam::1234566781:role/aws-sam-101-HelloWorldFunctionRole-WAAUK9mx1X1E
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Key                 HelloWorldApi
+</span></span><span style="display:flex;"><span>Description         API Gateway endpoint URL <span style="color:#66d9ef">for</span> Prod stage <span style="color:#66d9ef">for</span> Hello World <span style="color:#66d9ef">function</span>
+</span></span><span style="display:flex;"><span>Value               https://ffj14dx1k.execute-api.ap-northeast-1.amazonaws.com/Prod/hello/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Key                 HelloWorldFunction
+</span></span><span style="display:flex;"><span>Description         Hello World Lambda Function ARN
+</span></span><span style="display:flex;"><span>Value               arn:aws:lambda:ap-northeast-1:1234567890:function:aws-sam-101-HelloWorldFunction-714agg15dlfg
+</span></span><span style="display:flex;"><span>--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Successfully created/updated stack - aws-sam-101 in ap-northeast-1
+</span></span></code></pre></div><p>當你看到 <code>Successfully created/updated stack - aws-sam-101 in ap-northeast-1</code> 就是完成囉</p>
+<p>我們到 AWS Console 查看一下 Lambda 和 CloudFormation</p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/0fe92d28-1707-4705-a591-e60aebb349f0" alt="Untitled 16"  />
+</p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/19e82b89-b962-4a44-abdb-e8ea557e41cd" alt="Untitled 17"  />
+</p>
+<p>而 <code>sam deploy</code> 這個指令背後執行的具體步驟如下:</p>
+<ol>
+<li><strong>創建 Amazon S3 存儲桶並上傳 <code>.aws-sam</code> 目錄：</strong>
+<ul>
+<li>AWS SAM CLI 首先創建一個 Amazon S3 存儲桶（如果沒有指定現有的存儲桶）。這個存儲桶用於存儲部署過程中需要的所有文件。</li>
+<li>接著，AWS SAM CLI 將你的 <code>.aws-sam</code> 目錄上傳到這個新建的 S3 存儲桶中。<code>.aws-sam</code> 目錄通常包含編譯和打包後的應用程序代碼及其依賴文件，這些是部署到 AWS 的必需資源。</li>
+</ul>
+</li>
+<li><strong>將 AWS SAM 模板轉換為 AWS CloudFormation 並上傳：</strong>
+<ul>
+<li>AWS SAM 模板是一種描述你的服務器無應用架構的文件，它使用 YAML 或 JSON 格式編寫。AWS SAM CLI 會將這個模板轉換成 AWS CloudFormation 模板。CloudFormation 是 AWS 提供的一個服務，允許用戶通過編寫模板來模型化和設定整個 AWS 資源堆棧。</li>
+<li>轉換後的模板隨後被上傳到 AWS CloudFormation 服務。這個步驟是為了準備資源的配置和管理。</li>
+</ul>
+</li>
+<li><strong>AWS CloudFormation 佈置資源：</strong>
+<ul>
+<li>一旦模板上傳到 AWS CloudFormation 服務，CloudFormation 便開始根據模板中的定義來創建和配置所需的 AWS 資源。這包括設定如函數、資料庫、網絡設置等必要的組件。</li>
+<li>CloudFormation 確保所有資源都按照模板中定義的依賴關係和參數設定正確部署，並管理資源的整個生命周期。</li>
+</ul>
+</li>
+</ol>
+<h3 id="調用部署上去的-lambda-function">調用部署上去的 Lambda Function<a hidden class="anchor" aria-hidden="true" href="#調用部署上去的-lambda-function">#</a></h3>
+<p>現在我們可以來測試看看 API Endpoint，到剛剛的 Lambda，點擊 API Gateway 找到 Endpoint</p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/a89f7b7c-222d-4384-b988-b335184f6e19" alt="Untitled 18"  />
+</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ curl <span style="color:#f92672">{</span>YOUR_API_ENDPOINT<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;message&#34;</span>: <span style="color:#e6db74">&#34;hello world&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>除了直接到 AWS Console 查看 API Endpoint 之外，sam 還有提供指令來查看 API Endpoints</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sam list endpoints --output json
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;LogicalResourceId&#34;</span>: <span style="color:#e6db74">&#34;HelloWorldFunction&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;PhysicalResourceId&#34;</span>: <span style="color:#e6db74">&#34;aws-sam-101-HelloWorldFunction-7111ffa&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;CloudEndpoint&#34;</span>: <span style="color:#e6db74">&#34;-&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Methods&#34;</span>: <span style="color:#e6db74">&#34;-&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;LogicalResourceId&#34;</span>: <span style="color:#e6db74">&#34;ServerlessRestApi&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;PhysicalResourceId&#34;</span>: <span style="color:#e6db74">&#34;123j013dx3i&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;CloudEndpoint&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;https://12313d13i.execute-api.ap-northeast-1.amazonaws.com/Prod&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;https://12313d13i.execute-api.ap-northeast-1.amazonaws.com/Stage&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Methods&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;/hello[&#39;get&#39;]&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>另外我們也可以使用 <code>sam remote invoke</code> 指令來調用部署 AWS 上的 Lambda</p>
+<ul>
+<li>
+<p>但請特別注意，invoke 後面所接的參數，是你在 <code>template.yaml</code> 中所定義的 Resources 名稱，也就是 HelloWorldFunction，這跟 Serverless Framework 的 <code>serverless invoke</code> 指令概念一樣</p>
+<blockquote>
+<p>關於上述提到的 Serverless Framework，我有寫一篇教學文章，裡面有提到 <code>serverless invoke</code> 指令 (<a href="https://shiun.me/blog/serverless-framework-101/#%E8%AA%BF%E7%94%A8-lambda-function">連結</a>)</p>
+</blockquote>
+</li>
+</ul>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/95147343-fefa-4e40-9a94-dd4cd51fcfc0" alt="Untitled 19"  />
+</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sam remote invoke HelloWorldFunction
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Invoking Lambda Function HelloWorldFunction
+</span></span><span style="display:flex;"><span>START RequestId: 1ec7cb08-1066-4f23-b4fd-b542a97ef27b Version: $LATEST
+</span></span><span style="display:flex;"><span>END RequestId: 1ec7cb08-1066-4f23-b4fd-b542a97ef27b
+</span></span><span style="display:flex;"><span>REPORT RequestId: 1ec7cb08-1066-4f23-b4fd-b542a97ef27b  Duration: 2.30 ms       Billed Duration: <span style="color:#ae81ff">3</span> ms   Memory Size: <span style="color:#ae81ff">128</span> MB     Max Memory Used: <span style="color:#ae81ff">33</span> MB  Init Duration: 85.18 ms
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;statusCode&#34;</span>: 200, <span style="color:#e6db74">&#34;body&#34;</span>: <span style="color:#e6db74">&#34;{\&#34;message\&#34;: \&#34;hello world\&#34;}&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="對程式碼做個小更改並快速部署最新變更至-aws">對程式碼做個小更改，並快速部署最新變更至 AWS<a hidden class="anchor" aria-hidden="true" href="#對程式碼做個小更改並快速部署最新變更至-aws">#</a></h3>
+<p>現在我們來稍微修改一下 Lambda 程式碼，我把 <code>hello world</code> 改成 →  <code>hello shiun</code></p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/3d79b0a1-f568-4a76-8178-069491c759ba" alt="Untitled 20"  />
+</p>
+<p>也許第一時間我們會想說可以用 <code>sam deploy</code> 這個指令把最新的變更部署上去，但是 AWS SAM CLI 還提供了一個指令 — <code>sam snyc</code> ，當正在開發 AWS Lambda 函數或其他 AWS 資源並且需要頻繁進行小的更改時，<code>sam sync</code> 可以讓您快速將這些更改推送到 AWS</p>
+<h3 id="sam-deploy-vs-sam-sync">sam deploy vs sam sync<a hidden class="anchor" aria-hidden="true" href="#sam-deploy-vs-sam-sync">#</a></h3>
+<ul>
+<li><strong>sam sync</strong>
+<ul>
+<li>允許開發者快速將本地更改同步到已部署的應用，特別是對於代碼和配置的小修改。這對於快速開發周期非常有用，因為它大幅減少了等待時間，開發者可以即時看到他們更改的效果</li>
+<li>只更新有變更的資源，避免了不必要的重複部署過程，這樣可以節省時間和成本，尤其是在開發階段的頻繁更新中</li>
+</ul>
+</li>
+<li><strong>sam deploy</strong>：
+<ul>
+<li>進行完整的部署，包括重新打包應用、上傳到 S3，並通過 AWS CloudFormation 更新整個 Stack。這個過程通常比較耗時，對於小幅度的迭代來說可能效率不高</li>
+<li>每次部署都可能涉及重建和重啟所有資源，即使是未更改的部分也一樣，這會導致更高的時間和成本消耗</li>
+</ul>
+</li>
+</ul>
+<p>綜合以上，我們這裡修改了程式碼，比較好的做法是使用 <code>sam sync</code> 指令來部署最新變更</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sam sync --watch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>The SAM CLI will use the AWS Lambda, Amazon API Gateway, and AWS StepFunctions APIs to upload your code without
+</span></span><span style="display:flex;"><span>performing a CloudFormation deployment. This will cause drift in your CloudFormation stack.
+</span></span><span style="display:flex;"><span>**The sync command should only be used against a development stack**.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Confirm that you are synchronizing a development stack.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Enter Y to proceed with the command, or enter N to cancel:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">[</span>Y/n<span style="color:#f92672">]</span>: Y
+</span></span><span style="display:flex;"><span>Queued infra sync. Waiting <span style="color:#66d9ef">for</span> in progress code syncs to complete...
+</span></span><span style="display:flex;"><span>Starting infra sync.
+</span></span><span style="display:flex;"><span>Manifest is not changed <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>HelloWorldFunction<span style="color:#f92672">)</span>, running incremental build
+</span></span><span style="display:flex;"><span>Building codeuri: C:<span style="color:#ae81ff">\G</span>itHub<span style="color:#ae81ff">\a</span>ws-sam-101<span style="color:#ae81ff">\h</span>ello_world runtime: python3.11 metadata: <span style="color:#f92672">{}</span> architecture: x86_64 functions: HelloWorldFunction
+</span></span><span style="display:flex;"><span> Running PythonPipBuilder:CopySource
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Build Succeeded
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Successfully packaged artifacts and wrote output template to file C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\S</span>hiun<span style="color:#ae81ff">\A</span>ppData<span style="color:#ae81ff">\L</span>ocal<span style="color:#ae81ff">\T</span>emp<span style="color:#ae81ff">\t</span>mpve9a9m2j.
+</span></span><span style="display:flex;"><span>Execute the following command to deploy the packaged template
+</span></span><span style="display:flex;"><span>sam deploy --template-file C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\S</span>hiun<span style="color:#ae81ff">\A</span>ppData<span style="color:#ae81ff">\L</span>ocal<span style="color:#ae81ff">\T</span>emp<span style="color:#ae81ff">\t</span>mpveam2j --stack-name &lt;YOUR STACK NAME&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Deploying with following values
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">===============================</span>
+</span></span><span style="display:flex;"><span>        Stack name                   : aws-sam-101
+</span></span><span style="display:flex;"><span>        Region                       : ap-northeast-1
+</span></span><span style="display:flex;"><span>        Disable rollback             : False
+</span></span><span style="display:flex;"><span>        Deployment s3 bucket         : aws-sam-cli-managed-default-samclisourcebucket-jptialqk
+</span></span><span style="display:flex;"><span>        Capabilities                 : <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;CAPABILITY_NAMED_IAM&#34;</span>, <span style="color:#e6db74">&#34;CAPABILITY_AUTO_EXPAND&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>        Parameter overrides          : <span style="color:#f92672">{}</span>
+</span></span><span style="display:flex;"><span>        Signing Profiles             : null
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Initiating deployment
+</span></span><span style="display:flex;"><span><span style="color:#f92672">=====================</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>2024-04-28 22:15:56 - Waiting <span style="color:#66d9ef">for</span> stack create/update to complete
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>CloudFormation events from stack operations <span style="color:#f92672">(</span>refresh every 0.5 seconds<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>ResourceStatus                              ResourceType                                LogicalResourceId                           ResourceStatusReason
+</span></span><span style="display:flex;"><span>-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>UPDATE_IN_PROGRESS                          AWS::CloudFormation::Stack                  aws-sam-101                                 User Initiated
+</span></span><span style="display:flex;"><span>UPDATE_IN_PROGRESS                          AWS::CloudFormation::Stack                  aws-sam-101                                 Transformation succeeded
+</span></span><span style="display:flex;"><span>CREATE_IN_PROGRESS                          AWS::CloudFormation::Stack                  AwsSamAutoDependencyLayerNestedStack        -
+</span></span><span style="display:flex;"><span>CREATE_IN_PROGRESS                          AWS::CloudFormation::Stack                  AwsSamAutoDependencyLayerNestedStack        Resource creation Initiated
+</span></span><span style="display:flex;"><span>CREATE_COMPLETE                             AWS::CloudFormation::Stack                  AwsSamAutoDependencyLayerNestedStack        -
+</span></span><span style="display:flex;"><span>UPDATE_IN_PROGRESS                          AWS::Lambda::Function                       HelloWorldFunction                          -
+</span></span><span style="display:flex;"><span>UPDATE_COMPLETE                             AWS::Lambda::Function                       HelloWorldFunction                          -
+</span></span><span style="display:flex;"><span>UPDATE_COMPLETE_CLEANUP_IN_PROGRESS         AWS::CloudFormation::Stack                  aws-sam-101                                 -
+</span></span><span style="display:flex;"><span>UPDATE_COMPLETE                             AWS::CloudFormation::Stack                  aws-sam-101                                 -
+</span></span><span style="display:flex;"><span>-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>CloudFormation outputs from deployed stack
+</span></span><span style="display:flex;"><span>--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>Outputs
+</span></span><span style="display:flex;"><span>--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>Key                 HelloWorldFunctionIamRole
+</span></span><span style="display:flex;"><span>Description         Implicit IAM Role created <span style="color:#66d9ef">for</span> Hello World <span style="color:#66d9ef">function</span>
+</span></span><span style="display:flex;"><span>Value               arn:aws:iam::1234567890:role/aws-sam-101-HelloWorldFunctionRole-WAAUK9mx1X1E
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Key                 HelloWorldApi
+</span></span><span style="display:flex;"><span>Description         API Gateway endpoint URL <span style="color:#66d9ef">for</span> Prod stage <span style="color:#66d9ef">for</span> Hello World <span style="color:#66d9ef">function</span>
+</span></span><span style="display:flex;"><span>Value               https://g13i1111.execute-api.ap-northeast-1.amazonaws.com/Prod/hello/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Key                 HelloWorldFunction
+</span></span><span style="display:flex;"><span>Description         Hello World Lambda Function ARN
+</span></span><span style="display:flex;"><span>Value               arn:aws:lambda:ap-northeast-1:1234567890:function:aws-sam-101-HelloWorldFunction-7i6w81lfg
+</span></span><span style="display:flex;"><span>--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Stack update succeeded. Sync infra completed.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>CodeTrigger not created as CodeUri or DefinitionUri is missing <span style="color:#66d9ef">for</span> ServerlessRestApi.
+</span></span><span style="display:flex;"><span>Infra sync completed.
+</span></span></code></pre></div><p>現在我們上去 AWS Console 查看一下 Lambda 和 CloudFormation 的變更</p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/ea8ab3aa-8917-4611-bc71-2acc7113dd44" alt="Untitled 21"  />
+</p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/2128258c-0e9d-4bc2-bc77-fb0886d0c6d4" alt="Untitled 22"  />
+</p>
+<p>Lambda 已經成功修改這部分我想沒什麼問題，那 CloudFormation 的 Stack 顯示 &ldquo;NESTED” 這是什麼？由於此文章主要以 AWS SAM 入門教學為主，我這邊簡單解釋：</p>
+<ul>
+<li>
+<p>在 AWS CloudFormation 中，Nested Stack 就是在一個主要的 Stack（想像成一個大的項目列表）裡面，可以創建和管理多個小 Stack（就像是項目列表中的子列表）。這樣做的好處是，當你有很多相似的設置或配置需要重複使用時，你可以把這些配置做成一個小 Stack，然後在其他項目中引用它，這樣就不需要每次都重寫相同的配置，可以讓整個結構更清晰，也更容易管理。</p>
+</li>
+<li>
+<p>承上，由於這個特性，我們可以重用配置，這也是為什麼 sam sync 比較適合開發快速迭代，而且部署速度較快</p>
+<blockquote>
+<p>詳細請見 AWS 官方文檔: <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html">https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html</a></p>
+</blockquote>
+</li>
+</ul>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/b62eb74e-568d-4f0c-ab5e-b25dc6eb8b1e" alt="Untitled 23"  />
+</p>
+<p>再次調用一次，看看變更</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ curl <span style="color:#f92672">{</span>YOUR_API_ENDPOINT<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;message&#34;</span>: <span style="color:#e6db74">&#34;hello shiun&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="透過-aws-sam-cli-刪除部署在-aws-上的資源">透過 AWS SAM CLI 刪除部署在 AWS 上的資源<a hidden class="anchor" aria-hidden="true" href="#透過-aws-sam-cli-刪除部署在-aws-上的資源">#</a></h3>
+<p>CloudFormation 的特性就是可以刪除 Stack 來把當初透過這個 Stack 創建出來的資源刪乾淨，而 AWS SAM 身為 CloudFormation 的拓展，也提供了 <code>sam delete</code> 這個指令來刪除該專案部署在雲端上的資源</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sma delete
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Are you sure you want to delete the stack aws-sam-101 in the region ap-northeast-1 ? <span style="color:#f92672">[</span>y/N<span style="color:#f92672">]</span>: y
+</span></span><span style="display:flex;"><span>        Do you want to delete the template file 3141123123abc82d45ef55faf04.template in S3? <span style="color:#f92672">[</span>y/N<span style="color:#f92672">]</span>: y
+</span></span><span style="display:flex;"><span>        - Deleting S3 object with key 4c36d2ab78169da9e38fe8339b80626a
+</span></span><span style="display:flex;"><span>        - Deleting S3 object with key bd8e9f5130e915b480c3b2279a8baedb.template
+</span></span><span style="display:flex;"><span>        - Deleting S3 object with key 21410647a9e8cabc82d45e5556b6a804.template
+</span></span><span style="display:flex;"><span>        - Deleting Cloudformation stack aws-sam-101
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Deleted successfully
+</span></span></code></pre></div><h2 id="其他資源">其他資源<a hidden class="anchor" aria-hidden="true" href="#其他資源">#</a></h2>
+<ul>
+<li>Shiun Blog - Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda</li>
+<li>[<a href="https://catalog.workshops.aws/complete-aws-sam/en-US">AWS Workshop Studio - AWS SAM</a>](<a href="https://catalog.workshops.aws/complete-aws-sam/en-US">https://catalog.workshops.aws/complete-aws-sam/en-US</a>)</li>
+<li>[<a href="https://serverlessland.com/patterns?framework=SAM">Serverless Patterns Collection</a>](<a href="https://serverlessland.com/patterns?framework=SAM">https://serverlessland.com/patterns?framework=SAM</a>)</li>
+<li>[<a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html">AWS Docs - Working with nested stacks</a>](<a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html">https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-nested-stacks.html</a>)</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://shiun.me/tags/aws-sam/">AWS SAM</a></li>
+      <li><a href="https://shiun.me/tags/aws-sam-cli/">AWS SAM CLI</a></li>
+      <li><a href="https://shiun.me/tags/serverless/">Serverless</a></li>
+      <li><a href="https://shiun.me/tags/aws-lambda/">AWS Lambda</a></li>
+      <li><a href="https://shiun.me/tags/aws/">AWS</a></li>
+      <li><a href="https://shiun.me/tags/iac/">IaC</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://shiun.me/blog/serverless-framework-101/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda on x"
+            href="https://x.com/intent/tweet/?text=AWS%20SAM%20101%20-%20%e6%96%87%e9%95%b7%e5%9c%96%e5%a4%9a%ef%bc%81%e5%be%9e%e5%ae%89%e8%a3%9d%e5%88%b0%e9%83%a8%e7%bd%b2%e4%bd%a0%e7%9a%84%20AWS%20Lambda&amp;url=https%3a%2f%2fshiun.me%2fblog%2faws-sam-101%2f&amp;hashtags=AWSSAM%2cAWSSAMCLI%2cServerless%2cAWSLambda%2cAWS%2cIaC">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fshiun.me%2fblog%2faws-sam-101%2f&amp;title=AWS%20SAM%20101%20-%20%e6%96%87%e9%95%b7%e5%9c%96%e5%a4%9a%ef%bc%81%e5%be%9e%e5%ae%89%e8%a3%9d%e5%88%b0%e9%83%a8%e7%bd%b2%e4%bd%a0%e7%9a%84%20AWS%20Lambda&amp;summary=AWS%20SAM%20101%20-%20%e6%96%87%e9%95%b7%e5%9c%96%e5%a4%9a%ef%bc%81%e5%be%9e%e5%ae%89%e8%a3%9d%e5%88%b0%e9%83%a8%e7%bd%b2%e4%bd%a0%e7%9a%84%20AWS%20Lambda&amp;source=https%3a%2f%2fshiun.me%2fblog%2faws-sam-101%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fshiun.me%2fblog%2faws-sam-101%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda on telegram"
+            href="https://telegram.me/share/url?text=AWS%20SAM%20101%20-%20%e6%96%87%e9%95%b7%e5%9c%96%e5%a4%9a%ef%bc%81%e5%be%9e%e5%ae%89%e8%a3%9d%e5%88%b0%e9%83%a8%e7%bd%b2%e4%bd%a0%e7%9a%84%20AWS%20Lambda&amp;url=https%3a%2f%2fshiun.me%2fblog%2faws-sam-101%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer><div class="disqus markdown"><div id="disqus_thread"></div>
+<script>
+  
+
+  
+
+  (function () {
+    
+    var d = document,
+      s = d.createElement("script");
+    s.src = "https://shiun-me.disqus.com/embed.js";
+    s.setAttribute("data-timestamp", +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript
+  >Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript"
+    >comments powered by Disqus.</a
+  ></noscript
+>
+</div>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://shiun.me/">Shiun</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

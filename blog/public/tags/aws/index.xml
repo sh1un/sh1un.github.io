@@ -11,8 +11,15 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Sun, 21 Apr 2024 01:04:16 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 29 Apr 2024 23:47:09 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/tags/aws/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda</title>
+      <link>https://shiun.me/blog/aws-sam-101/</link>
+      <pubDate>Mon, 29 Apr 2024 23:47:09 +0800</pubDate>
+      <guid>https://shiun.me/blog/aws-sam-101/</guid>
+      <description>這篇文章將帶你從安裝 AWS SAM 到部署一個 Hello World Application，本文主要參考 AWS 官方文件步驟來撰寫，除此之外還包含了我練習過程中的一些筆記，以及一些除錯紀錄</description>
+    </item>
     <item>
       <title>AWS Internet Gateway vs NAT Gateway 及使用心得分享</title>
       <link>https://shiun.me/blog/internet-gateway-vs-nat-gateway/</link>
