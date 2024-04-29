@@ -2,7 +2,7 @@
 title: 'AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda'
 date: 2024-04-29T23:47:09+08:00
 draft: false
-description: "這篇文章將帶你從安裝 AWS SAM 到部署一個 Hello World Application，本文主要參考 AWS 官方文件步驟來撰寫，除此之外還包含了我練習過程中的一些筆記，以及一些除錯紀錄"
+description: "這篇文章將帶你從安裝 AWS SAM 到部署一個 Hello World Application，本文主要參考 AWS 官方教學文件來撰寫，除此之外還包含了我練習過程中的一些筆記，以及一些除錯紀錄"
 tags: ["AWS SAM", "AWS SAM CLI", "Serverless", "AWS Lambda", "AWS", "IaC"]
 categories: ["AWS SAM", "Serverless", "AWS Lambda", "AWS", "IaC"]
 keywords:
