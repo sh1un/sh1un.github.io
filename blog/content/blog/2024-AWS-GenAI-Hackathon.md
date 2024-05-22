@@ -17,7 +17,6 @@ keywords:
 - Gogoro
 ---
 來記錄一下學生時期的最後一場比賽 - [GenAI Hacathon](https://www.digitimes.com.tw/seminar/Hackathon_20240518/)，透過這篇想跟大家分享比賽的準備以及比賽的過程
-
 ## 比賽簡介
 這場比賽是 DIGITIMES 主辦，AWS 作為技術支援，總共邀請六個企業來命題，分為黑客組和創意交流組（簡單來說就是技術和非技術組），而黑客組在這場比賽必須使用 AWS 相關的服務和模型依照企業命題打造出 LLM Application
 ![image](https://github.com/sh1un/sh1un.github.io/assets/85695943/0f15df93-d73e-4076-94fa-81573b57adde)
@@ -142,8 +141,34 @@ for doc in docs_retrieved:
     print("-" * 80)
 ```
 
-結果我實際用下去就是悲劇...
+但是很可惜我們稍早已經測試過，實際用下去就是會看到 `NotImplementedError`，簡單來說就是 LangChain 還沒有支援 OpenSearch 使用這個 `similarity_score_threshold`:
+
+> Based on the information you've provided and the context from the LangChain repository, it seems like you're encountering a NotImplementedError when trying to use the similarity_score_threshold search type with the OpenSearch retriever in LangChain. This is likely because the similarity_score_threshold search type is not currently supported in the OpenSearch retriever in the LangChain framework, as mentioned in this issue.
+> 
+> **資料來源:** https://github.com/langchain-ai/langchain/issues/13007
 
 
-## 比賽結束
+所以在這部分，只能放棄使用 LangChain，改成用原生的 Python 庫 [`opensearch-py`](https://pypi.org/project/opensearch-py/)，而很感謝我們組員 Toby 對這部分還算熟悉，Toby 在比賽前幾日就有用過 `opensearch-py` 實踐 RAG ([Toby 的 GitHub Repo 連結](https://github.com/fdsf53451001/gogoro_hackathon/blob/main/retrieve_data.py))，所以我省了很多研究時間。
+
+而別以為我們現在看起來很順利，我們雖然 Retrieval 這部分已經沒問題了，但接下來要再把這部分用 LangChain 的 `chain.invoke()` 又開始卡關了，這次碰到的 ERROR 是:
+
+```shell
+[ERROR] ValueError: Invalid input type <class 'langchain_core.prompts.chat.ChatPromptTemplate'>. Must be a PromptValue, str, or list of BaseMessages.
+Traceback (most recent call last):
+  File "/var/task/is_question_rpy", line 219, in lambda_handler
+    answer = bedrock_llm.invoke(prompt)
+  File "/var/task/langchalanguage_models/chat_models.py159, in invoke
+    [self._convert_input(input)],
+  File "/var/task/langchalanguage_models/chat_models.py142, in _convert_input
+    raise ValueError(
+```
+
+但可惜到這邊，已經晚上 6:30 左右了，所以參賽者就先回家了，而我今天一整天就是「始於 502, 終於 502」，人還沒睡覺然後第一天東西還沒辦法正常 run 心態簡直快崩潰...
+
+一回到家心裡想著一定要把這解決才能睡，結果一到家一碰到床之後睜開眼已經是 Day2 早上 6:00
+
+
+## 比賽 Day2 - 可敬的對手
+
+
 
