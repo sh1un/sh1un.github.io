@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
+<meta name="robots" content="index, follow" />
+<title>
+  學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄 | Shiun
+</title>
+<meta
+  name="keywords"
+  content="GenAI, Bedrock, Claude, Claude 3 Sonnet, Hackathon, AWS, LangChain, RAG, Gogoro, IaC, AWS SAM, AI 應用開發, 生成式 AI, Retrieval Augmented Generation, 黑客松, Prompt 工程, Prompt Engineering, Gradio"
+/> <meta name="description" content="來記錄一下學生時期的最後一場比賽——GenAI Hackathon。透過這篇文章，想跟大家分享比賽的準備以及比賽過程中的點點滴滴。"> <meta name="author" content=""> <link rel="canonical" href="https://shiun.me/blog/2024-aws-genai-hackathon/">
+<link
+  crossorigin="anonymous"
+  href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css"
+  integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A="
+  rel="preload stylesheet"
+  as="style"
+/> <link rel="icon" href="https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"> <link
+rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://shiun.me/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://shiun.me/apple-touch-icon.png"> <link rel="mask-icon" href="https://shiun.me/safari-pinned-tab.svg"> <meta name="theme-color" content="#2e2e33"> <meta name="msapplication-TileColor" content="#2e2e33"> <link rel="alternate" hreflang="en" href="https://shiun.me/blog/2024-aws-genai-hackathon/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+<meta property="og:title" content="學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄" />
+<meta property="og:description" content="來記錄一下學生時期的最後一場比賽——GenAI Hackathon。透過這篇文章，想跟大家分享比賽的準備以及比賽過程中的點點滴滴。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/2024-aws-genai-hackathon/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-05-21T22:32:41+08:00" />
+<meta property="article:modified_time" content="2024-05-21T22:32:41+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄"/>
+<meta name="twitter:description" content="來記錄一下學生時期的最後一場比賽——GenAI Hackathon。透過這篇文章，想跟大家分享比賽的準備以及比賽過程中的點點滴滴。"/>
+
+
+<noscript>
+  <style>
+    #theme-toggle,
+    .top-link {
+      display: none;
+    }
+  </style>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --theme: rgb(29, 30, 32);
+        --entry: rgb(46, 46, 51);
+        --primary: rgb(218, 218, 219);
+        --secondary: rgb(155, 156, 157);
+        --tertiary: rgb(65, 66, 68);
+        --content: rgb(196, 196, 197);
+        --code-block-bg: rgb(46, 46, 51);
+        --code-bg: rgb(55, 56, 62);
+        --border: rgb(51, 51, 51);
+      }
+
+      .list {
+        background: var(--theme);
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-track {
+        background: 0 0;
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-thumb {
+        border-color: var(--theme);
+      }
+    }
+  </style>
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄" />
+<meta property="og:description" content="來記錄一下學生時期的最後一場比賽——GenAI Hackathon。透過這篇文章，想跟大家分享比賽的準備以及比賽過程中的點點滴滴。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/2024-aws-genai-hackathon/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-05-21T22:32:41+08:00" />
+<meta property="article:modified_time" content="2024-05-21T22:32:41+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/>
+
+<meta name="twitter:title" content="學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄"/>
+<meta name="twitter:description" content="來記錄一下學生時期的最後一場比賽——GenAI Hackathon。透過這篇文章，想跟大家分享比賽的準備以及比賽過程中的點點滴滴。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Blogs",
+      "item": "https://shiun.me/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄",
+      "item": "https://shiun.me/blog/2024-aws-genai-hackathon/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄",
+  "name": "學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄",
+  "description": "來記錄一下學生時期的最後一場比賽——GenAI Hackathon。透過這篇文章，想跟大家分享比賽的準備以及比賽過程中的點點滴滴。",
+  "keywords": [
+    "GenAI", "Bedrock", "Claude", "Claude 3 Sonnet", "Hackathon", "AWS", "LangChain", "RAG", "Gogoro", "IaC", "AWS SAM", "AI 應用開發", "生成式 AI", "Retrieval Augmented Generation", "黑客松", "Prompt 工程", "Prompt Engineering", "Gradio"
+  ],
+  "articleBody": " 比賽簡介 這場比賽是 DIGITIMES 主辦，AWS 作為技術支援，總共邀請六個企業來命題，分為黑客組和創意交流組（簡單來說就是技術和非技術組），而黑客組在這場比賽必須使用 AWS 相關的服務和模型依照企業命題打造出 LLM Application 比賽前 賽前工作坊 在比賽前，比賽主辦方有舉辦多場賽前工作坊，讓我們熟悉 AI 技術，而我只要有空都有去參加，我把我在的工作坊的學習筆記都寫在我的 Notion 日誌\n2024/04/27 - 基礎 AI 工作坊 2024/04/28 - 基礎 AI 工作坊 2024/05/05 - 進階 AI 工作坊 (這場有 GameDay) 2024/05/07 - Gogoro 企業數據工作坊 其實 AI 這領域真的不是我的專長領域，我自己會開始開發 GenAI 應用是從加入伊雲谷後開始的，在伊雲谷執手的專案就是一個 LLM Application，加上 GenAI 話題真的是時下最火熱的話題，活在這時代，開發的日常要不碰到 AI 真的蠻難的\n而賽前工作坊的主講者們真的人都很好，講解的也都很清楚，特別感謝 Roger 和 Ginny 在工作坊的教導，以及 Scott 在 GameDay 當天賽後的支援，在賽前工作坊也和現場的人交流，認識了不少技術高手！\n比賽還沒開始，但光是前面的工作坊就覺得這次的參賽體驗真的很棒，賽前能跟這些技術大神學習，真的是一次難得的機會。\n比賽題目公布 在報名時是要填寫競賽主題的志願序的，我們當初投的第一個志願是「智慧應用」第二為「智慧移動 - Gogoro」，最終我們被安排在智慧移動的組別。\n而我們這組的題目如下: 官方提供的數據就是 Gogoro 官網上的車主手冊: https://support.gogoro.com/tw/manual/collections/236738689176894/\n基本上這個命題絕對逃不過 “RAG”\n這個題目有幾個難點:\n如何讓 LLM 回應圖片並且顯示出來? 車主手冊有很大的比例是圖片，如何把圖片 Embed? 車主手冊全是 pdf 檔，如何萃取出 pdf 檔內的圖片 當使用者提供的資訊不夠詳細，LLM 這邊應要求使用者提供更多資訊 何謂資訊足夠詳細? 該如何定義「是否詳細」 LLM 要怎麼知道還需要請使用者提供哪些額外資訊? 作戰會議 而在 2024/05/07 Gogoro 數據工作坊一結束，我們小組就馬上來開了第一場作戰會議，一直到比賽開始前，總共開了三次會議，我們大致把整個應用的架構想出來，以及要使用的技術棧都定義出來並做好分工。\n分工部分:\nYuna (隊長): 資料前處理及構建 Data Pipeline Richie: 資料前處理及構建 Data Pipeline Eason: Presentaion 及 Prompt 研究 Toby: 自動化將資料 Embedding ，然後自動化將向量儲存到 OpenSearch，以及利用 Gradio 構建介面 Shiun (我): LangChain 開發及部署 LLM 應用 架構部分應該看得出來我在部落格這裡塞不下，因此直接附上連結 (連結點我)，這邊所看到的架構圖並只是我們會議討論時方便討論而畫出來的，但最後成品的架構其實跟這邊不太一樣，後面會提到最終的架構 另外想提一下，其實自己在開發 LLM 應用時，我很喜歡使用 Prompt Flow 來構建整個 Flow，雖然這是開源的，但這個終究是微軟的，所以最後這場比賽沒選擇使用 Prompt Flow XD，改成使用 LangGraph\n比賽前夕 我原本打算要用 LangGraph + LangChain 的組合來開發，但我花了三天學完 LangGraph 之後，發現自己真的沒有頭緒，用起來很力不從心，所以在比賽的前一晚我放棄使用 LangGraph，改成純用 Lambda 來構建出一個 Flow。\n而我擔心黑客松 30 個小時做不完，我在比賽的前一晚目標就是先開發出一個可以動的應用，然後在黑客松兩天串隊友們的資源。\n簡單來說，比賽前一晚我的目標是:\n串接 OpenSearch 實現 RAG 用 DynamoDB 儲存聊天紀錄，並確保 LLM 應用是具上下文記憶能力 IaC，確保黑客松當天直接一鍵部署，我是使用 AWS SAM 等最後弄完之後，大概早上 6:00 了，當時身體是累的但是睡不太著，然後就去買早餐，和隊友集合，然後去比賽啦\n其實當天我有開 Youtube 線上直播想要把黑客松前一晚的過程記錄起來… 沒想到我 OBS 串流打開了，但是卻忘了按下「開始直播」…一直到早上和隊友集合，隊友才告訴我我的 Youtube 畫面都是「等待中」…\n比賽 Day1 - 一整天在 502 Bad Gateway 度過 早上和組員一同進場報到 提案 在比賽剛開始時，評審會到各組先看我們的初步提案給予我們建議，以我們這組「智慧移動 - Gogoro」來說，評審有: Gogoro 副總, Gogoro 資訊技術總監, Gogoro 資料科學家, AWS Sr. SA，但 Day1 提案的時候印象中是沒看到副總出席，而我們這組就是把架構圖展示給評審看，同時也告訴我們遇到的難點。\n這個題目有幾個難點:\n如何讓 LLM 回應圖片並且顯示出來? 車主手冊有很大的比例是圖片，如何把圖片 Embed? 車主手冊全是 pdf 檔，如何萃取出 pdf 檔內的圖片 當使用者提供的資訊不夠詳細，LLM 這邊應要求使用者提供更多資訊 何謂資訊足夠詳細? 該如何定義「是否詳細」 LLM 要怎麼知道還需要請使用者提供哪些額外資訊? 當時我們只有請教評審們難點 4 的建議處理方式，而評審建議我的可以使用 Chain of Thought (CoT)\n開始卡在 502 Bad Gateway 在比賽才剛開始，我便遇到 502 Bad Gateway，明明早上 6.7 點左右都還 run 得好好的，現在 run 就會 502 Bad Gateway， 當時我遇到的 ERROR 如下:\n# 2024-05-18T01:29:19.802+-8:00 [ERROR] TypeError: not all arguments converted during string formatting Traceback (most recent call last): File \"/var/task/is_question_relevant.py\", line 186, in lambda_handler response = retrieval_chain.invoke( # 略 當時我印象中我是為了使用 LangSmith 來方便追蹤我的 Chain，所以在 template.yaml 為 Lambda Function 配置了一些 LangChain 相關的環境變量，所以我當時對於程式碼是沒有任何改動的，完全就是在配置一些額外的環境變量，我完全不覺得設環境變量會造成錯誤。\n於是我就開始退 commit，一個一個慢慢往前追溯是哪邊開始造成的，最後把 template.yaml 的變更都捨棄 (也就是我配置環境變量那部分)，才發現就是真的因為配置了 LangChain 的環境變量導致發生錯誤\n以 OpenSearch Similarity Score Threshold 決定問題是否相關 在我們的架構中，有一個節點負責判斷用戶的問題是否與 Gogoro 的主題相關。如果問題不相關，我們會禮貌地拒絕回答。我們的策略是，當用戶的提問進來時，就我們會結合 Chat History 一起去做 Embedding 然後進行 Retrieval。我們設定了一個相似度分數閾值 (Similarity Score Threshold)，只有當文檔的 Similarity Score 高於這個閾值時，文檔才會被檢索出來。因此當沒有檢索到任何文檔，我們就可以判定用戶的提問是不相關的。\n而我們在 LangChain 官方文檔有看到這部分有 API 可以用，寫法會長這樣:\nretriever = db.as_retriever( search_type=\"similarity_score_threshold\", search_kwargs={\"k\": 3, \"score_threshold\": 0.8}, ) docs_retrieved = retriever.invoke(query) for doc in docs_retrieved: print(\"-\" * 80) print(doc.page_content) print(\"-\" * 80) 但是很可惜我們稍早已經測試過，實際用下去就是會看到 NotImplementedError，簡單來說就是 LangChain 還沒有支援 OpenSearch 使用這個 similarity_score_threshold:\nBased on the information you’ve provided and the context from the LangChain repository, it seems like you’re encountering a NotImplementedError when trying to use the similarity_score_threshold search type with the OpenSearch retriever in LangChain. This is likely because the similarity_score_threshold search type is not currently supported in the OpenSearch retriever in the LangChain framework, as mentioned in this issue.\n資料來源: https://github.com/langchain-ai/langchain/issues/13007\n所以在這部分，只能放棄使用 LangChain，改成用原生的 Python 庫 opensearch-py，而很感謝我們組員 Toby 對這部分還算熟悉，Toby 在比賽前幾日就有用過 opensearch-py 實踐 RAG (Toby 的 GitHub Repo 連結)，所以我省了很多研究時間。\n而別以為我們現在看起來很順利，我們雖然 Retrieval 這部分已經沒問題了，但接下來要再把這部分用 LangChain 的 chain.invoke() 又開始卡關了，這次碰到的 ERROR 是:\n[ERROR] ValueError: Invalid input type ",
+  "wordCount" : "618",
+  "inLanguage": "en",
+  "datePublished": "2024-05-21T22:32:41+08:00",
+  "dateModified": "2024-05-21T22:32:41+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://shiun.me/blog/2024-aws-genai-hackathon/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Shiun",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://shiun.me/" accesskey="h" title="Shiun (Alt + H)">Shiun</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://shiun.me/blog/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.notion.site/Shiun-s-Learning-Journal-ded4cd4a3efd47b2805f2f99dee8f9a1?pvs=4" title="Notion">
+                    <span>Notion</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.linkedin.com/in/shiunchiu" title="About me">
+                    <span>About me</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://shiun.me/">Home</a>&nbsp;»&nbsp;<a href="https://shiun.me/blog/">Blogs</a></div>
+    <h1 class="post-title entry-hint-parent">
+      學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄
+    </h1>
+    <div class="post-description">
+      來記錄一下學生時期的最後一場比賽——GenAI Hackathon。透過這篇文章，想跟大家分享比賽的準備以及比賽過程中的點點滴滴。
+    </div>
+    <div class="post-meta"><span title='2024-05-21 22:32:41 +0800 CST'>May 21, 2024</span>&nbsp;·&nbsp;3 min
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e6%af%94%e8%b3%bd%e7%b0%a1%e4%bb%8b" aria-label="比賽簡介">比賽簡介</a></li>
+                <li>
+                    <a href="#%e6%af%94%e8%b3%bd%e5%89%8d" aria-label="比賽前">比賽前</a><ul>
+                        
+                <li>
+                    <a href="#%e8%b3%bd%e5%89%8d%e5%b7%a5%e4%bd%9c%e5%9d%8a" aria-label="賽前工作坊">賽前工作坊</a></li>
+                <li>
+                    <a href="#%e6%af%94%e8%b3%bd%e9%a1%8c%e7%9b%ae%e5%85%ac%e5%b8%83" aria-label="比賽題目公布">比賽題目公布</a></li>
+                <li>
+                    <a href="#%e4%bd%9c%e6%88%b0%e6%9c%83%e8%ad%b0" aria-label="作戰會議">作戰會議</a></li>
+                <li>
+                    <a href="#%e6%af%94%e8%b3%bd%e5%89%8d%e5%a4%95" aria-label="比賽前夕">比賽前夕</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%af%94%e8%b3%bd-day1---%e4%b8%80%e6%95%b4%e5%a4%a9%e5%9c%a8-502-bad-gateway-%e5%ba%a6%e9%81%8e" aria-label="比賽 Day1 - 一整天在 502 Bad Gateway 度過">比賽 Day1 - 一整天在 502 Bad Gateway 度過</a><ul>
+                        
+                <li>
+                    <a href="#%e6%8f%90%e6%a1%88" aria-label="提案">提案</a></li>
+                <li>
+                    <a href="#%e9%96%8b%e5%a7%8b%e5%8d%a1%e5%9c%a8-502-bad-gateway" aria-label="開始卡在 502 Bad Gateway">開始卡在 502 Bad Gateway</a></li>
+                <li>
+                    <a href="#%e4%bb%a5-opensearch-similarity-score-threshold-%e6%b1%ba%e5%ae%9a%e5%95%8f%e9%a1%8c%e6%98%af%e5%90%a6%e7%9b%b8%e9%97%9c" aria-label="以 OpenSearch Similarity Score Threshold 決定問題是否相關">以 OpenSearch Similarity Score Threshold 決定問題是否相關</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%af%94%e8%b3%bd-day2---%e5%8f%af%e6%95%ac%e7%9a%84%e5%b0%8d%e6%89%8b" aria-label="比賽 Day2 - 可敬的對手">比賽 Day2 - 可敬的對手</a><ul>
+                        
+                <li>
+                    <a href="#%e4%b8%80%e6%99%82%e4%be%86%e7%9a%84%e9%9d%88%e6%84%9f" aria-label="一時來的靈感">一時來的靈感</a></li>
+                <li>
+                    <a href="#%e5%b0%87%e8%b3%87%e6%ba%90%e9%83%a8%e7%bd%b2%e5%88%b0%e9%bb%91%e5%ae%a2%e6%9d%be%e7%9a%84-aws-%e5%b8%b3%e8%99%9f" aria-label="將資源部署到黑客松的 AWS 帳號">將資源部署到黑客松的 AWS 帳號</a></li>
+                <li>
+                    <a href="#presentation" aria-label="Presentation">Presentation</a></li>
+                <li>
+                    <a href="#%e5%8f%af%e6%95%ac%e7%9a%84%e5%b0%8d%e6%89%8b" aria-label="可敬的對手">可敬的對手</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e7%b5%90%e8%aa%9e" aria-label="結語">結語</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/d6ce61a1-3858-43b6-9c09-6ffb46c6c7f7" alt="GroupPhoto-1"  />
+</p>
+<h2 id="比賽簡介">比賽簡介<a hidden class="anchor" aria-hidden="true" href="#比賽簡介">#</a></h2>
+<p>這場比賽是 DIGITIMES 主辦，AWS 作為技術支援，總共邀請六個企業來命題，分為黑客組和創意交流組（簡單來說就是技術和非技術組），而黑客組在這場比賽必須使用 AWS 相關的服務和模型依照企業命題打造出 LLM Application
+<img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/0f15df93-d73e-4076-94fa-81573b57adde" alt="image"  />
+</p>
+<hr>
+<h2 id="比賽前">比賽前<a hidden class="anchor" aria-hidden="true" href="#比賽前">#</a></h2>
+<h3 id="賽前工作坊">賽前工作坊<a hidden class="anchor" aria-hidden="true" href="#賽前工作坊">#</a></h3>
+<p>在比賽前，比賽主辦方有舉辦多場賽前工作坊，讓我們熟悉 AI 技術，而我只要有空都有去參加，我把我在的工作坊的學習筆記都寫在我的 Notion 日誌</p>
+<ul>
+<li><a href="https://shiun.notion.site/20240427-198bb4068249447daccb651aa8ade714?pvs=4">2024/04/27 - 基礎 AI 工作坊</a></li>
+<li><a href="https://shiun.notion.site/20240428-9419901e5d47459e95ee99810479fc01?pvs=4">2024/04/28 - 基礎 AI 工作坊</a></li>
+<li><a href="https://shiun.notion.site/20240505-a9f4c32c17de4210959ffe3a57fcfbc4?pvs=4">2024/05/05 - 進階 AI 工作坊</a> (這場有 GameDay)</li>
+<li><a href="https://shiun.notion.site/20240507-748a1bcd059f4714b2bbb4d920333953?pvs=4">2024/05/07 - Gogoro 企業數據工作坊</a></li>
+</ul>
+<p>其實 AI 這領域真的不是我的專長領域，我自己會開始開發 GenAI 應用是從加入伊雲谷後開始的，在伊雲谷執手的專案就是一個 LLM Application，加上 GenAI 話題真的是時下最火熱的話題，活在這時代，開發的日常要不碰到 AI 真的蠻難的</p>
+<p>而賽前工作坊的主講者們真的人都很好，講解的也都很清楚，特別感謝 Roger 和 Ginny 在工作坊的教導，以及 <a href="https://shazi.info/">Scott</a> 在 GameDay 當天賽後的支援，在賽前工作坊也和現場的人交流，認識了不少技術高手！</p>
+<p>比賽還沒開始，但光是前面的工作坊就覺得這次的參賽體驗真的很棒，賽前能跟這些技術大神學習，真的是一次難得的機會。</p>
+<h3 id="比賽題目公布">比賽題目公布<a hidden class="anchor" aria-hidden="true" href="#比賽題目公布">#</a></h3>
+<p>在報名時是要填寫競賽主題的志願序的，我們當初投的第一個志願是「智慧應用」第二為「智慧移動 - Gogoro」，最終我們被安排在智慧移動的組別。</p>
+<p>而我們這組的題目如下:
+<img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/be97638f-6e7c-4021-af85-eb453ffb2b4b" alt="image"  />
+</p>
+<p>官方提供的數據就是 Gogoro 官網上的車主手冊: <a href="https://support.gogoro.com/tw/manual/collections/236738689176894/">https://support.gogoro.com/tw/manual/collections/236738689176894/</a></p>
+<p>基本上這個命題絕對逃不過 &ldquo;RAG&rdquo;</p>
+<p>這個題目有幾個難點:</p>
+<ol>
+<li>如何讓 LLM 回應圖片並且顯示出來?</li>
+<li>車主手冊有很大的比例是圖片，如何把圖片 Embed?</li>
+<li>車主手冊全是 pdf 檔，如何萃取出 pdf 檔內的圖片</li>
+<li>當使用者提供的資訊不夠詳細，LLM 這邊應要求使用者提供更多資訊
+<ol>
+<li>何謂資訊足夠詳細? 該如何定義「是否詳細」</li>
+<li>LLM 要怎麼知道還需要請使用者提供哪些額外資訊?</li>
+</ol>
+</li>
+</ol>
+<h3 id="作戰會議">作戰會議<a hidden class="anchor" aria-hidden="true" href="#作戰會議">#</a></h3>
+<p>而在 2024/05/07 Gogoro 數據工作坊一結束，我們小組就馬上來開了第一場作戰會議，一直到比賽開始前，總共開了三次會議，我們大致把整個應用的架構想出來，以及要使用的技術棧都定義出來並做好分工。</p>
+<p>分工部分:</p>
+<ul>
+<li><strong>Yuna (隊長):</strong> 資料前處理及構建 Data Pipeline</li>
+<li><strong>Richie:</strong> 資料前處理及構建 Data Pipeline</li>
+<li><strong>Eason:</strong> Presentaion 及 Prompt 研究</li>
+<li><strong>Toby:</strong> 自動化將資料 Embedding ，然後自動化將向量儲存到 OpenSearch，以及利用 Gradio 構建介面</li>
+<li><strong>Shiun (我):</strong> LangChain 開發及部署 LLM 應用</li>
+</ul>
+<p>架構部分應該看得出來我在部落格這裡塞不下，因此直接附上連結 (<a href="https://app.eraser.io/workspace/OvsOZInft271CWwmG1hL?origin=share">連結點我</a>)，這邊所看到的架構圖並只是我們會議討論時方便討論而畫出來的，但最後成品的架構其實跟這邊不太一樣，後面會提到最終的架構
+<img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/40ad9a8e-d198-4a49-9a9c-f1937882c089" alt="image"  />
+</p>
+<blockquote>
+<p>另外想提一下，其實自己在開發 LLM 應用時，我很喜歡使用 <a href="https://microsoft.github.io/promptflow/">Prompt Flow</a> 來構建整個 Flow，雖然這是開源的，但這個終究是微軟的，所以最後這場比賽沒選擇使用 Prompt Flow XD，改成使用 <a href="https://langchain-ai.github.io/langgraph/">LangGraph</a></p>
+</blockquote>
+<h3 id="比賽前夕">比賽前夕<a hidden class="anchor" aria-hidden="true" href="#比賽前夕">#</a></h3>
+<p>我原本打算要用 LangGraph + LangChain 的組合來開發，但我花了三天學完 LangGraph 之後，發現自己真的沒有頭緒，用起來很力不從心，所以在比賽的前一晚我放棄使用 LangGraph，改成純用 Lambda 來構建出一個 Flow。</p>
+<p>而我擔心黑客松 30 個小時做不完，我在比賽的前一晚目標就是先開發出一個可以動的應用，然後在黑客松兩天串隊友們的資源。</p>
+<p>簡單來說，比賽前一晚我的目標是:</p>
+<ol>
+<li>串接 OpenSearch</li>
+<li>實現 RAG</li>
+<li>用 DynamoDB 儲存聊天紀錄，並確保 LLM 應用是具上下文記憶能力</li>
+<li>IaC，確保黑客松當天直接一鍵部署，我是使用 AWS SAM</li>
+</ol>
+<p>等最後弄完之後，大概早上 6:00 了，當時身體是累的但是睡不太著，然後就去買早餐，和隊友集合，然後去比賽啦</p>
+<blockquote>
+<p>其實當天我有開 Youtube 線上直播想要把黑客松前一晚的過程記錄起來&hellip; 沒想到我 OBS 串流打開了，但是卻忘了按下「開始直播」&hellip;一直到早上和隊友集合，隊友才告訴我我的 Youtube 畫面都是「等待中」&hellip;</p>
+</blockquote>
+<hr>
+<h2 id="比賽-day1---一整天在-502-bad-gateway-度過">比賽 Day1 - 一整天在 502 Bad Gateway 度過<a hidden class="anchor" aria-hidden="true" href="#比賽-day1---一整天在-502-bad-gateway-度過">#</a></h2>
+<p>早上和組員一同進場報到
+<img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/bdabb144-8c19-4069-80c9-4121b4676cd7" alt="Competition check-in"  />
+</p>
+<h3 id="提案">提案<a hidden class="anchor" aria-hidden="true" href="#提案">#</a></h3>
+<p>在比賽剛開始時，評審會到各組先看我們的初步提案給予我們建議，以我們這組「智慧移動 - Gogoro」來說，評審有: Gogoro 副總, Gogoro 資訊技術總監, Gogoro 資料科學家,  AWS Sr. SA，但 Day1 提案的時候印象中是沒看到副總出席，而我們這組就是把<a href="https://app.eraser.io/workspace/OvsOZInft271CWwmG1hL?origin=share">架構圖</a>展示給評審看，同時也告訴我們遇到的難點。</p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/30e38a4f-1799-439e-896f-852da61ed4aa" alt="image"  />
+</p>
+<blockquote>
+<p>這個題目有幾個難點:</p>
+<ol>
+<li>如何讓 LLM 回應圖片並且顯示出來?</li>
+<li>車主手冊有很大的比例是圖片，如何把圖片 Embed?</li>
+<li>車主手冊全是 pdf 檔，如何萃取出 pdf 檔內的圖片</li>
+<li>當使用者提供的資訊不夠詳細，LLM 這邊應要求使用者提供更多資訊
+<ol>
+<li>何謂資訊足夠詳細? 該如何定義「是否詳細」</li>
+<li>LLM 要怎麼知道還需要請使用者提供哪些額外資訊?</li>
+</ol>
+</li>
+</ol>
+</blockquote>
+<p>當時我們只有請教評審們難點 4 的建議處理方式，而評審建議我的可以使用 Chain of Thought (CoT)</p>
+<h3 id="開始卡在-502-bad-gateway">開始卡在 502 Bad Gateway<a hidden class="anchor" aria-hidden="true" href="#開始卡在-502-bad-gateway">#</a></h3>
+<p>在比賽才剛開始，我便遇到 502 Bad Gateway，明明早上 6.7 點左右都還 run 得好好的，現在 run 就會 502 Bad Gateway，
+當時我遇到的 ERROR 如下:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 2024-05-18T01:29:19.802+-8:00</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>ERROR<span style="color:#f92672">]</span> TypeError: not all arguments converted during string formatting
+</span></span><span style="display:flex;"><span>Traceback <span style="color:#f92672">(</span>most recent call last<span style="color:#f92672">)</span>:
+</span></span><span style="display:flex;"><span>File <span style="color:#e6db74">&#34;/var/task/is_question_relevant.py&#34;</span>, line 186, in lambda_handler
+</span></span><span style="display:flex;"><span>response <span style="color:#f92672">=</span> retrieval_chain.invoke<span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 略</span>
+</span></span></code></pre></div><p>當時我印象中我是為了使用 LangSmith 來方便追蹤我的 Chain，所以在 <code>template.yaml</code> 為 Lambda Function 配置了一些 LangChain 相關的環境變量，所以我當時對於程式碼是沒有任何改動的，完全就是在配置一些額外的環境變量，我完全不覺得設環境變量會造成錯誤。</p>
+<p>於是我就開始退 commit，一個一個慢慢往前追溯是哪邊開始造成的，最後把 <code>template.yaml</code> 的變更都捨棄 (也就是我配置環境變量那部分)，才發現就是真的因為配置了 LangChain 的環境變量導致發生錯誤</p>
+<h3 id="以-opensearch-similarity-score-threshold-決定問題是否相關">以 OpenSearch Similarity Score Threshold 決定問題是否相關<a hidden class="anchor" aria-hidden="true" href="#以-opensearch-similarity-score-threshold-決定問題是否相關">#</a></h3>
+<p>在我們的架構中，有一個節點負責判斷用戶的問題是否與 Gogoro 的主題相關。如果問題不相關，我們會禮貌地拒絕回答。我們的策略是，當用戶的提問進來時，就我們會結合 Chat History 一起去做 Embedding 然後進行 Retrieval。我們設定了一個相似度分數閾值 (Similarity Score Threshold)，只有當文檔的 Similarity Score 高於這個閾值時，文檔才會被檢索出來。因此當沒有檢索到任何文檔，我們就可以判定用戶的提問是不相關的。</p>
+<p>而我們在 <a href="https://python.langchain.com/v0.1/docs/integrations/vectorstores/tidb_vector/#using-as-a-retriever">LangChain 官方文檔</a>有看到這部分有 API 可以用，寫法會長這樣:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>retriever <span style="color:#f92672">=</span> db<span style="color:#f92672">.</span>as_retriever(
+</span></span><span style="display:flex;"><span>    search_type<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;similarity_score_threshold&#34;</span>,
+</span></span><span style="display:flex;"><span>    search_kwargs<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;k&#34;</span>: <span style="color:#ae81ff">3</span>, <span style="color:#e6db74">&#34;score_threshold&#34;</span>: <span style="color:#ae81ff">0.8</span>},
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>docs_retrieved <span style="color:#f92672">=</span> retriever<span style="color:#f92672">.</span>invoke(query)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> doc <span style="color:#f92672">in</span> docs_retrieved:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">80</span>)
+</span></span><span style="display:flex;"><span>    print(doc<span style="color:#f92672">.</span>page_content)
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">80</span>)
+</span></span></code></pre></div><p>但是很可惜我們稍早已經測試過，實際用下去就是會看到 <code>NotImplementedError</code>，簡單來說就是 LangChain 還沒有支援 OpenSearch 使用這個 <code>similarity_score_threshold</code>:</p>
+<blockquote>
+<p>Based on the information you&rsquo;ve provided and the context from the LangChain repository, it seems like you&rsquo;re encountering a NotImplementedError when trying to use the similarity_score_threshold search type with the OpenSearch retriever in LangChain. This is likely because the similarity_score_threshold search type is not currently supported in the OpenSearch retriever in the LangChain framework, as mentioned in this issue.</p>
+<p><strong>資料來源:</strong> <a href="https://github.com/langchain-ai/langchain/issues/13007">https://github.com/langchain-ai/langchain/issues/13007</a></p>
+</blockquote>
+<p>所以在這部分，只能放棄使用 LangChain，改成用原生的 Python 庫 <a href="https://pypi.org/project/opensearch-py/"><code>opensearch-py</code></a>，而很感謝我們組員 Toby 對這部分還算熟悉，Toby 在比賽前幾日就有用過 <code>opensearch-py</code> 實踐 RAG (<a href="https://github.com/fdsf53451001/gogoro_hackathon/blob/main/retrieve_data.py">Toby 的 GitHub Repo 連結</a>)，所以我省了很多研究時間。</p>
+<p>而別以為我們現在看起來很順利，我們雖然 Retrieval 這部分已經沒問題了，但接下來要再把這部分用 LangChain 的 <code>chain.invoke()</code> 又開始卡關了，這次碰到的 ERROR 是:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>ERROR<span style="color:#f92672">]</span> ValueError: Invalid input type &lt;class <span style="color:#e6db74">&#39;langchain_core.prompts.chat.ChatPromptTemplate&#39;</span>&gt;. Must be a PromptValue, str, or list of BaseMessages.
+</span></span><span style="display:flex;"><span>Traceback <span style="color:#f92672">(</span>most recent call last<span style="color:#f92672">)</span>:
+</span></span><span style="display:flex;"><span>  File <span style="color:#e6db74">&#34;/var/task/is_question_rpy&#34;</span>, line 219, in lambda_handler
+</span></span><span style="display:flex;"><span>    answer <span style="color:#f92672">=</span> bedrock_llm.invoke<span style="color:#f92672">(</span>prompt<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>  File <span style="color:#e6db74">&#34;/var/task/langchalanguage_models/chat_models.py159, in invoke
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    [self._convert_input(input)],
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  File &#34;</span>/var/task/langchalanguage_models/chat_models.py142, in _convert_input
+</span></span><span style="display:flex;"><span>    raise ValueError<span style="color:#f92672">(</span>
+</span></span></code></pre></div><p>但可惜到這邊，已經晚上 6:30 左右了，所以參賽者就先回家了，而我今天一整天就是「始於 502, 終於 502」，人還沒睡覺然後第一天東西還沒辦法正常 run 心態簡直快崩潰&hellip;</p>
+<p>一回到家心裡想著一定要把這解決才能睡，結果一到家一碰到床之後睜開眼已經是 Day2 早上 6:00</p>
+<hr>
+<h2 id="比賽-day2---可敬的對手">比賽 Day2 - 可敬的對手<a hidden class="anchor" aria-hidden="true" href="#比賽-day2---可敬的對手">#</a></h2>
+<h3 id="一時來的靈感">一時來的靈感<a hidden class="anchor" aria-hidden="true" href="#一時來的靈感">#</a></h3>
+<p>黑客組預計會在 Day2 14:40 結束比賽</p>
+<p>Day2 我早上 6:00 醒來，梳洗一下，也不知道為什麼&hellip; 靈感很臨時來，突然覺得我想到 Day1 Bug 的解法了，馬上打開電腦試了一下，還真的解出來了。</p>
+<p>真的平常工作也是這樣，卡了一整天的 Bug，總是會在無意間想到解法，我也算這次很幸運這個臨感來的那麼快，在 Day2 的一早就馬上解決昨天的大難關，給 Day2 做了一個美好的開始。</p>
+<p>現在我們的系統可以說是可以動了，放下身上的重擔後，我就趕緊搭車去黑客松比賽現場與隊友會合了。</p>
+<h3 id="將資源部署到黑客松的-aws-帳號">將資源部署到黑客松的 AWS 帳號<a hidden class="anchor" aria-hidden="true" href="#將資源部署到黑客松的-aws-帳號">#</a></h3>
+<p>其實在 Day1 所有開發的東西我都部署在自己的 AWS 帳號，因為整個專案我都是用 <a href="https://docs.aws.amazon.com/zh_tw/serverless-application-model/latest/developerguide/what-is-sam.html">AWS SAM</a>來建置和部署資源的，所以要把同樣的東西部署到別的 AWS 帳號相當容易。</p>
+<p>但當然也是沒那麼順利，過程我犯了一個很傻的錯誤，就是忘記把 <code>samconfig.toml</code> 裡面的 <code>image_repositories</code> 換掉，所以我切換到黑客松的環境後，輸入 <code>sam deploy</code>，我根本沒辦法 Push 新的 Image 上去 ECR，因為我現在的 Credential 就是沒權限去 Push Image 到我自己 AWS 帳號的 ECR</p>
+<p>我以為是黑客松的 AWS 環境給的 Credential 有問題，所以還跑去請教 AWS SA - <a href="https://shazi.info/mr-shazi-page/">Scott</a>，結果 SA 一提點我就知道自己犯蠢 XD，真的很抱歉不小心打擾到 SA</p>
+<p>發現自己犯蠢後資源當然也部署上去了，只能說 IaC 真的讚！</p>
+<h3 id="presentation">Presentation<a hidden class="anchor" aria-hidden="true" href="#presentation">#</a></h3>
+<p>接下來我們把資源全都部署好，Toby 用 Gradio 切了一個簡單的前端介面然後我再把前端部署上去我們的專案就大功告成了！</p>
+<p>Eason 將會負責上台簡報，而我會負責操控電腦</p>
+<p>在這兩天的黑客松，Eason 一直在旁邊研究我們的系統以及跟我們釐清很多技術架構，然後為我們這兩天的成品做了一個很棒的簡報</p>
+<p>比賽 14:40 結束後，我們收到了 Gogoro 指定的問題，必須在等下的 Presentation 中進行 Live Demo。而我們「大使夢之隊」是「智慧移動」第一個要上台報告的組別。</p>
+<p>沒過多久後，就開始上台簡報了，只能說 Eason 的台風真的很穩，邏輯清晰，把我們系統的價值和架構表達得很清楚。另外當時很多大使來旁邊幫我們加油，到了 Live Demo 環節，我們第一題不知什麼原因就 Timeout 了，但網頁重整後又正常了，真的有 Live Demo 就一定要擺綠色乖乖&hellip;而後面的幾個問題，我覺得都符合我們預期，但就是有發現我們系統的回應時間其實太久了，幾乎都 20 秒上下才完成。</p>
+<p>但整體來說，我覺得我們已經把我們想展示的東西都展示出來了。</p>
+<h3 id="可敬的對手">可敬的對手<a hidden class="anchor" aria-hidden="true" href="#可敬的對手">#</a></h3>
+<p>在智慧移動這組中，我們遇到了一個勁敵——「富貴怎麼先走了」。他們的系統架構大概跟我們有七八成相似，但在前端的表現以及 LLM 的回應速度上，他們明顯勝出很多。當他們上台展示時，我們都非常佩服他們 LLM 的回應速度如此之快，前端頁面做得既舒服又有流暢的 Steaming，那個第一印象絕對是超越我們的。</p>
+<p>當時我就知道，他們很可能是這次比賽的第一名。比賽結果出爐前，對方也來和我們交流他們使用的技術。我們從賽前工作坊的 GameDay 就知道他們實力雄厚，因為他們那組在 GameDay 也拿了第一！</p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/c59cbc74-7b18-4fde-89ca-579dd86b9cfd" alt="FuGuae"  />
+
+<em>上圖為「富貴怎麼先走了」當天的 Presentation</em></p>
+<p>最終結果也不出所料，「富貴怎麼先走了」贏得了智慧移動組的優勝！比賽結束後，我們和他們聊了聊，發現他們真的很厲害，分工相當明確，隊友間彼此都很信任。這次經驗讓我們學到了很多，也再次恭喜他們取得優勝！</p>
+<hr>
+<h2 id="結語">結語<a hidden class="anchor" aria-hidden="true" href="#結語">#</a></h2>
+<p>這場比賽身邊的人都很看好我們的大使夢之隊，也很感謝大家來現場加油打氣和餵食，不過最後沒能取得優勝確實有些遺憾！尤其是「富貴怎麼先走了」這組真的很強，讓我認識到自己的實力還有待提升。他們的成品也給了我很多啟發，讓我知道自己的系統有哪些可以改進的地方。</p>
+<p>這次比賽學到了很多，主辦方的賽前工作坊非常紮實，現場的 SA 技術支援也非常到位，透過和各組的交流，我也學到了不少新的技巧。</p>
+<p>最後，真的超感謝隊友們。資料前處理部分，隊長 Yuna 和 Richie 真的是超級給力！Toby 本身在做 LLM 方面的研究，他在整個過程中提供了我心目中的 Best Practice！Eason 比賽全程在一旁觀察我們的開發，研究 Prompt 並釐清整體的系統架構，簡報時他更是把系統完整呈現出來！每個隊友都是核心，能和這樣的隊友在 30 個小時內打造出應用，真的是一段很有革命情感的經歷，希望之後還有機會能再一起組隊參賽。</p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/1c79c984-6f4f-424e-904b-3464d13159af" alt="GroupPhoto-2"  />
+</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://shiun.me/tags/aws/">AWS</a></li>
+      <li><a href="https://shiun.me/tags/aws-bedrock/">AWS Bedrock</a></li>
+      <li><a href="https://shiun.me/tags/competition-experience/">Competition Experience</a></li>
+      <li><a href="https://shiun.me/tags/hackathon/">Hackathon</a></li>
+      <li><a href="https://shiun.me/tags/genai/">GenAI</a></li>
+      <li><a href="https://shiun.me/tags/langchain/">LangChain</a></li>
+      <li><a href="https://shiun.me/tags/opensearch/">OpenSearch</a></li>
+      <li><a href="https://shiun.me/tags/rag/">RAG</a></li>
+      <li><a href="https://shiun.me/tags/gogoro/">Gogoro</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://shiun.me/blog/aws-sam-101/">
+    <span class="title">Next »</span>
+    <br>
+    <span>AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄 on x"
+            href="https://x.com/intent/tweet/?text=%e5%ad%b8%e7%94%9f%e6%99%82%e6%9c%9f%e7%9a%84%e6%9c%80%e5%be%8c%e4%b8%80%e5%a0%b4%e6%af%94%e8%b3%bd%3a%202024%20GenAI%20Hackathon%20%e6%af%94%e8%b3%bd%e7%b4%80%e9%8c%84&amp;url=https%3a%2f%2fshiun.me%2fblog%2f2024-aws-genai-hackathon%2f&amp;hashtags=AWS%2cAWSBedrock%2cCompetitionExperience%2cHackathon%2cGenAI%2cLangChain%2cOpenSearch%2cRAG%2cGogoro">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄 on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fshiun.me%2fblog%2f2024-aws-genai-hackathon%2f&amp;title=%e5%ad%b8%e7%94%9f%e6%99%82%e6%9c%9f%e7%9a%84%e6%9c%80%e5%be%8c%e4%b8%80%e5%a0%b4%e6%af%94%e8%b3%bd%3a%202024%20GenAI%20Hackathon%20%e6%af%94%e8%b3%bd%e7%b4%80%e9%8c%84&amp;summary=%e5%ad%b8%e7%94%9f%e6%99%82%e6%9c%9f%e7%9a%84%e6%9c%80%e5%be%8c%e4%b8%80%e5%a0%b4%e6%af%94%e8%b3%bd%3a%202024%20GenAI%20Hackathon%20%e6%af%94%e8%b3%bd%e7%b4%80%e9%8c%84&amp;source=https%3a%2f%2fshiun.me%2fblog%2f2024-aws-genai-hackathon%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄 on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fshiun.me%2fblog%2f2024-aws-genai-hackathon%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄 on telegram"
+            href="https://telegram.me/share/url?text=%e5%ad%b8%e7%94%9f%e6%99%82%e6%9c%9f%e7%9a%84%e6%9c%80%e5%be%8c%e4%b8%80%e5%a0%b4%e6%af%94%e8%b3%bd%3a%202024%20GenAI%20Hackathon%20%e6%af%94%e8%b3%bd%e7%b4%80%e9%8c%84&amp;url=https%3a%2f%2fshiun.me%2fblog%2f2024-aws-genai-hackathon%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer><div class="disqus markdown"><div id="disqus_thread"></div>
+<script>
+  
+
+  
+
+  (function () {
+    
+    var d = document,
+      s = d.createElement("script");
+    s.src = "https://shiun-me.disqus.com/embed.js";
+    s.setAttribute("data-timestamp", +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript
+  >Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript"
+    >comments powered by Disqus.</a
+  ></noscript
+>
+</div>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://shiun.me/">Shiun</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
