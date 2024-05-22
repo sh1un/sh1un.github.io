@@ -1,5 +1,5 @@
 ---
-title: '2024 AWS GenAI Hackathon'
+title: '學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄'
 date: 2024-05-21T22:32:41+08:00
 draft: false
 description: "來記錄一下學生時期的最後一場比賽——GenAI Hackathon。透過這篇文章，想跟大家分享比賽的準備以及比賽過程中的點點滴滴。"
