@@ -11,13 +11,69 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Mon, 29 Apr 2024 23:47:09 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 21 May 2024 22:32:41 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>AWS</title>
       <link>https://shiun.me/tags/aws/</link>
-      <pubDate>Mon, 29 Apr 2024 23:47:09 +0800</pubDate>
+      <pubDate>Tue, 21 May 2024 22:32:41 +0800</pubDate>
       <guid>https://shiun.me/tags/aws/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>AWS Bedrock</title>
+      <link>https://shiun.me/tags/aws-bedrock/</link>
+      <pubDate>Tue, 21 May 2024 22:32:41 +0800</pubDate>
+      <guid>https://shiun.me/tags/aws-bedrock/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Competition Experience</title>
+      <link>https://shiun.me/tags/competition-experience/</link>
+      <pubDate>Tue, 21 May 2024 22:32:41 +0800</pubDate>
+      <guid>https://shiun.me/tags/competition-experience/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>GenAI</title>
+      <link>https://shiun.me/tags/genai/</link>
+      <pubDate>Tue, 21 May 2024 22:32:41 +0800</pubDate>
+      <guid>https://shiun.me/tags/genai/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Gogoro</title>
+      <link>https://shiun.me/tags/gogoro/</link>
+      <pubDate>Tue, 21 May 2024 22:32:41 +0800</pubDate>
+      <guid>https://shiun.me/tags/gogoro/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Hackathon</title>
+      <link>https://shiun.me/tags/hackathon/</link>
+      <pubDate>Tue, 21 May 2024 22:32:41 +0800</pubDate>
+      <guid>https://shiun.me/tags/hackathon/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>LangChain</title>
+      <link>https://shiun.me/tags/langchain/</link>
+      <pubDate>Tue, 21 May 2024 22:32:41 +0800</pubDate>
+      <guid>https://shiun.me/tags/langchain/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>OpenSearch</title>
+      <link>https://shiun.me/tags/opensearch/</link>
+      <pubDate>Tue, 21 May 2024 22:32:41 +0800</pubDate>
+      <guid>https://shiun.me/tags/opensearch/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>RAG</title>
+      <link>https://shiun.me/tags/rag/</link>
+      <pubDate>Tue, 21 May 2024 22:32:41 +0800</pubDate>
+      <guid>https://shiun.me/tags/rag/</guid>
       <description></description>
     </item>
     <item>

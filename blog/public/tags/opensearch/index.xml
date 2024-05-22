@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>OpenSearch on Shiun</title>
+    <link>https://shiun.me/tags/opensearch/</link>
+    <description>Recent content in OpenSearch on Shiun</description>
+    <image>
+      <title>Shiun</title>
+      <url>https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea</url>
+      <link>https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-tw</language>
+    <lastBuildDate>Tue, 21 May 2024 22:32:41 +0800</lastBuildDate>
+    <atom:link href="https://shiun.me/tags/opensearch/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2024 AWS GenAI Hackathon</title>
+      <link>https://shiun.me/blog/2024-aws-genai-hackathon/</link>
+      <pubDate>Tue, 21 May 2024 22:32:41 +0800</pubDate>
+      <guid>https://shiun.me/blog/2024-aws-genai-hackathon/</guid>
+      <description>來記錄一下學生時期的最後一場比賽——GenAI Hackathon。透過這篇文章，想跟大家分享比賽的準備以及比賽過程中的點點滴滴。</description>
+    </item>
+  </channel>
+</rss>
