@@ -2,7 +2,7 @@
 title: '2024 AWS GenAI Hackathon'
 date: 2024-05-21T22:32:41+08:00
 draft: false
-description: ""
+description: "來記錄一下學生時期的最後一場比賽——GenAI Hackathon。透過這篇文章，想跟大家分享比賽的準備以及比賽過程中的點點滴滴。"
 tags: ["AWS", "AWS Bedrock", "Competition Experience", "Hackathon", "GenAI", "LangChain", "OpenSearch", "RAG", "Gogoro"]
 categories: ["AWS", "AI", "Hackathon", "LangChain"]
 keywords:
@@ -16,16 +16,21 @@ keywords:
 - RAG
 - Gogoro
 ---
-來記錄一下學生時期的最後一場比賽 - [GenAI Hacathon](https://www.digitimes.com.tw/seminar/Hackathon_20240518/)，透過這篇想跟大家分享比賽的準備以及比賽的過程
+來記錄一下學生時期的最後一場比賽 - [GenAI Hacathon](https://www.digitimes.com.tw/seminar/Hackathon_20240518/)，透過這篇文章，想跟大家分享比賽的準備以及比賽過程中的點點滴滴。
+
 ## 比賽簡介
+
 這場比賽是 DIGITIMES 主辦，AWS 作為技術支援，總共邀請六個企業來命題，分為黑客組和創意交流組（簡單來說就是技術和非技術組），而黑客組在這場比賽必須使用 AWS 相關的服務和模型依照企業命題打造出 LLM Application
 ![image](https://github.com/sh1un/sh1un.github.io/assets/85695943/0f15df93-d73e-4076-94fa-81573b57adde)
 
+---
 
 ## 比賽前
 
 ### 賽前工作坊
+
 在比賽前，比賽主辦方有舉辦多場賽前工作坊，讓我們熟悉 AI 技術，而我只要有空都有去參加，我把我在的工作坊的學習筆記都寫在我的 Notion 日誌
+
 - [2024/04/27 - 基礎 AI 工作坊](https://shiun.notion.site/20240427-198bb4068249447daccb651aa8ade714?pvs=4)
 - [2024/04/28 - 基礎 AI 工作坊](https://shiun.notion.site/20240428-9419901e5d47459e95ee99810479fc01?pvs=4)
 - [2024/05/05 - 進階 AI 工作坊](https://shiun.notion.site/20240505-a9f4c32c17de4210959ffe3a57fcfbc4?pvs=4) (這場有 GameDay)
@@ -33,11 +38,12 @@ keywords:
 
 其實 AI 這領域真的不是我的專長領域，我自己會開始開發 GenAI 應用是從加入伊雲谷後開始的，在伊雲谷執手的專案就是一個 LLM Application，加上 GenAI 話題真的是時下最火熱的話題，活在這時代，開發的日常要不碰到 AI 真的蠻難的
 
-而賽前工作坊的主講者們真的人都很好，講解的也都很清楚，特別感謝 Roger, Ginny 在工作坊的教導，以及 [Scott](https://shazi.info/) 在 GameDay 當天賽後的支援，在賽前工作坊也和現場的人交流，認識了不少技術高手！
+而賽前工作坊的主講者們真的人都很好，講解的也都很清楚，特別感謝 Roger 和 Ginny 在工作坊的教導，以及 [Scott](https://shazi.info/) 在 GameDay 當天賽後的支援，在賽前工作坊也和現場的人交流，認識了不少技術高手！
 
-只能說這次的參賽體驗真的讚，賽前可以跟這些技術大神學習真的機會難得
+比賽還沒開始，但光是前面的工作坊就覺得這次的參賽體驗真的很棒，賽前能跟這些技術大神學習，真的是一次難得的機會。
 
 ### 比賽題目公布
+
 在報名時是要填寫競賽主題的志願序的，我們當初投的第一個志願是「智慧應用」第二為「智慧移動 - Gogoro」，最終我們被安排在智慧移動的組別。
 
 而我們這組的題目如下:
@@ -48,6 +54,7 @@ keywords:
 基本上這個命題絕對逃不過 "RAG"
 
 這個題目有幾個難點:
+
 1. 如何讓 LLM 回應圖片並且顯示出來?
 2. 車主手冊有很大的比例是圖片，如何把圖片 Embed?
 3. 車主手冊全是 pdf 檔，如何萃取出 pdf 檔內的圖片
@@ -60,6 +67,7 @@ keywords:
 而在 2024/05/07 Gogoro 數據工作坊一結束，我們小組就馬上來開了第一場作戰會議，一直到比賽開始前，總共開了三次會議，我們大致把整個應用的架構想出來，以及要使用的技術棧都定義出來並做好分工。
 
 分工部分:
+
 - **Yuna (隊長):** 資料前處理及構建 Data Pipeline
 - **Richie:** 資料前處理及構建 Data Pipeline
 - **Eason:** Presentaion 及 Prompt 研究
@@ -79,6 +87,7 @@ keywords:
 而我擔心黑客松 30 個小時做不完，我在比賽的前一晚目標就是先開發出一個可以動的應用，然後在黑客松兩天串隊友們的資源。
 
 簡單來說，比賽前一晚我的目標是:
+
 1. 串接 OpenSearch
 2. 實現 RAG
 3. 用 DynamoDB 儲存聊天紀錄，並確保 LLM 應用是具上下文記憶能力
@@ -88,14 +97,18 @@ keywords:
 
 > 其實當天我有開 Youtube 線上直播想要把黑客松前一晚的過程記錄起來... 沒想到我 OBS 串流打開了，但是卻忘了按下「開始直播」...一直到早上和隊友集合，隊友才告訴我我的 Youtube 畫面都是「等待中」...
 
+---
+
 ## 比賽 Day1 - 一整天在 502 Bad Gateway 度過
 
 ### 提案
+
 在比賽剛開始時，評審會到各組先看我們的初步提案給予我們建議，以我們這組「智慧移動 - Gogoro」來說，評審有: Gogoro 副總, Gogoro 資訊技術總監, Gogoro 資料科學家,  AWS Sr. SA，但 Day1 提案的時候印象中是沒看到副總出席，而我們這組就是把[架構圖](https://app.eraser.io/workspace/OvsOZInft271CWwmG1hL?origin=share)展示給評審看，同時也告訴我們遇到的難點。
 
 ![image](https://github.com/sh1un/sh1un.github.io/assets/85695943/30e38a4f-1799-439e-896f-852da61ed4aa)
 
 > 這個題目有幾個難點:
+>
 > 1. 如何讓 LLM 回應圖片並且顯示出來?
 > 2. 車主手冊有很大的比例是圖片，如何把圖片 Embed?
 > 3. 車主手冊全是 pdf 檔，如何萃取出 pdf 檔內的圖片
@@ -105,7 +118,7 @@ keywords:
 
 當時我們只有請教評審們難點 4 的建議處理方式，而評審建議我的可以使用 Chain of Thought (CoT)
 
-### 開始卡在 502 Bad Gateway...
+### 開始卡在 502 Bad Gateway
 
 在比賽才剛開始，我便遇到 502 Bad Gateway，明明早上 6.7 點左右都還 run 得好好的，現在 run 就會 502 Bad Gateway，
 當時我遇到的 ERROR 如下:
@@ -144,9 +157,8 @@ for doc in docs_retrieved:
 但是很可惜我們稍早已經測試過，實際用下去就是會看到 `NotImplementedError`，簡單來說就是 LangChain 還沒有支援 OpenSearch 使用這個 `similarity_score_threshold`:
 
 > Based on the information you've provided and the context from the LangChain repository, it seems like you're encountering a NotImplementedError when trying to use the similarity_score_threshold search type with the OpenSearch retriever in LangChain. This is likely because the similarity_score_threshold search type is not currently supported in the OpenSearch retriever in the LangChain framework, as mentioned in this issue.
-> 
+>
 > **資料來源:** https://github.com/langchain-ai/langchain/issues/13007
-
 
 所以在這部分，只能放棄使用 LangChain，改成用原生的 Python 庫 [`opensearch-py`](https://pypi.org/project/opensearch-py/)，而很感謝我們組員 Toby 對這部分還算熟悉，Toby 在比賽前幾日就有用過 `opensearch-py` 實踐 RAG ([Toby 的 GitHub Repo 連結](https://github.com/fdsf53451001/gogoro_hackathon/blob/main/retrieve_data.py))，所以我省了很多研究時間。
 
@@ -167,6 +179,7 @@ Traceback (most recent call last):
 
 一回到家心裡想著一定要把這解決才能睡，結果一到家一碰到床之後睜開眼已經是 Day2 早上 6:00
 
+---
 
 ## 比賽 Day2 - 可敬的對手
 
@@ -180,7 +193,6 @@ Day2 我早上 6:00 醒來，梳洗一下，也不知道為什麼... 靈感很�
 
 現在我們的系統可以說是可以動了，放下身上的重擔後，我就趕緊搭車去黑客松比賽現場與隊友會合了。
 
-
 ### 將資源部署到黑客松的 AWS 帳號
 
 其實在 Day1 所有開發的東西我都部署在自己的 AWS 帳號，因為整個專案我都是用 [AWS SAM](https://docs.aws.amazon.com/zh_tw/serverless-application-model/latest/developerguide/what-is-sam.html)來建置和部署資源的，所以要把同樣的東西部署到別的 AWS 帳號相當容易。
@@ -190,7 +202,6 @@ Day2 我早上 6:00 醒來，梳洗一下，也不知道為什麼... 靈感很�
 我以為是黑客松的 AWS 環境給的 Credential 有問題，所以還跑去請教 AWS SA - [Scott](https://shazi.info/mr-shazi-page/)，結果 SA 一提點我就知道自己犯蠢 XD，真的很抱歉不小心打擾到 SA
 
 發現自己犯蠢後資源當然也部署上去了，只能說 IaC 真的讚！
-
 
 ### Presentation
 
@@ -208,19 +219,18 @@ Eason 將會負責上台簡報，而我會負責操控電腦
 
 ### 可敬的對手
 
-在智慧移動這組，有一個勁敵是「富貴怎麼先走了」，這組的架構大概跟我們 8 成相似，但是他們在前端的展現，以及 LLM 的回應速度真的快上我們許多，當時輪到他們 Presentation 時，他們表現的非常好，當下我們都相當佩服他們 LLM 回應的速度如此之快，而且前端頁面做得舒服又有做 Steaming，那個第一印象一定是超越我們。
+在智慧移動這組中，我們遇到了一個勁敵——「富貴怎麼先走了」。他們的系統架構大概跟我們有七八成相似，但在前端的表現以及 LLM 的回應速度上，他們明顯勝出很多。當他們上台展示時，我們都非常佩服他們 LLM 的回應速度如此之快，前端頁面做得既舒服又有流暢的 Steaming，那個第一印象絕對是超越我們的。
 
-當時我知道他們應該就是第一名了，比賽結果出爐前，對方也有來跟我們交流他們使用的技術，我們從賽前工作坊的 GameDay 就知道他們實力雄厚了，因為賽前工作坊 GameDay 他們那組也拿了第一！
+當時我就知道，他們很可能是這次比賽的第一名。比賽結果出爐前，對方也來和我們交流他們使用的技術。我們從賽前工作坊的 GameDay 就知道他們實力雄厚，因為他們那組在 GameDay 也拿了第一！
 
-而最後結果也不出所料，是由「富貴怎麼先走了」取得智慧移動組的優勝！
-最後我們在比賽結束後，跟他們聊聊天認識了一下，他們那組真的很厲害，分工相當明確，隊友間彼此都很信任，真的恭喜他們！
+最終結果也不出所料，「富貴怎麼先走了」贏得了智慧移動組的優勝！比賽結束後，我們和他們聊了聊，發現他們真的很厲害，分工相當明確，隊友間彼此都很信任。這次經驗讓我們學到了很多，也再次恭喜他們取得優勝！
 
+---
 
 ## 結語
 
-這場比賽身邊蠻多的人都很看好我們大使夢之隊，也好感謝大家都來現場加油和餵食，但最後沒取得優勝自己也覺得很可惜！而「富貴怎麼先走了」這組真的很厲害，所以真的就是自己實力還要再精進！看到他們的成品可以知道自己的系統還有哪些地方可以改進
+這場比賽身邊的人都很看好我們的大使夢之隊，也很感謝大家來現場加油打氣和餵食，不過最後沒能取得優勝確實有些遺憾！尤其是「富貴怎麼先走了」這組真的很強，讓我認識到自己的實力還有待提升。他們的成品也給了我很多啟發，讓我知道自己的系統有哪些可以改進的地方。
 
-而這場比賽學到的東西真的太多了，主辦方的賽前工作坊很紮實，現場 SA 給予的技術支援也很給力，也透過各組間的交流，學習到別組的技巧
+這次比賽學到了很多，主辦方的賽前工作坊非常紮實，現場的 SA 技術支援也非常到位，透過和各組的交流，我也學到了不少新的技巧。
 
-最後，真的超感謝隊友們，資料前處理那一個部分隊長 Yuna 和 Richie 超級給力！Toby 本身在做 LLM 方面的研究，在整個過程中可說是 Toby 在 LLM 這邊提供了我心目中的 Best Practice！Eason 比賽全程在一旁看著我們開發，研究 Prompt 以及釐清整體的系統架構，簡報時把系統完整的呈現出來！真的每個隊友都是核心，和隊友一同在 30 個小時內打造出應用真的會很有革命情感，很希望之後還有機會能再組隊一起參與比賽
-
+最後，真的超感謝隊友們。資料前處理部分，隊長 Yuna 和 Richie 真的是超級給力！Toby 本身在做 LLM 方面的研究，他在整個過程中提供了我心目中的 Best Practice！Eason 比賽全程在一旁觀察我們的開發，研究 Prompt 並釐清整體的系統架構，簡報時他更是把系統完整呈現出來！每個隊友都是核心，能和這樣的隊友在 30 個小時內打造出應用，真的是一段很有革命情感的經歷，希望之後還有機會能再一起組隊參賽。
