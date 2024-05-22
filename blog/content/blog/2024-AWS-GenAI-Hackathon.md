@@ -71,7 +71,7 @@ keywords:
 ![image](https://github.com/sh1un/sh1un.github.io/assets/85695943/40ad9a8e-d198-4a49-9a9c-f1937882c089)
 
 > 另外想提一下，其實自己在開發 LLM 應用時，我很喜歡使用 [Prompt Flow](https://microsoft.github.io/promptflow/) 來構建整個 Flow，雖然這是開源的，但這個終究是微軟的，所以最後這場比賽沒選擇使用 Prompt Flow XD，改成使用 [LangGraph](https://langchain-ai.github.io/langgraph/)
-
+![alt text](image-1.png)
 
 ### 比賽前夕
 
@@ -83,13 +83,67 @@ keywords:
 1. 串接 OpenSearch
 2. 實現 RAG
 3. 用 DynamoDB 儲存聊天紀錄，並確保 LLM 應用是具上下文記憶能力
-4. IaC，確保黑客松當天直接一鍵部署
+4. IaC，確保黑客松當天直接一鍵部署，我是使用 AWS SAM
 
 等最後弄完之後，大概早上 6:00 了，當時身體是累的但是睡不太著，然後就去買早餐，和隊友集合，然後去比賽啦
 
 > 其實當天我有開 Youtube 線上直播想要把黑客松前一晚的過程記錄起來... 沒想到我 OBS 串流打開了，但是卻忘了按下「開始直播」...一直到早上和隊友集合，隊友才告訴我我的 Youtube 畫面都是「等待中」...
 
-## 比賽開始
+## 比賽 Day1 - 一整天在 502 Bad Gateway 度過
+
+### 提案
+在比賽剛開始時，評審會到各組先看我們的初步提案給予我們建議，以我們這組「智慧移動 - Gogoro」來說，評審有: Gogoro 副總, Gogoro 資訊技術總監, Gogoro 資料科學家,  AWS Sr. SA，但 Day1 提案的時候印象中是沒看到副總出席，而我們這組就是把[架構圖](https://app.eraser.io/workspace/OvsOZInft271CWwmG1hL?origin=share)展示給評審看，同時也告訴我們遇到的難點。
+
+![image](https://github.com/sh1un/sh1un.github.io/assets/85695943/30e38a4f-1799-439e-896f-852da61ed4aa)
+
+> 這個題目有幾個難點:
+> 1. 如何讓 LLM 回應圖片並且顯示出來?
+> 2. 車主手冊有很大的比例是圖片，如何把圖片 Embed?
+> 3. 車主手冊全是 pdf 檔，如何萃取出 pdf 檔內的圖片
+> 4. 當使用者提供的資訊不夠詳細，LLM 這邊應要求使用者提供更多資訊
+>    1. 何謂資訊足夠詳細? 該如何定義「是否詳細」
+>    2. LLM 要怎麼知道還需要請使用者提供哪些額外資訊?
+
+當時我們只有請教評審們難點 4 的建議處理方式，而評審建議我的可以使用 Chain of Thought (CoT)
+
+### 開始卡在 502 Bad Gateway...
+
+在比賽才剛開始，我便遇到 502 Bad Gateway，明明早上 6.7 點左右都還 run 得好好的，現在 run 就會 502 Bad Gateway，
+當時我遇到的 ERROR 如下:
+
+```shell
+# 2024-05-18T01:29:19.802+-8:00
+[ERROR] TypeError: not all arguments converted during string formatting
+Traceback (most recent call last):
+File "/var/task/is_question_relevant.py", line 186, in lambda_handler
+response = retrieval_chain.invoke(
+# 略
+```
+
+當時我印象中我是為了使用 LangSmith 來方便追蹤我的 Chain，所以在 `template.yaml` 為 Lambda Function 配置了一些 LangChain 相關的環境變量，所以我當時對於程式碼是沒有任何改動的，完全就是在配置一些額外的環境變量，我完全不覺得設環境變量會造成錯誤。
+
+於是我就開始退 commit，一個一個慢慢往前追溯是哪邊開始造成的，最後把 `template.yaml` 的變更都捨棄 (也就是我配置環境變量那部分)，才發現就是真的因為配置了 LangChain 的環境變量導致發生錯誤
+
+### 以 OpenSearch Similarity Score Threshold 決定問題是否相關
+
+在我們的架構中，有一個節點負責判斷用戶的問題是否與 Gogoro 的主題相關。如果問題不相關，我們會禮貌地拒絕回答。我們的策略是，當用戶的提問進來時，就我們會結合 Chat History 一起去做 Embedding 然後進行 Retrieval。我們設定了一個相似度分數閾值 (Similarity Score Threshold)，只有當文檔的 Similarity Score 高於這個閾值時，文檔才會被檢索出來。因此當沒有檢索到任何文檔，我們就可以判定用戶的提問是不相關的。
+
+而我們在 [LangChain 官方文檔](https://python.langchain.com/v0.1/docs/integrations/vectorstores/tidb_vector/#using-as-a-retriever)有看到這部分有 API 可以用，寫法會長這樣:
+
+```python
+retriever = db.as_retriever(
+    search_type="similarity_score_threshold",
+    search_kwargs={"k": 3, "score_threshold": 0.8},
+)
+docs_retrieved = retriever.invoke(query)
+for doc in docs_retrieved:
+    print("-" * 80)
+    print(doc.page_content)
+    print("-" * 80)
+```
+
+結果我實際用下去就是悲劇...
+
 
 ## 比賽結束
 
