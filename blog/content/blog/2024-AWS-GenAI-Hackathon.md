@@ -15,9 +15,17 @@ keywords:
 - LangChain
 - RAG
 - Gogoro
+- IaC
+- AWS SAM
+- AI 應用開發
+- 生成式 AI
+- Retrieval Augmented Generation
+- 黑客松
+- Prompt 工程
+- Prompt Engineering
+- Gradio
 ---
-來記錄一下學生時期的最後一場比賽 - [GenAI Hacathon](https://www.digitimes.com.tw/seminar/Hackathon_20240518/)，透過這篇文章，想跟大家分享比賽的準備以及比賽過程中的點點滴滴。
-
+![GroupPhoto-1](https://github.com/sh1un/sh1un.github.io/assets/85695943/d6ce61a1-3858-43b6-9c09-6ffb46c6c7f7)
 ## 比賽簡介
 
 這場比賽是 DIGITIMES 主辦，AWS 作為技術支援，總共邀請六個企業來命題，分為黑客組和創意交流組（簡單來說就是技術和非技術組），而黑客組在這場比賽必須使用 AWS 相關的服務和模型依照企業命題打造出 LLM Application
@@ -78,7 +86,6 @@ keywords:
 ![image](https://github.com/sh1un/sh1un.github.io/assets/85695943/40ad9a8e-d198-4a49-9a9c-f1937882c089)
 
 > 另外想提一下，其實自己在開發 LLM 應用時，我很喜歡使用 [Prompt Flow](https://microsoft.github.io/promptflow/) 來構建整個 Flow，雖然這是開源的，但這個終究是微軟的，所以最後這場比賽沒選擇使用 Prompt Flow XD，改成使用 [LangGraph](https://langchain-ai.github.io/langgraph/)
-![alt text](image-1.png)
 
 ### 比賽前夕
 
@@ -101,6 +108,8 @@ keywords:
 
 ## 比賽 Day1 - 一整天在 502 Bad Gateway 度過
 
+早上和組員一同進場報到
+![Competition check-in](https://github.com/sh1un/sh1un.github.io/assets/85695943/bdabb144-8c19-4069-80c9-4121b4676cd7)
 ### 提案
 
 在比賽剛開始時，評審會到各組先看我們的初步提案給予我們建議，以我們這組「智慧移動 - Gogoro」來說，評審有: Gogoro 副總, Gogoro 資訊技術總監, Gogoro 資料科學家,  AWS Sr. SA，但 Day1 提案的時候印象中是沒看到副總出席，而我們這組就是把[架構圖](https://app.eraser.io/workspace/OvsOZInft271CWwmG1hL?origin=share)展示給評審看，同時也告訴我們遇到的難點。
@@ -223,7 +232,13 @@ Eason 將會負責上台簡報，而我會負責操控電腦
 
 當時我就知道，他們很可能是這次比賽的第一名。比賽結果出爐前，對方也來和我們交流他們使用的技術。我們從賽前工作坊的 GameDay 就知道他們實力雄厚，因為他們那組在 GameDay 也拿了第一！
 
+
+![FuGuae](https://github.com/sh1un/sh1un.github.io/assets/85695943/c59cbc74-7b18-4fde-89ca-579dd86b9cfd)
+_上圖為「富貴怎麼先走了」當天的 Presentation_
+
 最終結果也不出所料，「富貴怎麼先走了」贏得了智慧移動組的優勝！比賽結束後，我們和他們聊了聊，發現他們真的很厲害，分工相當明確，隊友間彼此都很信任。這次經驗讓我們學到了很多，也再次恭喜他們取得優勝！
+
+
 
 ---
 
@@ -234,3 +249,5 @@ Eason 將會負責上台簡報，而我會負責操控電腦
 這次比賽學到了很多，主辦方的賽前工作坊非常紮實，現場的 SA 技術支援也非常到位，透過和各組的交流，我也學到了不少新的技巧。
 
 最後，真的超感謝隊友們。資料前處理部分，隊長 Yuna 和 Richie 真的是超級給力！Toby 本身在做 LLM 方面的研究，他在整個過程中提供了我心目中的 Best Practice！Eason 比賽全程在一旁觀察我們的開發，研究 Prompt 並釐清整體的系統架構，簡報時他更是把系統完整呈現出來！每個隊友都是核心，能和這樣的隊友在 30 個小時內打造出應用，真的是一段很有革命情感的經歷，希望之後還有機會能再一起組隊參賽。
+
+![GroupPhoto-2](https://github.com/sh1un/sh1un.github.io/assets/85695943/1c79c984-6f4f-424e-904b-3464d13159af)
