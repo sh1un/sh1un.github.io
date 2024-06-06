@@ -23,7 +23,9 @@ keywords:
 - AWS Console
 - Infrastructure Management
 ---
-## Import
+![Blog  Cover - Terraform Import (WhiteBG)](https://github.com/sh1un/sh1un.github.io/assets/85695943/e2027f5e-d58b-4c4b-983a-ad9a8b76ce63)
+
+## Terraform Import
 
 ### 簡介
 
