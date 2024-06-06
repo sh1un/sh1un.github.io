@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cloud Infrastructure on Shiun</title>
+    <link>https://shiun.me/tags/cloud-infrastructure/</link>
+    <description>Recent content in Cloud Infrastructure on Shiun</description>
+    <image>
+      <title>Shiun</title>
+      <url>https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea</url>
+      <link>https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-tw</language>
+    <lastBuildDate>Thu, 06 Jun 2024 10:50:53 +0800</lastBuildDate>
+    <atom:link href="https://shiun.me/tags/cloud-infrastructure/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>要導入 IaC？用 Terraform Import 導入現有資源</title>
+      <link>https://shiun.me/blog/how-to-use-terraform-import-to-import-existing-resources-into-iac/</link>
+      <pubDate>Thu, 06 Jun 2024 10:50:53 +0800</pubDate>
+      <guid>https://shiun.me/blog/how-to-use-terraform-import-to-import-existing-resources-into-iac/</guid>
+      <description>過去我們可能習慣直接在 AWS Console 上建立資源，但是現在想導入 IaC，把原本建立好的資源改成用 Terraform 管理。這篇文章會教你如何使用 Terraform Import 功能，將現有的資源導入到 Terraform 的 State 中</description>
+    </item>
+  </channel>
+</rss>
