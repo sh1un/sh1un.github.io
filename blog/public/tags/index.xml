@@ -11,13 +11,62 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Thu, 06 Jun 2024 10:50:53 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 14 Jun 2024 23:41:33 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>AWS</title>
       <link>https://shiun.me/tags/aws/</link>
-      <pubDate>Thu, 06 Jun 2024 10:50:53 +0800</pubDate>
+      <pubDate>Fri, 14 Jun 2024 23:41:33 +0800</pubDate>
       <guid>https://shiun.me/tags/aws/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>AWS API Gateway</title>
+      <link>https://shiun.me/tags/aws-api-gateway/</link>
+      <pubDate>Fri, 14 Jun 2024 23:41:33 +0800</pubDate>
+      <guid>https://shiun.me/tags/aws-api-gateway/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>AWS Lambda</title>
+      <link>https://shiun.me/tags/aws-lambda/</link>
+      <pubDate>Fri, 14 Jun 2024 23:41:33 +0800</pubDate>
+      <guid>https://shiun.me/tags/aws-lambda/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Backend Development</title>
+      <link>https://shiun.me/tags/backend-development/</link>
+      <pubDate>Fri, 14 Jun 2024 23:41:33 +0800</pubDate>
+      <guid>https://shiun.me/tags/backend-development/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Cloud Computing</title>
+      <link>https://shiun.me/tags/cloud-computing/</link>
+      <pubDate>Fri, 14 Jun 2024 23:41:33 +0800</pubDate>
+      <guid>https://shiun.me/tags/cloud-computing/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>HTTP Request</title>
+      <link>https://shiun.me/tags/http-request/</link>
+      <pubDate>Fri, 14 Jun 2024 23:41:33 +0800</pubDate>
+      <guid>https://shiun.me/tags/http-request/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Lambda Proxy Integration</title>
+      <link>https://shiun.me/tags/lambda-proxy-integration/</link>
+      <pubDate>Fri, 14 Jun 2024 23:41:33 +0800</pubDate>
+      <guid>https://shiun.me/tags/lambda-proxy-integration/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Serverless</title>
+      <link>https://shiun.me/tags/serverless/</link>
+      <pubDate>Fri, 14 Jun 2024 23:41:33 +0800</pubDate>
+      <guid>https://shiun.me/tags/serverless/</guid>
       <description></description>
     </item>
     <item>
@@ -126,13 +175,6 @@
       <description></description>
     </item>
     <item>
-      <title>AWS Lambda</title>
-      <link>https://shiun.me/tags/aws-lambda/</link>
-      <pubDate>Mon, 29 Apr 2024 23:47:09 +0800</pubDate>
-      <guid>https://shiun.me/tags/aws-lambda/</guid>
-      <description></description>
-    </item>
-    <item>
       <title>AWS SAM</title>
       <link>https://shiun.me/tags/aws-sam/</link>
       <pubDate>Mon, 29 Apr 2024 23:47:09 +0800</pubDate>
@@ -144,13 +186,6 @@
       <link>https://shiun.me/tags/aws-sam-cli/</link>
       <pubDate>Mon, 29 Apr 2024 23:47:09 +0800</pubDate>
       <guid>https://shiun.me/tags/aws-sam-cli/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Serverless</title>
-      <link>https://shiun.me/tags/serverless/</link>
-      <pubDate>Mon, 29 Apr 2024 23:47:09 +0800</pubDate>
-      <guid>https://shiun.me/tags/serverless/</guid>
       <description></description>
     </item>
     <item>
