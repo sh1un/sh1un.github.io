@@ -19,13 +19,13 @@ keywords:
 - Lambda function event object
 ---
 
-在 AWS API Gateway (REST API) 創建 method 時，我們可以指定他要把請求傳到哪個 AWS 服務，而如果你選擇 Lambda，你會看到有一個選項是 Lambda Proxy Integration，那我把它勾選起來會怎樣呢？
+在 AWS API Gateway 創建 method 時，我們可以指定他要把請求傳到哪個 AWS 服務或是其他 HTTP Endpoint...等等，而如果你選擇 Lambda，你會看到有一個選項是 Lambda Proxy Integration，那我把它勾選起來會怎樣呢？
 
 ![image](https://github.com/sh1un/sh1un.github.io/assets/85695943/95b1fe3d-a93c-4563-80bb-36ad8ff3b6c8)
 
 ## TL;DR
 
-如果有打開 Proxy Integration，接著我們到那個 Resource 的 Method 頁面看一下，會看到下圖的提示
+如果有打開 Lambda Proxy Integration，接著我們到那個 Resource 的 Method 頁面看一下，會看到下圖的提示
 ![image](https://github.com/sh1un/sh1un.github.io/assets/85695943/47c6b110-9431-4181-b584-9ab14db865c5)
 
 > **Proxy integration**
@@ -61,7 +61,7 @@ def lambda_handler(event, context):
 
 ```
 
-接著我們分別執行看看
+接著我們分別調用看看這兩支 API
 
 - With Lambda Proxy Integration
 
@@ -109,7 +109,7 @@ def lambda_handler(event, context):
 - Non Lambda Proxy Integration
 ![image](https://github.com/sh1un/sh1un.github.io/assets/85695943/2777e74c-c5d0-4d38-99f7-20810b398e43)
 
-注意到了嗎？有沒有打開 Lambda Proxy Integration 其行為差異會如此大
+注意到了嗎？有沒有打開 Lambda Proxy Integration 其行為差異會如此大，若有開啟 Lambda Proxy Integration，那他會直接把你在 Function 內設定的 `statusCode` 映射到 Response 的 Status Code；而沒有開啟的話，他會把你的 `statusCode` 包在 Response Body 內，這樣的行為是不是很不直覺呢？
 
 ### 加入 Query Parameters
 
@@ -135,11 +135,12 @@ def lambda_handler(event, context):
 - Non Lambda Proxy Integration
 ![image](https://github.com/sh1un/sh1un.github.io/assets/85695943/7f6b789e-df36-42d3-a664-4c6b04da1cf2)
 
-可以注意到，有使用 Lambda Proxy Integration 的正確接到值了，而另一個沒有開啟的則出現錯誤，錯誤很明顯就是他找不到對應的 Key
+可以注意到，有使用 Lambda Proxy Integration 的正確接到值了；而另一個沒有開啟的則出現錯誤，錯誤很明顯就是他找不到對應的 Key
 
 ### 加入自定義 Header
 
 接下來我要在Lambda Function 中 return 自定義的 Header: `X-Shiun-Custom-Header" : "test"`
+
 也是一樣，我會分別調用這兩支 API，我們來觀察 Response Headers
 
 - With Lambda Proxy Integration
@@ -148,11 +149,13 @@ def lambda_handler(event, context):
 - Non Lambda Proxy Integration
 ![image](https://github.com/sh1un/sh1un.github.io/assets/85695943/df22fa12-9acb-4faf-af98-d77dc5f9910e)
 
-觀察到兩者的差異了嗎？在 Lambda Proxy Integration 那張圖片看到 Response Headers 裡面真的有回傳 `X-Shiun-Custom-Header" : "test"`
+觀察到兩者的差異了嗎？有啟用 Lambda Proxy Integration 的那支 API 會看到 Response Headers 裡面真的有回傳 `X-Shiun-Custom-Header" : "test"`
 
 ## Lambda Proxy Integration 的工作原理
 
-啟用 Lambda Proxy Integration 後，API Gateway 會將整個 HTTP 請求(包括request headers, query string parameters, URL path variables, payload, and API configuration data) 打包成單一的 [event object](https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format)，並傳遞給 Lambda 函數。這也解釋為什麼我 call API 如果帶了 Query Param ，我使用這種寫法 `name = event["queryStringParameters"]["name"]` 能抓到 API 請求的 Query Parameter
+到底是什麼原因會出現這樣的行為差異呢？所以我們來看看 Lambda Proxy Integration 的工作原理
+
+啟用 Lambda Proxy Integration 後，API Gateway 會將整個 HTTP 請求(包括request headers, query string parameters, URL path variables, payload 和 API configuration data) 打包成單一的 [event object](https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format)，並傳遞給 Lambda 函數。這也解釋為什麼我 call API 如果帶了 Query Param ，我使用這種寫法 `name = event["queryStringParameters"]["name"]` 能抓到 API 請求的 Query Parameter
 
 而這個 event object 實際長這樣:
 
@@ -254,11 +257,13 @@ def lambda_handler(event, context):
 
 ## 那我到底要不要打開 Lambda Proxy Integration?
 
-我會高度推薦打開，因為你可以在程式碼那邊控制 Response，這我不認為不只是是”簡化”，而是”大大降低管理複雜度”，我認為這是一個更佳的管理方式 (這邊是我的主觀感受，並不代表完全正確)。
+我會高度推薦打開，因為你可以在程式碼那邊控制 Response，這我不認為不只是是”簡化”，而是”大大降低管理複雜度”，我認為這是一個更佳的管理方式 _(這邊是我的主觀感受，並不代表完全正確)_。
 
-甚至有時候我都會直接果斷啟用 Lambda Proxy Integration，然後在 API Gateway 後面加一層 Lambda 專門做參數驗證再轉發到實際後端的 Lambda Function，而非選擇在 API Gateway 那邊做請求預處理或是參數驗證，但實際仍需要以本身的業務需求去挑出最佳的解決方案，這邊只是提供一個我認為對開發人員很友善的處理方式，而且這種方式你也可以在程式碼內做出高度客製化
+甚至有時候我都會直接果斷啟用 Lambda Proxy Integration，然後在 API Gateway 後面加一層 Lambda 專門做參數驗證再轉發到實際後端的 Lambda Function，而非選擇在 API Gateway 那邊做請求預處理或是參數驗證。但實際仍需要以本身的業務需求去挑出最佳的解決方案，這邊只是提供一個我認為對開發人員很友善的處理方式，而且這種方式你也可以在程式碼內做出高度客製化
 
-總而言之，如果你沒有使用 Proxy Integration，則需要在 API Gateway 中配置額外的轉換模板來處理輸入和輸出格式。
+總而言之，如果你沒有使用 Lambda Proxy Integration，則需要在 API Gateway 中配置額外的轉換模板來處理輸入和輸出格式。
+
+希望這篇文章有幫助你更加了解 Lambda Proxy Integration 的功能和行為，並且能夠在實際應用中更好地使用這個功能！
 
 ## Resources
 
