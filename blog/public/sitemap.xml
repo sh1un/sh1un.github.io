@@ -3,16 +3,49 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://shiun.me/tags/aws/</loc>
-    <lastmod>2024-06-06T10:50:53+08:00</lastmod>
+    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/categories/aws/</loc>
-    <lastmod>2024-06-06T10:50:53+08:00</lastmod>
+    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/aws-api-gateway/</loc>
+    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/aws-lambda/</loc>
+    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/backend-development/</loc>
+    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/blog/</loc>
-    <lastmod>2024-06-06T10:50:53+08:00</lastmod>
+    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/categories/</loc>
-    <lastmod>2024-06-06T10:50:53+08:00</lastmod>
+    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/cloud-computing/</loc>
+    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/http-request/</loc>
+    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/lambda-proxy-integration/</loc>
+    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/serverless/</loc>
+    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/serverless/</loc>
+    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/</loc>
+    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/</loc>
+    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/blog/understanding-lambda-proxy-integration/</loc>
+    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/cloud-infrastructure/</loc>
     <lastmod>2024-06-06T10:50:53+08:00</lastmod>
@@ -27,12 +60,6 @@
     <lastmod>2024-06-06T10:50:53+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/categories/iac/</loc>
-    <lastmod>2024-06-06T10:50:53+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/</loc>
-    <lastmod>2024-06-06T10:50:53+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/</loc>
     <lastmod>2024-06-06T10:50:53+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/technical-tutorial/</loc>
@@ -89,9 +116,6 @@
     <loc>https://shiun.me/blog/2024-aws-genai-hackathon/</loc>
     <lastmod>2024-05-21T22:32:41+08:00</lastmod>
   </url><url>
-    <loc>https://shiun.me/tags/aws-lambda/</loc>
-    <lastmod>2024-04-29T23:47:09+08:00</lastmod>
-  </url><url>
     <loc>https://shiun.me/categories/aws-lambda/</loc>
     <lastmod>2024-04-29T23:47:09+08:00</lastmod>
   </url><url>
@@ -105,12 +129,6 @@
     <lastmod>2024-04-29T23:47:09+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/aws-sam-cli/</loc>
-    <lastmod>2024-04-29T23:47:09+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/serverless/</loc>
-    <lastmod>2024-04-29T23:47:09+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/categories/serverless/</loc>
     <lastmod>2024-04-29T23:47:09+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/serverless-framework/</loc>

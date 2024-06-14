@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
+<meta name="robots" content="index, follow" />
+<title>
+  深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能 | Shiun
+</title>
+<meta
+  name="keywords"
+  content="AWS Lambda Proxy Integration, API Gateway Lambda proxy integration, API Gateway Lambda integration, Lambda function HTTP request, Serverless architecture, AWS API Gateway setup, Lambda Proxy advantages, Lambda Proxy HTTP response, AWS cloud services, Simplify Lambda requests, Lambda function event object"
+/> <meta name="description" content="API Gateway 背後接 Lambda 是一個相當常見的組合，然而很多人對 API Gateway 上面的 Lambda Proxy Integration 在做什麼其實不是很了解，事實上，啟用或不啟用這個功能，行為會差非常多，這篇文章用實際的例子帶你認識 Lambda Proxy Integration"> <meta name="author" content=""> <link rel="canonical" href="https://shiun.me/blog/understanding-lambda-proxy-integration/">
+<link
+  crossorigin="anonymous"
+  href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css"
+  integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A="
+  rel="preload stylesheet"
+  as="style"
+/> <link rel="icon" href="https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"> <link
+rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://shiun.me/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://shiun.me/apple-touch-icon.png"> <link rel="mask-icon" href="https://shiun.me/safari-pinned-tab.svg"> <meta name="theme-color" content="#2e2e33"> <meta name="msapplication-TileColor" content="#2e2e33"> <link rel="alternate" hreflang="en" href="https://shiun.me/blog/understanding-lambda-proxy-integration/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+<meta property="og:title" content="深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能" />
+<meta property="og:description" content="API Gateway 背後接 Lambda 是一個相當常見的組合，然而很多人對 API Gateway 上面的 Lambda Proxy Integration 在做什麼其實不是很了解，事實上，啟用或不啟用這個功能，行為會差非常多，這篇文章用實際的例子帶你認識 Lambda Proxy Integration" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/understanding-lambda-proxy-integration/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-06-14T23:41:33+08:00" />
+<meta property="article:modified_time" content="2024-06-14T23:41:33+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能"/>
+<meta name="twitter:description" content="API Gateway 背後接 Lambda 是一個相當常見的組合，然而很多人對 API Gateway 上面的 Lambda Proxy Integration 在做什麼其實不是很了解，事實上，啟用或不啟用這個功能，行為會差非常多，這篇文章用實際的例子帶你認識 Lambda Proxy Integration"/>
+
+
+<noscript>
+  <style>
+    #theme-toggle,
+    .top-link {
+      display: none;
+    }
+  </style>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --theme: rgb(29, 30, 32);
+        --entry: rgb(46, 46, 51);
+        --primary: rgb(218, 218, 219);
+        --secondary: rgb(155, 156, 157);
+        --tertiary: rgb(65, 66, 68);
+        --content: rgb(196, 196, 197);
+        --code-block-bg: rgb(46, 46, 51);
+        --code-bg: rgb(55, 56, 62);
+        --border: rgb(51, 51, 51);
+      }
+
+      .list {
+        background: var(--theme);
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-track {
+        background: 0 0;
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-thumb {
+        border-color: var(--theme);
+      }
+    }
+  </style>
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能" />
+<meta property="og:description" content="API Gateway 背後接 Lambda 是一個相當常見的組合，然而很多人對 API Gateway 上面的 Lambda Proxy Integration 在做什麼其實不是很了解，事實上，啟用或不啟用這個功能，行為會差非常多，這篇文章用實際的例子帶你認識 Lambda Proxy Integration" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/understanding-lambda-proxy-integration/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-06-14T23:41:33+08:00" />
+<meta property="article:modified_time" content="2024-06-14T23:41:33+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/>
+
+<meta name="twitter:title" content="深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能"/>
+<meta name="twitter:description" content="API Gateway 背後接 Lambda 是一個相當常見的組合，然而很多人對 API Gateway 上面的 Lambda Proxy Integration 在做什麼其實不是很了解，事實上，啟用或不啟用這個功能，行為會差非常多，這篇文章用實際的例子帶你認識 Lambda Proxy Integration"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Blogs",
+      "item": "https://shiun.me/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能",
+      "item": "https://shiun.me/blog/understanding-lambda-proxy-integration/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能",
+  "name": "深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能",
+  "description": "API Gateway 背後接 Lambda 是一個相當常見的組合，然而很多人對 API Gateway 上面的 Lambda Proxy Integration 在做什麼其實不是很了解，事實上，啟用或不啟用這個功能，行為會差非常多，這篇文章用實際的例子帶你認識 Lambda Proxy Integration",
+  "keywords": [
+    "AWS Lambda Proxy Integration", "API Gateway Lambda proxy integration", "API Gateway Lambda integration", "Lambda function HTTP request", "Serverless architecture", "AWS API Gateway setup", "Lambda Proxy advantages", "Lambda Proxy HTTP response", "AWS cloud services", "Simplify Lambda requests", "Lambda function event object"
+  ],
+  "articleBody": "在 AWS API Gateway 創建 method 時，我們可以指定他要把請求傳到哪個 AWS 服務或是其他 HTTP Endpoint…等等，而如果你選擇 Lambda，你會看到有一個選項是 Lambda Proxy Integration，那我把它勾選起來會怎樣呢？\nTL;DR 如果有打開 Lambda Proxy Integration，接著我們到那個 Resource 的 Method 頁面看一下，會看到下圖的提示 Proxy integration For proxy integrations, API Gateway automatically passes the backend output to the caller as the complete payload.\n但也許沒有很好理解，所以我們後面會實際打 Code 來示範，但我這邊先稍微解釋一下打開這個功能的影響:\n完整的 HTTP 請求資訊：啟用 Lambda Proxy Integration 後，API Gateway 會將整個 HTTP 請求打包成單一的 event object，並傳遞給 Lambda Function 簡化的處理流程：Lambda Function 接收到的是一個包含了所有請求資訊的 event object，因此不需要再通過模板或轉換就可以直接處理請求。這樣簡化了函數的輸入處理，因為 Lambda Function 已經包含了所有必要的請求資訊 控制 HTTP Response：Lambda Function 需要返回一個特定格式的物件，這個物件包括 Status Code、Response Headers 和 Response Body。由於 Response 是直接由 Lambda Function 生成的，所以開發者可以完全控制 Response 的格式和內容 效能和成本效益：由於請求處理的過程更加直接，減少了中間的處理和轉換步驟，可以提高處理效率，可能也會在某種程度上降低成本 總之，選擇 Lambda Proxy Integration 可以使得與 AWS Lambda 的整合更加緊密、直接和高效。這適合需要精細控制 HTTP 響應的場景，或者希望簡化 API 與 Lambda 之間交互的架構設計\n來看實際的例子先來感受有無開啟的行為差異 我現在創建了兩個 API Gateway -\u003e Lambda 的組合:\n使用 Proxy Integration 不使用 Proxy Integration 而程式碼目前都是:\nimport json def lambda_handler(event, context): # TODO implement return { 'statusCode': 200, 'body': json.dumps('Hello from Lambda!') } 接著我們分別調用看看這兩支 API\nWith Lambda Proxy Integration # With Lambda Proxy Integration $ curl -X GET \"https://m13nrn7ks1.execute-api.us-west-2.amazonaws.com/dev\" \"Hello from Lambda!\" Non Lambda Proxy Integration # Non Lambda Proxy Integration $ curl -X GET https://byjlq9pv48.execute-api.us-west-2.amazonaws.com/dev/ {\"statusCode\": 200, \"body\": \"\\\"Hello from Lambda!\\\"\"} 可以注意到，回傳的格式不太一樣，前者是回傳單純的字串，後者才是包在 Json 物件內而且還多了 statusCode 在 Response Body，具體原因後面會解釋\n修改 Lambda Function 內 Return 的 Status Code 我們緊接著來改一下 Lambda Function 的程式碼，我把 statusCode 改成 400，所以現在的完整程式碼如下:\nimport json def lambda_handler(event, context): # TODO implement return { 'statusCode': 400, # 修改這行 'body': json.dumps('Hello from Lambda!') } 一樣我依序調用 API，但是我這邊改成用 Postman 去調用，這樣比較好閱讀和觀覽，請幫我注意下面兩張圖片的紅框處:\nWith Lambda Proxy Integration Non Lambda Proxy Integration 注意到了嗎？有沒有打開 Lambda Proxy Integration 其行為差異會如此大，若有開啟 Lambda Proxy Integration，那他會直接把你在 Function 內設定的 statusCode 映射到 Response 的 Status Code；而沒有開啟的話，他會把你的 statusCode 包在 Response Body 內，這樣的行為是不是很不直覺呢？\n加入 Query Parameters 接著我現在要在 API 調用時，加上 Query Parameter name=Shiun，並且我也修改了程式碼:\nimport json def lambda_handler(event, context): name = event[\"queryStringParameters\"][\"name\"] # 從 evnet object 取得 Query Parameter return { 'statusCode': 200, # 改回 200 'body': json.dumps(f'Hello {name}!') } 一樣我再次分別調用兩支 API\nWith Lambda Proxy Integration Non Lambda Proxy Integration 可以注意到，有使用 Lambda Proxy Integration 的正確接到值了；而另一個沒有開啟的則出現錯誤，錯誤很明顯就是他找不到對應的 Key\n加入自定義 Header 接下來我要在Lambda Function 中 return 自定義的 Header: X-Shiun-Custom-Header\" : \"test\"\n也是一樣，我會分別調用這兩支 API，我們來觀察 Response Headers\nWith Lambda Proxy Integration Non Lambda Proxy Integration 觀察到兩者的差異了嗎？有啟用 Lambda Proxy Integration 的那支 API 會看到 Response Headers 裡面真的有回傳 X-Shiun-Custom-Header\" : \"test\"\nLambda Proxy Integration 的工作原理 到底是什麼原因會出現這樣的行為差異呢？所以我們來看看 Lambda Proxy Integration 的工作原理\n啟用 Lambda Proxy Integration 後，API Gateway 會將整個 HTTP 請求(包括request headers, query string parameters, URL path variables, payload 和 API configuration data) 打包成單一的 event object，並傳遞給 Lambda 函數。這也解釋為什麼我 call API 如果帶了 Query Param ，我使用這種寫法 name = event[\"queryStringParameters\"][\"name\"] 能抓到 API 請求的 Query Parameter\n而這個 event object 實際長這樣:\n{ \"resource\": \"/my/path\", \"path\": \"/my/path\", \"httpMethod\": \"GET\", \"headers\": { \"header1\": \"value1\", \"header2\": \"value1,value2\" }, \"multiValueHeaders\": { \"header1\": [ \"value1\" ], \"header2\": [ \"value1\", \"value2\" ] }, \"queryStringParameters\": { \"parameter1\": \"value1,value2\", \"parameter2\": \"value\" }, \"multiValueQueryStringParameters\": { \"parameter1\": [ \"value1\", \"value2\" ], \"parameter2\": [ \"value\" ] }, \"requestContext\": { \"accountId\": \"123456789012\", \"apiId\": \"id\", \"authorizer\": { \"claims\": null, \"scopes\": null }, \"domainName\": \"id.execute-api.us-east-1.amazonaws.com\", \"domainPrefix\": \"id\", \"extendedRequestId\": \"request-id\", \"httpMethod\": \"GET\", \"identity\": { \"accessKey\": null, \"accountId\": null, \"caller\": null, \"cognitoAuthenticationProvider\": null, \"cognitoAuthenticationType\": null, \"cognitoIdentityId\": null, \"cognitoIdentityPoolId\": null, \"principalOrgId\": null, \"sourceIp\": \"IP\", \"user\": null, \"userAgent\": \"user-agent\", \"userArn\": null, \"clientCert\": { \"clientCertPem\": \"CERT_CONTENT\", \"subjectDN\": \"www.example.com\", \"issuerDN\": \"Example issuer\", \"serialNumber\": \"a1:a1:a1:a1:a1:a1:a1:a1:a1:a1:a1:a1:a1:a1:a1:a1\", \"validity\": { \"notBefore\": \"May 28 12:30:02 2019 GMT\", \"notAfter\": \"Aug 5 09:36:04 2021 GMT\" } } }, \"path\": \"/my/path\", \"protocol\": \"HTTP/1.1\", \"requestId\": \"id=\", \"requestTime\": \"04/Mar/2020:19:15:17 +0000\", \"requestTimeEpoch\": 1583349317135, \"resourceId\": null, \"resourcePath\": \"/my/path\", \"stage\": \"$default\" }, \"pathParameters\": null, \"stageVariables\": null, \"body\": \"Hello from Lambda!\", \"isBase64Encoded\": false } 此外，啟用 Lambda Proxy Integration，你也必須遵守特定的 Output Format，你才能正確地把 Response 傳遞出去:\n{ \"isBase64Encoded\": true|false, \"statusCode\": httpStatusCode, \"headers\": { \"headerName\": \"headerValue\", ... }, \"multiValueHeaders\": { \"headerName\": [\"headerValue\", \"headerValue2\", ...], ... }, \"body\": \"...\" } 所以這邊也解釋了，為什麼設定好 statusCode、headers，我就能控制整個 Response 回應的 Status Code 和 Headers，這中間都是因為有了 Lambda Proxy Integration 幫我們簡化了這中間繁雜的配置，如果沒有 Lambda Proxy Integration，那我們就必須手動去 API Gateway 那邊設定 Mapping Template，配置起來相當麻煩。\n那我到底要不要打開 Lambda Proxy Integration? 我會高度推薦打開，因為你可以在程式碼那邊控制 Response，這我不認為不只是是”簡化”，而是”大大降低管理複雜度”，我認為這是一個更佳的管理方式 (這邊是我的主觀感受，並不代表完全正確)。\n甚至有時候我都會直接果斷啟用 Lambda Proxy Integration，然後在 API Gateway 後面加一層 Lambda 專門做參數驗證再轉發到實際後端的 Lambda Function，而非選擇在 API Gateway 那邊做請求預處理或是參數驗證。但實際仍需要以本身的業務需求去挑出最佳的解決方案，這邊只是提供一個我認為對開發人員很友善的處理方式，而且這種方式你也可以在程式碼內做出高度客製化\n總而言之，如果你沒有使用 Lambda Proxy Integration，則需要在 API Gateway 中配置額外的轉換模板來處理輸入和輸出格式。\n希望這篇文章有幫助你更加了解 Lambda Proxy Integration 的功能和行為，並且能夠在實際應用中更好地使用這個功能！\nResources Using AWS API Gateway as Proxy to other HTTP Endpoints Set up Lambda proxy integrations in API Gateway - Amazon API Gateway ",
+  "wordCount" : "641",
+  "inLanguage": "en",
+  "datePublished": "2024-06-14T23:41:33+08:00",
+  "dateModified": "2024-06-14T23:41:33+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://shiun.me/blog/understanding-lambda-proxy-integration/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Shiun",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://shiun.me/" accesskey="h" title="Shiun (Alt + H)">Shiun</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://shiun.me/blog/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.notion.site/Shiun-s-Learning-Journal-ded4cd4a3efd47b2805f2f99dee8f9a1?pvs=4" title="Notion">
+                    <span>Notion</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.linkedin.com/in/shiunchiu" title="About me">
+                    <span>About me</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://shiun.me/">Home</a>&nbsp;»&nbsp;<a href="https://shiun.me/blog/">Blogs</a></div>
+    <h1 class="post-title entry-hint-parent">
+      深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能
+    </h1>
+    <div class="post-description">
+      API Gateway 背後接 Lambda 是一個相當常見的組合，然而很多人對 API Gateway 上面的 Lambda Proxy Integration 在做什麼其實不是很了解，事實上，啟用或不啟用這個功能，行為會差非常多，這篇文章用實際的例子帶你認識 Lambda Proxy Integration
+    </div>
+    <div class="post-meta"><span title='2024-06-14 23:41:33 +0800 CST'>June 14, 2024</span>&nbsp;·&nbsp;4 min
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#tldr" aria-label="TL;DR">TL;DR</a></li>
+                <li>
+                    <a href="#%e4%be%86%e7%9c%8b%e5%af%a6%e9%9a%9b%e7%9a%84%e4%be%8b%e5%ad%90%e5%85%88%e4%be%86%e6%84%9f%e5%8f%97%e6%9c%89%e7%84%a1%e9%96%8b%e5%95%9f%e7%9a%84%e8%a1%8c%e7%82%ba%e5%b7%ae%e7%95%b0" aria-label="來看實際的例子先來感受有無開啟的行為差異">來看實際的例子先來感受有無開啟的行為差異</a><ul>
+                        
+                <li>
+                    <a href="#%e4%bf%ae%e6%94%b9-lambda-function-%e5%85%a7-return-%e7%9a%84-status-code" aria-label="修改 Lambda Function 內 Return 的 Status Code">修改 Lambda Function 內 Return 的 Status Code</a></li>
+                <li>
+                    <a href="#%e5%8a%a0%e5%85%a5-query-parameters" aria-label="加入 Query Parameters">加入 Query Parameters</a></li>
+                <li>
+                    <a href="#%e5%8a%a0%e5%85%a5%e8%87%aa%e5%ae%9a%e7%be%a9-header" aria-label="加入自定義 Header">加入自定義 Header</a></li></ul>
+                </li>
+                <li>
+                    <a href="#lambda-proxy-integration-%e7%9a%84%e5%b7%a5%e4%bd%9c%e5%8e%9f%e7%90%86" aria-label="Lambda Proxy Integration 的工作原理">Lambda Proxy Integration 的工作原理</a></li>
+                <li>
+                    <a href="#%e9%82%a3%e6%88%91%e5%88%b0%e5%ba%95%e8%a6%81%e4%b8%8d%e8%a6%81%e6%89%93%e9%96%8b-lambda-proxy-integration" aria-label="那我到底要不要打開 Lambda Proxy Integration?">那我到底要不要打開 Lambda Proxy Integration?</a></li>
+                <li>
+                    <a href="#resources" aria-label="Resources">Resources</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>在 AWS API Gateway 創建 method 時，我們可以指定他要把請求傳到哪個 AWS 服務或是其他 HTTP Endpoint&hellip;等等，而如果你選擇 Lambda，你會看到有一個選項是 Lambda Proxy Integration，那我把它勾選起來會怎樣呢？</p>
+<p><img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/95b1fe3d-a93c-4563-80bb-36ad8ff3b6c8" alt="image"  />
+</p>
+<h2 id="tldr">TL;DR<a hidden class="anchor" aria-hidden="true" href="#tldr">#</a></h2>
+<p>如果有打開 Lambda Proxy Integration，接著我們到那個 Resource 的 Method 頁面看一下，會看到下圖的提示
+<img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/47c6b110-9431-4181-b584-9ab14db865c5" alt="image"  />
+</p>
+<blockquote>
+<p><strong>Proxy integration</strong>
+For proxy integrations, API Gateway automatically passes the backend output to the caller as the complete payload.</p>
+</blockquote>
+<p>但也許沒有很好理解，所以我們後面會實際打 Code 來示範，但我這邊先稍微解釋一下打開這個功能的影響:</p>
+<ol>
+<li><strong>完整的 HTTP 請求資訊</strong>：啟用 Lambda Proxy Integration 後，API Gateway 會將整個 HTTP 請求打包成單一的 <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format">event object</a>，並傳遞給 Lambda Function</li>
+<li><strong>簡化的處理流程</strong>：Lambda Function 接收到的是一個包含了所有請求資訊的 event object，因此不需要再通過模板或轉換就可以直接處理請求。這樣簡化了函數的輸入處理，因為 Lambda Function 已經包含了所有必要的請求資訊</li>
+<li><strong>控制 HTTP Response</strong>：Lambda Function 需要返回一個特定格式的物件，這個物件包括 Status Code、Response Headers 和 Response Body。由於 Response 是直接由 Lambda Function 生成的，所以開發者可以完全控制 Response 的格式和內容</li>
+<li><strong>效能和成本效益</strong>：由於請求處理的過程更加直接，減少了中間的處理和轉換步驟，可以提高處理效率，可能也會在某種程度上降低成本</li>
+</ol>
+<p>總之，選擇 Lambda Proxy Integration 可以使得與 AWS Lambda 的整合更加緊密、直接和高效。這適合需要精細控制 HTTP 響應的場景，或者希望簡化 API 與 Lambda 之間交互的架構設計</p>
+<h2 id="來看實際的例子先來感受有無開啟的行為差異">來看實際的例子先來感受有無開啟的行為差異<a hidden class="anchor" aria-hidden="true" href="#來看實際的例子先來感受有無開啟的行為差異">#</a></h2>
+<p>我現在創建了兩個 API Gateway -&gt; Lambda 的<strong>組合</strong>:</p>
+<ol>
+<li>使用 Proxy Integration</li>
+<li>不使用 Proxy Integration</li>
+</ol>
+<p>而程式碼目前都是:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> json
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">lambda_handler</span>(event, context):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># TODO implement</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;statusCode&#39;</span>: <span style="color:#ae81ff">200</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;body&#39;</span>: json<span style="color:#f92672">.</span>dumps(<span style="color:#e6db74">&#39;Hello from Lambda!&#39;</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>接著我們分別調用看看這兩支 API</p>
+<ul>
+<li>With Lambda Proxy Integration</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># With Lambda Proxy Integration</span>
+</span></span><span style="display:flex;"><span>$ curl -X GET <span style="color:#e6db74">&#34;https://m13nrn7ks1.execute-api.us-west-2.amazonaws.com/dev&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Hello from Lambda!&#34;</span>
+</span></span></code></pre></div><ul>
+<li>Non Lambda Proxy Integration</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># Non Lambda Proxy Integration</span>
+</span></span><span style="display:flex;"><span>$ curl -X GET https://byjlq9pv48.execute-api.us-west-2.amazonaws.com/dev/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;statusCode&#34;</span>: 200, <span style="color:#e6db74">&#34;body&#34;</span>: <span style="color:#e6db74">&#34;\&#34;Hello from Lambda!\&#34;&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>可以注意到，回傳的格式不太一樣，前者是回傳單純的字串，後者才是包在 Json 物件內而且還多了 <code>statusCode</code> 在 Response Body，具體原因後面會解釋</p>
+<h3 id="修改-lambda-function-內-return-的-status-code">修改 Lambda Function 內 Return 的 Status Code<a hidden class="anchor" aria-hidden="true" href="#修改-lambda-function-內-return-的-status-code">#</a></h3>
+<p>我們緊接著來改一下 Lambda Function 的程式碼，我把 <code>statusCode</code> 改成 <code>400</code>，所以現在的完整程式碼如下:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> json
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">lambda_handler</span>(event, context):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># TODO implement</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;statusCode&#39;</span>: <span style="color:#ae81ff">400</span>, <span style="color:#75715e"># 修改這行</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;body&#39;</span>: json<span style="color:#f92672">.</span>dumps(<span style="color:#e6db74">&#39;Hello from Lambda!&#39;</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>一樣我依序調用 API，但是我這邊改成用 Postman 去調用，這樣比較好閱讀和觀覽，請幫我注意下面兩張圖片的紅框處:</p>
+<ul>
+<li>
+<p>With Lambda Proxy Integration
+<img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/d433c8cb-a2be-4b58-8849-9075d52ef766" alt="image"  />
+</p>
+</li>
+<li>
+<p>Non Lambda Proxy Integration
+<img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/2777e74c-c5d0-4d38-99f7-20810b398e43" alt="image"  />
+</p>
+</li>
+</ul>
+<p>注意到了嗎？有沒有打開 Lambda Proxy Integration 其行為差異會如此大，若有開啟 Lambda Proxy Integration，那他會直接把你在 Function 內設定的 <code>statusCode</code> 映射到 Response 的 Status Code；而沒有開啟的話，他會把你的 <code>statusCode</code> 包在 Response Body 內，這樣的行為是不是很不直覺呢？</p>
+<h3 id="加入-query-parameters">加入 Query Parameters<a hidden class="anchor" aria-hidden="true" href="#加入-query-parameters">#</a></h3>
+<p>接著我現在要在 API 調用時，加上 Query Parameter <code>name=Shiun</code>，並且我也修改了程式碼:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> json
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">lambda_handler</span>(event, context):
+</span></span><span style="display:flex;"><span>    name <span style="color:#f92672">=</span> event[<span style="color:#e6db74">&#34;queryStringParameters&#34;</span>][<span style="color:#e6db74">&#34;name&#34;</span>] <span style="color:#75715e"># 從 evnet object 取得 Query Parameter</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;statusCode&#39;</span>: <span style="color:#ae81ff">200</span>, <span style="color:#75715e"># 改回 200</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;body&#39;</span>: json<span style="color:#f92672">.</span>dumps(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Hello </span><span style="color:#e6db74">{</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74">!&#39;</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>一樣我再次分別調用兩支 API</p>
+<ul>
+<li>
+<p>With Lambda Proxy Integration
+<img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/89f50a1a-75c4-4b59-8b18-bb674e283a71" alt="image"  />
+</p>
+</li>
+<li>
+<p>Non Lambda Proxy Integration
+<img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/7f6b789e-df36-42d3-a664-4c6b04da1cf2" alt="image"  />
+</p>
+</li>
+</ul>
+<p>可以注意到，有使用 Lambda Proxy Integration 的正確接到值了；而另一個沒有開啟的則出現錯誤，錯誤很明顯就是他找不到對應的 Key</p>
+<h3 id="加入自定義-header">加入自定義 Header<a hidden class="anchor" aria-hidden="true" href="#加入自定義-header">#</a></h3>
+<p>接下來我要在Lambda Function 中 return 自定義的 Header: <code>X-Shiun-Custom-Header&quot; : &quot;test&quot;</code></p>
+<p>也是一樣，我會分別調用這兩支 API，我們來觀察 Response Headers</p>
+<ul>
+<li>
+<p>With Lambda Proxy Integration
+<img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/7a895fae-88fe-450f-8feb-1ade4a1bf0ce" alt="image"  />
+</p>
+</li>
+<li>
+<p>Non Lambda Proxy Integration
+<img loading="lazy" src="https://github.com/sh1un/sh1un.github.io/assets/85695943/df22fa12-9acb-4faf-af98-d77dc5f9910e" alt="image"  />
+</p>
+</li>
+</ul>
+<p>觀察到兩者的差異了嗎？有啟用 Lambda Proxy Integration 的那支 API 會看到 Response Headers 裡面真的有回傳 <code>X-Shiun-Custom-Header&quot; : &quot;test&quot;</code></p>
+<h2 id="lambda-proxy-integration-的工作原理">Lambda Proxy Integration 的工作原理<a hidden class="anchor" aria-hidden="true" href="#lambda-proxy-integration-的工作原理">#</a></h2>
+<p>到底是什麼原因會出現這樣的行為差異呢？所以我們來看看 Lambda Proxy Integration 的工作原理</p>
+<p>啟用 Lambda Proxy Integration 後，API Gateway 會將整個 HTTP 請求(包括request headers, query string parameters, URL path variables, payload 和 API configuration data) 打包成單一的 <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format">event object</a>，並傳遞給 Lambda 函數。這也解釋為什麼我 call API 如果帶了 Query Param ，我使用這種寫法 <code>name = event[&quot;queryStringParameters&quot;][&quot;name&quot;]</code> 能抓到 API 請求的 Query Parameter</p>
+<p>而這個 event object 實際長這樣:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;resource&#34;</span>: <span style="color:#e6db74">&#34;/my/path&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;path&#34;</span>: <span style="color:#e6db74">&#34;/my/path&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;httpMethod&#34;</span>: <span style="color:#e6db74">&#34;GET&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;headers&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;header1&#34;</span>: <span style="color:#e6db74">&#34;value1&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;header2&#34;</span>: <span style="color:#e6db74">&#34;value1,value2&#34;</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;multiValueHeaders&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;header1&#34;</span>: [
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;value1&#34;</span>
+</span></span><span style="display:flex;"><span>    ],
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;header2&#34;</span>: [
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;value1&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;value2&#34;</span>
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;queryStringParameters&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;parameter1&#34;</span>: <span style="color:#e6db74">&#34;value1,value2&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;parameter2&#34;</span>: <span style="color:#e6db74">&#34;value&#34;</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;multiValueQueryStringParameters&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;parameter1&#34;</span>: [
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;value1&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;value2&#34;</span>
+</span></span><span style="display:flex;"><span>    ],
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;parameter2&#34;</span>: [
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;value&#34;</span>
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;requestContext&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;accountId&#34;</span>: <span style="color:#e6db74">&#34;123456789012&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;apiId&#34;</span>: <span style="color:#e6db74">&#34;id&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;authorizer&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;claims&#34;</span>: <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;scopes&#34;</span>: <span style="color:#66d9ef">null</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;domainName&#34;</span>: <span style="color:#e6db74">&#34;id.execute-api.us-east-1.amazonaws.com&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;domainPrefix&#34;</span>: <span style="color:#e6db74">&#34;id&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;extendedRequestId&#34;</span>: <span style="color:#e6db74">&#34;request-id&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;httpMethod&#34;</span>: <span style="color:#e6db74">&#34;GET&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;identity&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;accessKey&#34;</span>: <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;accountId&#34;</span>: <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;caller&#34;</span>: <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;cognitoAuthenticationProvider&#34;</span>: <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;cognitoAuthenticationType&#34;</span>: <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;cognitoIdentityId&#34;</span>: <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;cognitoIdentityPoolId&#34;</span>: <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;principalOrgId&#34;</span>: <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;sourceIp&#34;</span>: <span style="color:#e6db74">&#34;IP&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;user&#34;</span>: <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;userAgent&#34;</span>: <span style="color:#e6db74">&#34;user-agent&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;userArn&#34;</span>: <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;clientCert&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;clientCertPem&#34;</span>: <span style="color:#e6db74">&#34;CERT_CONTENT&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;subjectDN&#34;</span>: <span style="color:#e6db74">&#34;www.example.com&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;issuerDN&#34;</span>: <span style="color:#e6db74">&#34;Example issuer&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;serialNumber&#34;</span>: <span style="color:#e6db74">&#34;a1:a1:a1:a1:a1:a1:a1:a1:a1:a1:a1:a1:a1:a1:a1:a1&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;validity&#34;</span>: {
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;notBefore&#34;</span>: <span style="color:#e6db74">&#34;May 28 12:30:02 2019 GMT&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;notAfter&#34;</span>: <span style="color:#e6db74">&#34;Aug  5 09:36:04 2021 GMT&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;path&#34;</span>: <span style="color:#e6db74">&#34;/my/path&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;protocol&#34;</span>: <span style="color:#e6db74">&#34;HTTP/1.1&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;requestId&#34;</span>: <span style="color:#e6db74">&#34;id=&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;requestTime&#34;</span>: <span style="color:#e6db74">&#34;04/Mar/2020:19:15:17 +0000&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;requestTimeEpoch&#34;</span>: <span style="color:#ae81ff">1583349317135</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;resourceId&#34;</span>: <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;resourcePath&#34;</span>: <span style="color:#e6db74">&#34;/my/path&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;stage&#34;</span>: <span style="color:#e6db74">&#34;$default&#34;</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;pathParameters&#34;</span>: <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;stageVariables&#34;</span>: <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;body&#34;</span>: <span style="color:#e6db74">&#34;Hello from Lambda!&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;isBase64Encoded&#34;</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>此外，啟用 Lambda Proxy Integration，你也必須遵守特定的 Output Format，你才能正確地把 Response 傳遞出去:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;isBase64Encoded&#34;</span>: <span style="color:#66d9ef">true</span><span style="color:#960050;background-color:#1e0010">|</span><span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;statusCode&#34;</span>: <span style="color:#960050;background-color:#1e0010">httpStatusCode</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;headers&#34;</span>: { <span style="color:#f92672">&#34;headerName&#34;</span>: <span style="color:#e6db74">&#34;headerValue&#34;</span>, <span style="color:#960050;background-color:#1e0010">...</span> },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;multiValueHeaders&#34;</span>: { <span style="color:#f92672">&#34;headerName&#34;</span>: [<span style="color:#e6db74">&#34;headerValue&#34;</span>, <span style="color:#e6db74">&#34;headerValue2&#34;</span>, <span style="color:#960050;background-color:#1e0010">...</span>], <span style="color:#960050;background-color:#1e0010">...</span> },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;body&#34;</span>: <span style="color:#e6db74">&#34;...&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>所以這邊也解釋了，為什麼設定好 <code>statusCode</code>、<code>headers</code>，我就能控制整個 Response 回應的 Status Code 和 Headers，這中間都是因為有了 Lambda Proxy Integration 幫我們簡化了這中間繁雜的配置，如果沒有 Lambda Proxy Integration，那我們就必須手動去 API Gateway 那邊設定 Mapping Template，配置起來相當麻煩。</p>
+<h2 id="那我到底要不要打開-lambda-proxy-integration">那我到底要不要打開 Lambda Proxy Integration?<a hidden class="anchor" aria-hidden="true" href="#那我到底要不要打開-lambda-proxy-integration">#</a></h2>
+<p>我會高度推薦打開，因為你可以在程式碼那邊控制 Response，這我不認為不只是是”簡化”，而是”大大降低管理複雜度”，我認為這是一個更佳的管理方式 <em>(這邊是我的主觀感受，並不代表完全正確)</em>。</p>
+<p>甚至有時候我都會直接果斷啟用 Lambda Proxy Integration，然後在 API Gateway 後面加一層 Lambda 專門做參數驗證再轉發到實際後端的 Lambda Function，而非選擇在 API Gateway 那邊做請求預處理或是參數驗證。但實際仍需要以本身的業務需求去挑出最佳的解決方案，這邊只是提供一個我認為對開發人員很友善的處理方式，而且這種方式你也可以在程式碼內做出高度客製化</p>
+<p>總而言之，如果你沒有使用 Lambda Proxy Integration，則需要在 API Gateway 中配置額外的轉換模板來處理輸入和輸出格式。</p>
+<p>希望這篇文章有幫助你更加了解 Lambda Proxy Integration 的功能和行為，並且能夠在實際應用中更好地使用這個功能！</p>
+<h2 id="resources">Resources<a hidden class="anchor" aria-hidden="true" href="#resources">#</a></h2>
+<ul>
+<li><a href="https://medium.com/@chikim79/using-aws-api-gateway-as-proxy-to-another-http-endpoints-5271d78c5bd6">Using AWS API Gateway as Proxy to other HTTP Endpoints</a></li>
+<li><a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-output-format">Set up Lambda proxy integrations in API Gateway - Amazon API Gateway</a></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://shiun.me/tags/aws/">AWS</a></li>
+      <li><a href="https://shiun.me/tags/aws-api-gateway/">AWS API Gateway</a></li>
+      <li><a href="https://shiun.me/tags/aws-lambda/">AWS Lambda</a></li>
+      <li><a href="https://shiun.me/tags/lambda-proxy-integration/">Lambda Proxy Integration</a></li>
+      <li><a href="https://shiun.me/tags/cloud-computing/">Cloud Computing</a></li>
+      <li><a href="https://shiun.me/tags/serverless/">Serverless</a></li>
+      <li><a href="https://shiun.me/tags/backend-development/">Backend Development</a></li>
+      <li><a href="https://shiun.me/tags/http-request/">HTTP Request</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://shiun.me/blog/how-to-use-terraform-import-to-import-existing-resources-into-iac/">
+    <span class="title">Next »</span>
+    <br>
+    <span>要導入 IaC？用 Terraform Import 導入現有資源</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能 on x"
+            href="https://x.com/intent/tweet/?text=%e6%b7%b1%e5%ba%a6%e8%a7%a3%e6%9e%90%20AWS%20API%20Gateway%20%e7%9a%84%20Lambda%20Proxy%20Integration%20%e5%8a%9f%e8%83%bd&amp;url=https%3a%2f%2fshiun.me%2fblog%2funderstanding-lambda-proxy-integration%2f&amp;hashtags=AWS%2cAWSAPIGateway%2cAWSLambda%2cLambdaProxyIntegration%2cCloudComputing%2cServerless%2cBackendDevelopment%2cHTTPRequest">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能 on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fshiun.me%2fblog%2funderstanding-lambda-proxy-integration%2f&amp;title=%e6%b7%b1%e5%ba%a6%e8%a7%a3%e6%9e%90%20AWS%20API%20Gateway%20%e7%9a%84%20Lambda%20Proxy%20Integration%20%e5%8a%9f%e8%83%bd&amp;summary=%e6%b7%b1%e5%ba%a6%e8%a7%a3%e6%9e%90%20AWS%20API%20Gateway%20%e7%9a%84%20Lambda%20Proxy%20Integration%20%e5%8a%9f%e8%83%bd&amp;source=https%3a%2f%2fshiun.me%2fblog%2funderstanding-lambda-proxy-integration%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能 on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fshiun.me%2fblog%2funderstanding-lambda-proxy-integration%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能 on telegram"
+            href="https://telegram.me/share/url?text=%e6%b7%b1%e5%ba%a6%e8%a7%a3%e6%9e%90%20AWS%20API%20Gateway%20%e7%9a%84%20Lambda%20Proxy%20Integration%20%e5%8a%9f%e8%83%bd&amp;url=https%3a%2f%2fshiun.me%2fblog%2funderstanding-lambda-proxy-integration%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer><div class="disqus markdown"><div id="disqus_thread"></div>
+<script>
+  
+
+  
+
+  (function () {
+    
+    var d = document,
+      s = d.createElement("script");
+    s.src = "https://shiun-me.disqus.com/embed.js";
+    s.setAttribute("data-timestamp", +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript
+  >Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript"
+    >comments powered by Disqus.</a
+  ></noscript
+>
+</div>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://shiun.me/">Shiun</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
