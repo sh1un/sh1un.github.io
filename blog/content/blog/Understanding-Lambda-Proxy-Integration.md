@@ -1,7 +1,7 @@
 ---
 title: '深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能'
 date: 2024-06-14T23:41:33+08:00
-draft: true
+draft: false
 description: "API Gateway 背後接 Lambda 是一個相當常見的組合，然而很多人對 API Gateway 上面的 Lambda Proxy Integration 在做什麼其實不是很了解，事實上，啟用或不啟用這個功能，行為會差非常多，這篇文章用實際的例子帶你認識 Lambda Proxy Integration"
 tags: ["AWS", "AWS API Gateway", "AWS Lambda", "Lambda Proxy Integration", "Cloud Computing", "Serverless", "Backend Development", "HTTP Request"]
 categories: ["AWS", "Serverless"]
@@ -18,7 +18,6 @@ keywords:
 - Simplify Lambda requests
 - Lambda function event object
 ---
-# AWS API Gateway Lambda Proxy Integration 解析
 
 在 AWS API Gateway (REST API) 創建 method 時，我們可以指定他要把請求傳到哪個 AWS 服務，而如果你選擇 Lambda，你會看到有一個選項是 Lambda Proxy Integration，那我把它勾選起來會怎樣呢？
 
@@ -44,6 +43,7 @@ keywords:
 ## 來看實際的例子先來感受有無開啟的行為差異
 
 我現在創建了兩個 API Gateway -> Lambda 的**組合**:
+
 1. 使用 Proxy Integration
 2. 不使用 Proxy Integration
 
@@ -64,6 +64,7 @@ def lambda_handler(event, context):
 接著我們分別執行看看
 
 - With Lambda Proxy Integration
+
 ```shell
 # With Lambda Proxy Integration
 $ curl -X GET "https://m13nrn7ks1.execute-api.us-west-2.amazonaws.com/dev"
@@ -73,6 +74,7 @@ $ curl -X GET "https://m13nrn7ks1.execute-api.us-west-2.amazonaws.com/dev"
 ```
 
 - Non Lambda Proxy Integration
+
 ```shell
 # Non Lambda Proxy Integration
 $ curl -X GET https://byjlq9pv48.execute-api.us-west-2.amazonaws.com/dev/
@@ -99,7 +101,8 @@ def lambda_handler(event, context):
 
 ```
 
-一樣我依序調用 API，但是我這邊改成用 Postman 去調用，這樣比較好閱讀和觀覽，請幫我注意下面兩張圖片的紅框處
+一樣我依序調用 API，但是我這邊改成用 Postman 去調用，這樣比較好閱讀和觀覽，請幫我注意下面兩張圖片的紅框處:
+
 - With Lambda Proxy Integration
 ![image](https://github.com/sh1un/sh1un.github.io/assets/85695943/d433c8cb-a2be-4b58-8849-9075d52ef766)
 
@@ -107,7 +110,6 @@ def lambda_handler(event, context):
 ![image](https://github.com/sh1un/sh1un.github.io/assets/85695943/2777e74c-c5d0-4d38-99f7-20810b398e43)
 
 注意到了嗎？有沒有打開 Lambda Proxy Integration 其行為差異會如此大
-
 
 ### 加入 Query Parameters
 
@@ -130,17 +132,14 @@ def lambda_handler(event, context):
 - With Lambda Proxy Integration
 ![image](https://github.com/sh1un/sh1un.github.io/assets/85695943/89f50a1a-75c4-4b59-8b18-bb674e283a71)
 
-
 - Non Lambda Proxy Integration
 ![image](https://github.com/sh1un/sh1un.github.io/assets/85695943/7f6b789e-df36-42d3-a664-4c6b04da1cf2)
 
 可以注意到，有使用 Lambda Proxy Integration 的正確接到值了，而另一個沒有開啟的則出現錯誤，錯誤很明顯就是他找不到對應的 Key
 
-
-
 ### 加入自定義 Header
 
-接下來我要在Lambda Function 中 return 自定義的 Header: `X-Shiun-Custom-Header" : "test"` 
+接下來我要在Lambda Function 中 return 自定義的 Header: `X-Shiun-Custom-Header" : "test"`
 也是一樣，我會分別調用這兩支 API，我們來觀察 Response Headers
 
 - With Lambda Proxy Integration
@@ -149,8 +148,7 @@ def lambda_handler(event, context):
 - Non Lambda Proxy Integration
 ![image](https://github.com/sh1un/sh1un.github.io/assets/85695943/df22fa12-9acb-4faf-af98-d77dc5f9910e)
 
-觀察到兩者的差異了嗎？在 Lambda Proxy Integration 那張圖片看到 Response Headers 裡面真的有回傳 `X-Shiun-Custom-Header" : "test"` 
-
+觀察到兩者的差異了嗎？在 Lambda Proxy Integration 那張圖片看到 Response Headers 裡面真的有回傳 `X-Shiun-Custom-Header" : "test"`
 
 ## Lambda Proxy Integration 的工作原理
 
@@ -262,7 +260,7 @@ def lambda_handler(event, context):
 
 總而言之，如果你沒有使用 Proxy Integration，則需要在 API Gateway 中配置額外的轉換模板來處理輸入和輸出格式。
 
+## Resources
 
-## Resources:
-- https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
-- https://medium.com/@chikim79/using-aws-api-gateway-as-proxy-to-another-http-endpoints-5271d78c5bd6
+- [Using AWS API Gateway as Proxy to other HTTP Endpoints](https://medium.com/@chikim79/using-aws-api-gateway-as-proxy-to-another-http-endpoints-5271d78c5bd6)
+- [Set up Lambda proxy integrations in API Gateway - Amazon API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-output-format)
