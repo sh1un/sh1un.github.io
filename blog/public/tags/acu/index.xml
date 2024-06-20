@@ -14,11 +14,11 @@
     <lastBuildDate>Sat, 06 Apr 2024 23:45:32 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/tags/acu/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU</title>
+      <title>如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU</title>
       <link>https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/</link>
       <pubDate>Sat, 06 Apr 2024 23:45:32 +0800</pubDate>
       <guid>https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/</guid>
-      <description>這篇文章將教學如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU</description>
+      <description>這篇文章將教學如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU</description>
     </item>
   </channel>
 </rss>

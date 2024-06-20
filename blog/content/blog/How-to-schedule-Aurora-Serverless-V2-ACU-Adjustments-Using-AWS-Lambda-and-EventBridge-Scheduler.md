@@ -1,8 +1,8 @@
 ---
-title: '如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU'
+title: '如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU'
 date: 2024-04-06T23:45:32+08:00
 draft: false
-description: "這篇文章將教學如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU"
+description: "這篇文章將教學如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU"
 tags: ["AWS","AWS EventBridge", "AWS EventBridge Scheduler", "AWS Lambda", "AWS Aurora", "ACU", "Serverless", "Cron", "Automated Task", "Time-based Scheduling", "AWS Aurora Serverless V2"]
 categories: ["AWS","Serverless", "Database"]
 keywords:

@@ -19,11 +19,11 @@ keywords:
 
 ## Internet Gateway (IGW)
 
-IGW 是一種允許 VPC（Virtual Private Cloud）與 Internet 之間通信的 VPC組件。它能讓 VPC 內的資源如 EC2 Instance 直接訪問 Internet，同時也能讓Internet 上的使用者訪問 VPC 內的資源。
+IGW 是一種允許 VPC 與 Internet 之間通訊的 VPC 組件。它能讓 VPC 內的資源如 EC2 Instance 直接訪問 Internet，同時也能讓 Internet 上的使用者訪問 VPC 內的資源。
 
 **主要功能包括**：
 
-- **雙向通信支持**：允許配有 Public IP 的 Instance 訪問 Internet，同時也能接收來自 Internet 的數據。
+- **雙向通訊支持**：允許配有 Public IP 的 Instance 訪問 Internet，同時也能接收來自 Internet 的數據。
 - **高度的可靠性和擴展性**：確保無需用戶干預即可維持服務的持續可用。
 
 ## NAT Gateway
@@ -33,6 +33,7 @@ NAT Gateway 是一種網路地址轉換服務，允許 Private Subnet 中的 Ins
 **NAT Gateway 價錢:**
 
 - NAT Gateway 收費 = NAT Gateway 開啟時間 USD 0.062 per Hour + 經過 NAT 資料處理費用 USD 0.062 per GB + (Optional) 跨 AZ 傳輸費用 0.02 per GB (發送+接收)
+
 > 總而言之很貴，最新價錢請參考 [AWS 官方](https://aws.amazon.com/vpc/pricing/)
 
 **主要功能包括**：
@@ -46,7 +47,7 @@ NAT Gateway 是一種網路地址轉換服務，允許 Private Subnet 中的 Ins
 
 ## 核心差異與選擇考量
 
-- **訪問權限**：IGW 允許雙向通信，適合需要與 Internet 雙向交互的公開子網應用，而 NAT Gateway 只支持出站訪問，適用於需要保護的 Private Subnet 環境。
+- **訪問權限**：IGW 允許雙向通訊，適合需要與 Internet 雙向交互的 Public Subnet 應用，而 NAT Gateway 只支持出站訪問，適用於需要保護的 Private Subnet 環境。
 - **實例需求**：每個 VPC 僅需一個 IGW，而每個 AZ 可能需要一個 NAT Gateway 來保證服務的高可用性。
 - **成本影響**：使用 IGW 不會產生額外費用，而 NAT Gateway 則根據創建和使用情況收取費用。
 

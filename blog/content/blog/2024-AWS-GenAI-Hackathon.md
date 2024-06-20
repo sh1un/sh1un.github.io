@@ -72,7 +72,7 @@ keywords:
 
 ### 作戰會議
 
-而在 2024/05/07 Gogoro 數據工作坊一結束，我們小組就馬上來開了第一場作戰會議，一直到比賽開始前，總共開了三次會議，我們大致把整個應用的架構想出來，以及要使用的技術棧都定義出來並做好分工。
+而在 2024/05/07 Gogoro 數據工作坊一結束，我們隊伍就馬上來開了第一場作戰會議，一直到比賽開始前，總共開了三次會議，我們大致把整個應用的架構想出來，以及要使用的技術棧都定義出來並做好分工。
 
 分工部分:
 
@@ -82,7 +82,7 @@ keywords:
 - **Toby:** 自動化將資料 Embedding ，然後自動化將向量儲存到 OpenSearch，以及利用 Gradio 構建介面
 - **Shiun (我):** LangChain 開發及部署 LLM 應用
 
-架構部分應該看得出來我在部落格這裡塞不下，因此直接附上連結 ([連結點我](https://app.eraser.io/workspace/OvsOZInft271CWwmG1hL?origin=share))，這邊所看到的架構圖並只是我們會議討論時方便討論而畫出來的，但最後成品的架構其實跟這邊不太一樣，後面會提到最終的架構
+架構部分應該看得出來我在部落格這裡塞不下，因此直接附上連結 ([連結點我](https://app.eraser.io/workspace/OvsOZInft271CWwmG1hL?origin=share))，這邊所看到的架構圖只是我們會議討論時方便討論而畫出來的，但最後成品的架構其實跟這邊不太一樣，後面會提到最終的架構
 ![image](https://github.com/sh1un/sh1un.github.io/assets/85695943/40ad9a8e-d198-4a49-9a9c-f1937882c089)
 
 > 另外想提一下，其實自己在開發 LLM 應用時，我很喜歡使用 [Prompt Flow](https://microsoft.github.io/promptflow/) 來構建整個 Flow，雖然這是開源的，但這個終究是微軟的，所以最後這場比賽沒選擇使用 Prompt Flow XD，改成使用 [LangGraph](https://langchain-ai.github.io/langgraph/)
@@ -108,11 +108,11 @@ keywords:
 
 ## 比賽 Day1 - 一整天在 502 Bad Gateway 度過
 
-早上和組員一同進場報到
+早上和隊員一同進場報到
 ![Competition check-in](https://github.com/sh1un/sh1un.github.io/assets/85695943/bdabb144-8c19-4069-80c9-4121b4676cd7)
 ### 提案
 
-在比賽剛開始時，評審會到各組先看我們的初步提案給予我們建議，以我們這組「智慧移動 - Gogoro」來說，評審有: Gogoro 副總, Gogoro 資訊技術總監, Gogoro 資料科學家,  AWS Sr. SA，但 Day1 提案的時候印象中是沒看到副總出席，而我們這組就是把[架構圖](https://app.eraser.io/workspace/OvsOZInft271CWwmG1hL?origin=share)展示給評審看，同時也告訴我們遇到的難點。
+在比賽剛開始時，評審會到各隊先看我們的初步提案給予我們建議，以我們這組「智慧移動 - Gogoro」來說，評審有: Gogoro 副總, Gogoro 資訊技術總監, Gogoro 資料科學家,  AWS Sr. SA，但 Day1 提案的時候印象中是沒看到副總出席，而我們這隊就是把[架構圖](https://app.eraser.io/workspace/OvsOZInft271CWwmG1hL?origin=share)展示給評審看，同時也告訴我們遇到的難點。
 
 ![image](https://github.com/sh1un/sh1un.github.io/assets/85695943/30e38a4f-1799-439e-896f-852da61ed4aa)
 
@@ -169,7 +169,7 @@ for doc in docs_retrieved:
 >
 > **資料來源:** https://github.com/langchain-ai/langchain/issues/13007
 
-所以在這部分，只能放棄使用 LangChain，改成用原生的 Python 庫 [`opensearch-py`](https://pypi.org/project/opensearch-py/)，而很感謝我們組員 Toby 對這部分還算熟悉，Toby 在比賽前幾日就有用過 `opensearch-py` 實踐 RAG ([Toby 的 GitHub Repo 連結](https://github.com/fdsf53451001/gogoro_hackathon/blob/main/retrieve_data.py))，所以我省了很多研究時間。
+所以在這部分，只能放棄使用 LangChain，改成用原生的 Python 庫 [`opensearch-py`](https://pypi.org/project/opensearch-py/)，而很感謝我們隊員 Toby 對這部分還算熟悉，Toby 在比賽前幾日就有用過 `opensearch-py` 實踐 RAG ([Toby 的 GitHub Repo 連結](https://github.com/fdsf53451001/gogoro_hackathon/blob/main/retrieve_data.py))，所以我省了很多研究時間。
 
 而別以為我們現在看起來很順利，我們雖然 Retrieval 這部分已經沒問題了，但接下來要再把這部分用 LangChain 的 `chain.invoke()` 又開始卡關了，這次碰到的 ERROR 是:
 
@@ -220,7 +220,7 @@ Eason 將會負責上台簡報，而我會負責操控電腦
 
 在這兩天的黑客松，Eason 一直在旁邊研究我們的系統以及跟我們釐清很多技術架構，然後為我們這兩天的成品做了一個很棒的簡報
 
-比賽 14:40 結束後，我們收到了 Gogoro 指定的問題，必須在等下的 Presentation 中進行 Live Demo。而我們「大使夢之隊」是「智慧移動」第一個要上台報告的組別。
+比賽 14:40 結束後，我們收到了 Gogoro 指定的問題，必須在等下的 Presentation 中進行 Live Demo。而我們「大使夢之隊」是「智慧移動」第一個要上台報告的隊伍。
 
 沒過多久後，就開始上台簡報了，只能說 Eason 的台風真的很穩，邏輯清晰，把我們系統的價值和架構表達得很清楚。另外當時很多大使來旁邊幫我們加油，到了 Live Demo 環節，我們第一題不知什麼原因就 Timeout 了，但網頁重整後又正常了，真的有 Live Demo 就一定要擺綠色乖乖...而後面的幾個問題，我覺得都符合我們預期，但就是有發現我們系統的回應時間其實太久了，幾乎都 20 秒上下才完成。
 
@@ -244,9 +244,9 @@ _上圖為「富貴怎麼先走了」當天的 Presentation_
 
 ## 結語
 
-這場比賽身邊的人都很看好我們的大使夢之隊，也很感謝大家來現場加油打氣和餵食，不過最後沒能取得優勝確實有些遺憾！尤其是「富貴怎麼先走了」這組真的很強，讓我認識到自己的實力還有待提升。他們的成品也給了我很多啟發，讓我知道自己的系統有哪些可以改進的地方。
+這場比賽身邊的人都很看好我們的大使夢之隊，也很感謝大家來現場加油打氣和餵食，不過最後沒能取得優勝確實有些遺憾！尤其是「富貴怎麼先走了」這隊真的很強，讓我認識到自己的實力還有待提升。他們的成品也給了我很多啟發，讓我知道自己的系統有哪些可以改進的地方。
 
-這次比賽學到了很多，主辦方的賽前工作坊非常紮實，現場的 SA 技術支援也非常到位，透過和各組的交流，我也學到了不少新的技巧。
+這次比賽學到了很多，主辦方的賽前工作坊非常紮實，現場的 SA 技術支援也非常到位，透過和各隊的交流，我也學到了不少新的技巧。
 
 最後，真的超感謝隊友們。資料前處理部分，隊長 Yuna 和 Richie 真的是超級給力！Toby 本身在做 LLM 方面的研究，他在整個過程中提供了我心目中的 Best Practice！Eason 比賽全程在一旁觀察我們的開發，研究 Prompt 並釐清整體的系統架構，簡報時他更是把系統完整呈現出來！每個隊友都是核心，能和這樣的隊友在 30 個小時內打造出應用，真的是一段很有革命情感的經歷，希望之後還有機會能再一起組隊參賽。
 

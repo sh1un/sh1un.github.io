@@ -109,7 +109,7 @@ _圖片取自：[https://docs.docker.com/storage/volumes/](https://docs.docker.c
 
 Bind Mount 是一種將宿主機(Host)的文件或目錄掛載到容器中的方法。適合以下情況：
 
-1. **開發階段**：當你需要對代碼進行快速迭代時，使用 Bind Mount 可以即時反映宿主機上的更改。
+1. **開發階段**：當你需要對程式碼進行快速迭代時，使用 Bind Mount 可以即時反映宿主機上的更改。
     - 這也是為何我 Debug 時，使用 Bind Mount 的原因，因為我在 Host 上的改動可以立即顯現出來
     - 但這不意味著 Bind Mount 不適合用在 Production 環境，只是 Bind Mount 會依賴宿主機(Host)目錄系統的結構，在安全和一致性上讓你更難處理
 1. **日誌文件的處理**：將日誌文件直接掛載到宿主機，方便進行日誌的收集和分析。
