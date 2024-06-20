@@ -393,7 +393,7 @@ Successfully created/updated stack - aws-sam-101 in ap-northeast-1
     - AWS SAM 模板是一種描述你的服務器無應用架構的文件，它使用 YAML 或 JSON 格式編寫。AWS SAM CLI 會將這個模板轉換成 AWS CloudFormation 模板。CloudFormation 是 AWS 提供的一個服務，允許用戶通過編寫模板來模型化和設定整個 AWS 資源堆棧。
     - 轉換後的模板隨後被上傳到 AWS CloudFormation 服務。這個步驟是為了準備資源的配置和管理。
 3. **AWS CloudFormation 佈置資源：**
-    - 一旦模板上傳到 AWS CloudFormation 服務，CloudFormation 便開始根據模板中的定義來創建和配置所需的 AWS 資源。這包括設定如函數、資料庫、網絡設置等必要的組件。
+    - 一旦模板上傳到 AWS CloudFormation 服務，CloudFormation 便開始根據模板中的定義來創建和配置所需的 AWS 資源。這包括設定如函數、資料庫、網路設置等必要的組件。
     - CloudFormation 確保所有資源都按照模板中定義的依賴關係和參數設定正確部署，並管理資源的整個生命周期。
 
 ### 調用部署上去的 Lambda Function

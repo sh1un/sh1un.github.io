@@ -216,7 +216,7 @@ $ terraform plan
 
 在 Terraform v1.5.0 之後，引入了新的 [`import` block](https://developer.hashicorp.com/terraform/language/import)，`import` block 可以直接在 Terraform 配置文件中指定哪些資源需要被導入，而不需要單獨執行 `terraform import` 命令
 
-這個新功能的好處在於，當你和你的團隊需要多次或系統地導入資源時，可以將這些導入操作版本化並包含在基礎設施即代碼（IaC）配置中
+這個新功能的好處在於，當你和你的團隊需要多次或系統地導入資源時，可以將這些導入操作版本化並包含在基礎設施即程式碼 (IaC) 配置中
 
 一個 `import` block 的基本語法如下:
 
