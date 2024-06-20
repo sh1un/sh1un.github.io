@@ -56,11 +56,11 @@
       <description>在準備 SAA 的過程中，我覺得最難的部分就是網路，這篇文章主要先介紹一下 IGW 和 NAT Gateway 的差異，接著介紹一些使用心得。</description>
     </item>
     <item>
-      <title>如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU</title>
+      <title>如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU</title>
       <link>https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/</link>
       <pubDate>Sat, 06 Apr 2024 23:45:32 +0800</pubDate>
       <guid>https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/</guid>
-      <description>這篇文章將教學如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU</description>
+      <description>這篇文章將教學如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU</description>
     </item>
     <item>
       <title>Docker 初學常見問題 - CMD vs ENTRYPOINT 兩者的差異與範例</title>

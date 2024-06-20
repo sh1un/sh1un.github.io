@@ -9,12 +9,12 @@
 />
 <meta name="robots" content="index, follow" />
 <title>
-  如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU | Shiun
+  如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU | Shiun
 </title>
 <meta
   name="keywords"
   content="AWS, AWS EventBridge Scheduler, AWS EventBridge, AWS Lambda, Serverless, AWS Aurora, ACU, Automated Task, Technical Tutorial"
-/> <meta name="description" content="這篇文章將教學如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU"> <meta name="author" content=""> <link rel="canonical" href="https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/">
+/> <meta name="description" content="這篇文章將教學如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU"> <meta name="author" content=""> <link rel="canonical" href="https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/">
 <link
   crossorigin="anonymous"
   href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css"
@@ -40,8 +40,8 @@ if (!doNotTrack) {
 
 
 
-<meta property="og:title" content="如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU" />
-<meta property="og:description" content="這篇文章將教學如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU" />
+<meta property="og:title" content="如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU" />
+<meta property="og:description" content="這篇文章將教學如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="article:section" content="blog" />
 <meta property="article:published_time" content="2024-04-06T23:45:32+08:00" />
@@ -50,8 +50,8 @@ if (!doNotTrack) {
 
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU"/>
-<meta name="twitter:description" content="這篇文章將教學如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU"/>
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU"/>
+<meta name="twitter:description" content="這篇文章將教學如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU"/>
 
 
 <noscript>
@@ -99,8 +99,8 @@ if (!doNotTrack) {
 	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
 }
 </script>
-<meta property="og:title" content="如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU" />
-<meta property="og:description" content="這篇文章將教學如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU" />
+<meta property="og:title" content="如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU" />
+<meta property="og:description" content="這篇文章將教學如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="article:section" content="blog" />
 <meta property="article:published_time" content="2024-04-06T23:45:32+08:00" />
@@ -109,8 +109,8 @@ if (!doNotTrack) {
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/>
 
-<meta name="twitter:title" content="如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU"/>
-<meta name="twitter:description" content="這篇文章將教學如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU"/>
+<meta name="twitter:title" content="如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU"/>
+<meta name="twitter:description" content="這篇文章將教學如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU"/>
 
 
 <script type="application/ld+json">
@@ -127,7 +127,7 @@ if (!doNotTrack) {
     {
       "@type": "ListItem",
       "position":  2 ,
-      "name": "如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU",
+      "name": "如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU",
       "item": "https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/"
     }
   ]
@@ -137,9 +137,9 @@ if (!doNotTrack) {
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU",
-  "name": "如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU",
-  "description": "這篇文章將教學如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU",
+  "headline": "如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU",
+  "name": "如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU",
+  "description": "這篇文章將教學如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU",
   "keywords": [
     "AWS", "AWS EventBridge Scheduler", "AWS EventBridge", "AWS Lambda", "Serverless", "AWS Aurora", "ACU", "Automated Task", "Technical Tutorial"
   ],
@@ -257,10 +257,10 @@ if (!doNotTrack) {
   <header class="post-header">
     <div class="breadcrumbs"><a href="https://shiun.me/">Home</a>&nbsp;»&nbsp;<a href="https://shiun.me/blog/">Blogs</a></div>
     <h1 class="post-title entry-hint-parent">
-      如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU
+      如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU
     </h1>
     <div class="post-description">
-      這篇文章將教學如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU
+      這篇文章將教學如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU
     </div>
     <div class="post-meta"><span title='2024-04-06 23:45:32 +0800 CST'>April 6, 2024</span>&nbsp;·&nbsp;2 min
 
@@ -526,8 +526,8 @@ if (!doNotTrack) {
 
 <ul class="share-buttons">
     <li>
-        <a target="_blank" rel="noopener noreferrer" aria-label="share 如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU on x"
-            href="https://x.com/intent/tweet/?text=%e5%a6%82%e4%bd%95%e4%bd%bf%e7%94%a8%20AWS%20EventBridge%20%e5%8f%8a%20Lambda%20%e8%87%aa%e5%8b%95%e6%8e%92%e7%a8%8b%e8%aa%bf%e6%95%b4%20AWS%20Aurora%20Serverless%20V2%20ACU&amp;url=https%3a%2f%2fshiun.me%2fblog%2fhow-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler%2f&amp;hashtags=AWS%2cAWSEventBridge%2cAWSEventBridgeScheduler%2cAWSLambda%2cAWSAurora%2cACU%2cServerless%2cCron%2cAutomatedTask%2cTime-basedScheduling%2cAWSAuroraServerlessV2">
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU on x"
+            href="https://x.com/intent/tweet/?text=%e5%a6%82%e4%bd%95%e4%bd%bf%e7%94%a8%20AWS%20EventBridge%20Scheduler%20%e5%8f%8a%20Lambda%20%e8%87%aa%e5%8b%95%e6%8e%92%e7%a8%8b%e8%aa%bf%e6%95%b4%20AWS%20Aurora%20Serverless%20V2%20ACU&amp;url=https%3a%2f%2fshiun.me%2fblog%2fhow-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler%2f&amp;hashtags=AWS%2cAWSEventBridge%2cAWSEventBridgeScheduler%2cAWSLambda%2cAWSAurora%2cACU%2cServerless%2cCron%2cAutomatedTask%2cTime-basedScheduling%2cAWSAuroraServerlessV2">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
@@ -535,8 +535,8 @@ if (!doNotTrack) {
         </a>
     </li>
     <li>
-        <a target="_blank" rel="noopener noreferrer" aria-label="share 如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU on linkedin"
-            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fshiun.me%2fblog%2fhow-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler%2f&amp;title=%e5%a6%82%e4%bd%95%e4%bd%bf%e7%94%a8%20AWS%20EventBridge%20%e5%8f%8a%20Lambda%20%e8%87%aa%e5%8b%95%e6%8e%92%e7%a8%8b%e8%aa%bf%e6%95%b4%20AWS%20Aurora%20Serverless%20V2%20ACU&amp;summary=%e5%a6%82%e4%bd%95%e4%bd%bf%e7%94%a8%20AWS%20EventBridge%20%e5%8f%8a%20Lambda%20%e8%87%aa%e5%8b%95%e6%8e%92%e7%a8%8b%e8%aa%bf%e6%95%b4%20AWS%20Aurora%20Serverless%20V2%20ACU&amp;source=https%3a%2f%2fshiun.me%2fblog%2fhow-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler%2f">
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fshiun.me%2fblog%2fhow-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler%2f&amp;title=%e5%a6%82%e4%bd%95%e4%bd%bf%e7%94%a8%20AWS%20EventBridge%20Scheduler%20%e5%8f%8a%20Lambda%20%e8%87%aa%e5%8b%95%e6%8e%92%e7%a8%8b%e8%aa%bf%e6%95%b4%20AWS%20Aurora%20Serverless%20V2%20ACU&amp;summary=%e5%a6%82%e4%bd%95%e4%bd%bf%e7%94%a8%20AWS%20EventBridge%20Scheduler%20%e5%8f%8a%20Lambda%20%e8%87%aa%e5%8b%95%e6%8e%92%e7%a8%8b%e8%aa%bf%e6%95%b4%20AWS%20Aurora%20Serverless%20V2%20ACU&amp;source=https%3a%2f%2fshiun.me%2fblog%2fhow-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler%2f">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
@@ -544,7 +544,7 @@ if (!doNotTrack) {
         </a>
     </li>
     <li>
-        <a target="_blank" rel="noopener noreferrer" aria-label="share 如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU on facebook"
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU on facebook"
             href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fshiun.me%2fblog%2fhow-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler%2f">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
@@ -553,8 +553,8 @@ if (!doNotTrack) {
         </a>
     </li>
     <li>
-        <a target="_blank" rel="noopener noreferrer" aria-label="share 如何使用 AWS EventBridge 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU on telegram"
-            href="https://telegram.me/share/url?text=%e5%a6%82%e4%bd%95%e4%bd%bf%e7%94%a8%20AWS%20EventBridge%20%e5%8f%8a%20Lambda%20%e8%87%aa%e5%8b%95%e6%8e%92%e7%a8%8b%e8%aa%bf%e6%95%b4%20AWS%20Aurora%20Serverless%20V2%20ACU&amp;url=https%3a%2f%2fshiun.me%2fblog%2fhow-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler%2f">
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU on telegram"
+            href="https://telegram.me/share/url?text=%e5%a6%82%e4%bd%95%e4%bd%bf%e7%94%a8%20AWS%20EventBridge%20Scheduler%20%e5%8f%8a%20Lambda%20%e8%87%aa%e5%8b%95%e6%8e%92%e7%a8%8b%e8%aa%bf%e6%95%b4%20AWS%20Aurora%20Serverless%20V2%20ACU&amp;url=https%3a%2f%2fshiun.me%2fblog%2fhow-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler%2f">
             <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
