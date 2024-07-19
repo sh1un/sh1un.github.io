@@ -11,8 +11,15 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Fri, 14 Jun 2024 23:41:33 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 19 Jul 2024 23:04:08 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/categories/aws/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>如何使用 Lambda 處理 AWS Cognito User 首次登入被系統要求強制變更密碼</title>
+      <link>https://shiun.me/blog/aws-cognito-how-to-handle-force-change-password/</link>
+      <pubDate>Fri, 19 Jul 2024 23:04:08 +0800</pubDate>
+      <guid>https://shiun.me/blog/aws-cognito-how-to-handle-force-change-password/</guid>
+      <description>在 AWS Cognito 裡，當你在 User Pool 中創建新的 user 時，系統會要求這個 user 在第一次 login 時必須更改密碼。這是一個常見的安全措施，但如果沒有適當處理，可能會讓使用者體驗變得不太順暢。讓我們來看看如何優雅地解決這個問題。</description>
+    </item>
     <item>
       <title>深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能</title>
       <link>https://shiun.me/blog/understanding-lambda-proxy-integration/</link>

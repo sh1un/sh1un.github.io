@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
+<meta name="robots" content="index, follow" />
+<title>
+  如何使用 Lambda 處理 AWS Cognito User 首次登入被系統要求強制變更密碼 | Shiun
+</title>
+<meta
+  name="keywords"
+  content="AWS Cognito, AWS Lambda, Password Change, First Login, NEW_PASSWORD_REQUIRED, User Experience, Boto3, Python, Serverless, Security, Cognito first login password change, Lambda function Cognito password change, Cognito respond_to_auth_challenge, Python Boto3 Cognito, Cognito user experience, Cognito password policy, AWS Lambda function example, Cognito first login flow, Cognito security"
+/> <meta name="description" content="在 AWS Cognito 裡，當你在 User Pool 中創建新的 user 時，系統會要求這個 user 在第一次 login 時必須更改密碼。這是一個常見的安全措施，但如果沒有適當處理，可能會讓使用者體驗變得不太順暢。讓我們來看看如何優雅地解決這個問題。"> <meta name="author" content=""> <link rel="canonical" href="https://shiun.me/blog/aws-cognito-how-to-handle-force-change-password/">
+<link
+  crossorigin="anonymous"
+  href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css"
+  integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A="
+  rel="preload stylesheet"
+  as="style"
+/> <link rel="icon" href="https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"> <link
+rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://shiun.me/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://shiun.me/apple-touch-icon.png"> <link rel="mask-icon" href="https://shiun.me/safari-pinned-tab.svg"> <meta name="theme-color" content="#2e2e33"> <meta name="msapplication-TileColor" content="#2e2e33"> <link rel="alternate" hreflang="en" href="https://shiun.me/blog/aws-cognito-how-to-handle-force-change-password/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+<meta property="og:title" content="如何使用 Lambda 處理 AWS Cognito User 首次登入被系統要求強制變更密碼" />
+<meta property="og:description" content="在 AWS Cognito 裡，當你在 User Pool 中創建新的 user 時，系統會要求這個 user 在第一次 login 時必須更改密碼。這是一個常見的安全措施，但如果沒有適當處理，可能會讓使用者體驗變得不太順暢。讓我們來看看如何優雅地解決這個問題。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/aws-cognito-how-to-handle-force-change-password/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-07-19T23:04:08+08:00" />
+<meta property="article:modified_time" content="2024-07-19T23:04:08+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="如何使用 Lambda 處理 AWS Cognito User 首次登入被系統要求強制變更密碼"/>
+<meta name="twitter:description" content="在 AWS Cognito 裡，當你在 User Pool 中創建新的 user 時，系統會要求這個 user 在第一次 login 時必須更改密碼。這是一個常見的安全措施，但如果沒有適當處理，可能會讓使用者體驗變得不太順暢。讓我們來看看如何優雅地解決這個問題。"/>
+
+
+<noscript>
+  <style>
+    #theme-toggle,
+    .top-link {
+      display: none;
+    }
+  </style>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --theme: rgb(29, 30, 32);
+        --entry: rgb(46, 46, 51);
+        --primary: rgb(218, 218, 219);
+        --secondary: rgb(155, 156, 157);
+        --tertiary: rgb(65, 66, 68);
+        --content: rgb(196, 196, 197);
+        --code-block-bg: rgb(46, 46, 51);
+        --code-bg: rgb(55, 56, 62);
+        --border: rgb(51, 51, 51);
+      }
+
+      .list {
+        background: var(--theme);
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-track {
+        background: 0 0;
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-thumb {
+        border-color: var(--theme);
+      }
+    }
+  </style>
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="如何使用 Lambda 處理 AWS Cognito User 首次登入被系統要求強制變更密碼" />
+<meta property="og:description" content="在 AWS Cognito 裡，當你在 User Pool 中創建新的 user 時，系統會要求這個 user 在第一次 login 時必須更改密碼。這是一個常見的安全措施，但如果沒有適當處理，可能會讓使用者體驗變得不太順暢。讓我們來看看如何優雅地解決這個問題。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/aws-cognito-how-to-handle-force-change-password/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-07-19T23:04:08+08:00" />
+<meta property="article:modified_time" content="2024-07-19T23:04:08+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/>
+
+<meta name="twitter:title" content="如何使用 Lambda 處理 AWS Cognito User 首次登入被系統要求強制變更密碼"/>
+<meta name="twitter:description" content="在 AWS Cognito 裡，當你在 User Pool 中創建新的 user 時，系統會要求這個 user 在第一次 login 時必須更改密碼。這是一個常見的安全措施，但如果沒有適當處理，可能會讓使用者體驗變得不太順暢。讓我們來看看如何優雅地解決這個問題。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Blogs",
+      "item": "https://shiun.me/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "如何使用 Lambda 處理 AWS Cognito User 首次登入被系統要求強制變更密碼",
+      "item": "https://shiun.me/blog/aws-cognito-how-to-handle-force-change-password/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "如何使用 Lambda 處理 AWS Cognito User 首次登入被系統要求強制變更密碼",
+  "name": "如何使用 Lambda 處理 AWS Cognito User 首次登入被系統要求強制變更密碼",
+  "description": "在 AWS Cognito 裡，當你在 User Pool 中創建新的 user 時，系統會要求這個 user 在第一次 login 時必須更改密碼。這是一個常見的安全措施，但如果沒有適當處理，可能會讓使用者體驗變得不太順暢。讓我們來看看如何優雅地解決這個問題。",
+  "keywords": [
+    "AWS Cognito", "AWS Lambda", "Password Change", "First Login", "NEW_PASSWORD_REQUIRED", "User Experience", "Boto3", "Python", "Serverless", "Security", "Cognito first login password change", "Lambda function Cognito password change", "Cognito respond_to_auth_challenge", "Python Boto3 Cognito", "Cognito user experience", "Cognito password policy", "AWS Lambda function example", "Cognito first login flow", "Cognito security"
+  ],
+  "articleBody": "情境描述 上圖顯示的是我剛在 Cognito User Pool 中新增了一個 user，可以注意到箭頭處顯示 Force change password。\n當這個 user 嘗試首次登入時，他們會遇到這樣的情況:\n{ \"message\": \"New password required\"， \"challengeName\": \"NEW_PASSWORD_REQUIRED\"， \"session\": \"AYABeAsYJsR3yEr0iJssKPPUPEgAHQABAAdTZXJ2aWNlABBDb2duaXRvVXNlclBvb2xzAAEAB2F3cy1rbXMAS2Fybjphd3M6a21zOnVzLXdlc3QtMjowMTU3MzY3MjcxOTg6a2V5LzI5OTFhNGE5LTM5YTAtNDQ0Mi04MWU4LWRkYjY4NTllMTg2MQC4AQIBAHhPj7k9zU4nGXUQUvM0Ccwk42DS-fm3vKmH75ktTrktNQG1gnjl6HkUVUYN1J_HPow6AAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMulTha32s34j2CmQWAgEQgDtog8CDFh2e-4YyjM2kB_MXheMgmrdY_IF3aN9TImZXddMBj7djEAPPduLZnG3ddBLYQa8x3T3WPKUkvwIAAAAADAAAEAAAAAAAAAAAAAAAAADCbdmpLPo0E4QkWLlyH8ov_____wAAAAEAAAAAAAAAAAAAAAEAAAC1oMtgshmuUU4fk36WHKBzPgJEoE1MmL0PFyhR9lRcimImOIObhhxvC1fwiYylgbYx0Gu0i1cp5Le8AvrAnUGEJjZp54TMPP4N-JCT3qSrHeq_Kat_2CuECVSQqkc1qH4z9FVOTvAnos4FrDSn2W6KvFfLo8YQh2LJxM1h3GdIeyYqj7Ipfk6PZKGYmV5P741rRMNcuYBtvE8Hq9gVqMbEPG-c5MppY_q9JoG9TyQRN7rVGlZf62_WtTqST2F3-DZPoXTMTyY\"， \"challengeParameters\": { \"USER_ID_FOR_SRP\": \"shiun\"， \"requiredAttributes\": \"[]\"， \"userAttributes\": \"{\\\"email\\\":\\\"xxxxx@gmail.com\\\"}\" } } Cognito 回傳了一個 NEW_PASSWORD_REQUIRED 的 challenge，同時給了我們一個 session token。這就是我們需要處理的 case。\n解決方案 要解決這個問題，我們需要提供一個 change-password 的 API endpoint，讓 user 可以順利更改密碼。整個 flow 大致如下:\nUser 首次登入 Cognito 回傳 NEW_PASSWORD_REQUIRED challenge 和 session token 前端帶著 session token 呼叫我們的 change-password API 密碼更改成功，user 順利登入系統 以下是一個處理這種情況的 Lambda function 範例:\nimport json import logging import boto3 from botocore.exceptions import ClientError # Initialize logger logger = logging.getLogger() logger.setLevel(logging.INFO) # Initialize Cognito client client = boto3.client(\"cognito-idp\") def lambda_handler(event, context): \"\"\" Handles the NEW_PASSWORD_REQUIRED challenge from Cognito \"\"\" try: # Parse the request body body = json.loads(event[\"body\"]) # Respond to the new password required challenge response = client.respond_to_auth_challenge( ClientId=\"YOUR_CLIENT_ID\", ChallengeName=\"NEW_PASSWORD_REQUIRED\", Session=body[\"session\"], ChallengeResponses={ \"USERNAME\": body[\"username\"], \"NEW_PASSWORD\": body[\"new_password\"], # Add any required attributes here if necessary }, ) logger.info(\"Cognito respond to challenge response: %s\", response) # Extract access token from the response access_token = response[\"AuthenticationResult\"][\"AccessToken\"] # Return successful response with the access token set in cookies return { \"statusCode\": 200, \"headers\": { \"Set-Cookie\": f\"accessToken={access_token}; Path=/; Secure; HttpOnly; SameSite=None; Domain=.aws-educate.tw\" }, \"body\": json.dumps({\"message\": \"Password changed successfully\"}), } except ClientError as e: # Handle Cognito client errors logger.error(\"Cognito client error: %s\", e) return { \"statusCode\": 400, \"body\": json.dumps({\"message\": e.response[\"Error\"][\"Message\"]}), } except json.JSONDecodeError as e: # Handle JSON decoding errors logger.error(\"JSON decode error: %s\", e) return { \"statusCode\": 400, \"body\": json.dumps({\"message\": \"Invalid JSON format in request body\"}), } 這個 Lambda function 做了以下幾件事:\n接收包含 username、new password 和 session token 的 request 使用 Cognito 的 respond_to_auth_challenge API 來處理 NEW_PASSWORD_REQUIRED challenge 如果密碼更改成功，從 response 中提取 access token 將 access token 設置在 cookie 中，並返回成功訊息 透過這樣的處理，我們可以讓新用戶順利完成首次登入時的密碼更改流程，提供更好的 user experience。\n記得，在實際部署時，要根據你的具體需求來調整這個 function，比如錯誤處理、日誌記錄等。同時，也要確保前端能夠正確處理這個流程，在收到 NEW_PASSWORD_REQUIRED challenge 時，引導用戶到密碼更改的頁面。\n希望這個範例能幫助讀者更好地處理 AWS Cognito 的首次登入密碼更改流程\n",
+  "wordCount" : "284",
+  "inLanguage": "en",
+  "datePublished": "2024-07-19T23:04:08+08:00",
+  "dateModified": "2024-07-19T23:04:08+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://shiun.me/blog/aws-cognito-how-to-handle-force-change-password/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Shiun",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://shiun.me/" accesskey="h" title="Shiun (Alt + H)">Shiun</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://shiun.me/blog/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.notion.site/Shiun-s-Learning-Journal-ded4cd4a3efd47b2805f2f99dee8f9a1?pvs=4" title="Notion">
+                    <span>Notion</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.linkedin.com/in/shiunchiu" title="About me">
+                    <span>About me</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://shiun.me/">Home</a>&nbsp;»&nbsp;<a href="https://shiun.me/blog/">Blogs</a></div>
+    <h1 class="post-title entry-hint-parent">
+      如何使用 Lambda 處理 AWS Cognito User 首次登入被系統要求強制變更密碼
+    </h1>
+    <div class="post-description">
+      在 AWS Cognito 裡，當你在 User Pool 中創建新的 user 時，系統會要求這個 user 在第一次 login 時必須更改密碼。這是一個常見的安全措施，但如果沒有適當處理，可能會讓使用者體驗變得不太順暢。讓我們來看看如何優雅地解決這個問題。
+    </div>
+    <div class="post-meta"><span title='2024-07-19 23:04:08 +0800 CST'>July 19, 2024</span>&nbsp;·&nbsp;2 min
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e6%83%85%e5%a2%83%e6%8f%8f%e8%bf%b0" aria-label="情境描述">情境描述</a></li>
+                <li>
+                    <a href="#%e8%a7%a3%e6%b1%ba%e6%96%b9%e6%a1%88" aria-label="解決方案">解決方案</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="情境描述">情境描述<a hidden class="anchor" aria-hidden="true" href="#情境描述">#</a></h2>
+<p><img loading="lazy" src="https://github.com/user-attachments/assets/b959f776-a2da-4561-aff2-f17016e4cc88" alt="01-AWS-Cognito-User-Pool-Force-Change-Password"  />
+</p>
+<p>上圖顯示的是我剛在 Cognito User Pool 中新增了一個 user，可以注意到箭頭處顯示 <code>Force change password</code>。</p>
+<p>當這個 user 嘗試首次登入時，他們會遇到這樣的情況:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;message&#34;</span>: <span style="color:#e6db74">&#34;New password required&#34;</span><span style="color:#960050;background-color:#1e0010">，</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;challengeName&#34;</span>: <span style="color:#e6db74">&#34;NEW_PASSWORD_REQUIRED&#34;</span><span style="color:#960050;background-color:#1e0010">，</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;session&#34;</span>: <span style="color:#e6db74">&#34;AYABeAsYJsR3yEr0iJssKPPUPEgAHQABAAdTZXJ2aWNlABBDb2duaXRvVXNlclBvb2xzAAEAB2F3cy1rbXMAS2Fybjphd3M6a21zOnVzLXdlc3QtMjowMTU3MzY3MjcxOTg6a2V5LzI5OTFhNGE5LTM5YTAtNDQ0Mi04MWU4LWRkYjY4NTllMTg2MQC4AQIBAHhPj7k9zU4nGXUQUvM0Ccwk42DS-fm3vKmH75ktTrktNQG1gnjl6HkUVUYN1J_HPow6AAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMulTha32s34j2CmQWAgEQgDtog8CDFh2e-4YyjM2kB_MXheMgmrdY_IF3aN9TImZXddMBj7djEAPPduLZnG3ddBLYQa8x3T3WPKUkvwIAAAAADAAAEAAAAAAAAAAAAAAAAADCbdmpLPo0E4QkWLlyH8ov_____wAAAAEAAAAAAAAAAAAAAAEAAAC1oMtgshmuUU4fk36WHKBzPgJEoE1MmL0PFyhR9lRcimImOIObhhxvC1fwiYylgbYx0Gu0i1cp5Le8AvrAnUGEJjZp54TMPP4N-JCT3qSrHeq_Kat_2CuECVSQqkc1qH4z9FVOTvAnos4FrDSn2W6KvFfLo8YQh2LJxM1h3GdIeyYqj7Ipfk6PZKGYmV5P741rRMNcuYBtvE8Hq9gVqMbEPG-c5MppY_q9JoG9TyQRN7rVGlZf62_WtTqST2F3-DZPoXTMTyY&#34;</span><span style="color:#960050;background-color:#1e0010">，</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;challengeParameters&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;USER_ID_FOR_SRP&#34;</span>: <span style="color:#e6db74">&#34;shiun&#34;</span><span style="color:#960050;background-color:#1e0010">，</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;requiredAttributes&#34;</span>: <span style="color:#e6db74">&#34;[]&#34;</span><span style="color:#960050;background-color:#1e0010">，</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;userAttributes&#34;</span>: <span style="color:#e6db74">&#34;{\&#34;email\&#34;:\&#34;xxxxx@gmail.com\&#34;}&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Cognito 回傳了一個 <code>NEW_PASSWORD_REQUIRED</code> 的 challenge，同時給了我們一個 session token。這就是我們需要處理的 case。</p>
+<h2 id="解決方案">解決方案<a hidden class="anchor" aria-hidden="true" href="#解決方案">#</a></h2>
+<p>要解決這個問題，我們需要提供一個 change-password 的 API endpoint，讓 user 可以順利更改密碼。整個 flow 大致如下:</p>
+<ol>
+<li>User 首次登入</li>
+<li>Cognito 回傳 <code>NEW_PASSWORD_REQUIRED</code> challenge 和 session token</li>
+<li>前端帶著 session token 呼叫我們的 change-password API</li>
+<li>密碼更改成功，user 順利登入系統</li>
+</ol>
+<p>以下是一個處理這種情況的 Lambda function 範例:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> json
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> logging
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> boto3
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> botocore.exceptions <span style="color:#f92672">import</span> ClientError
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Initialize logger</span>
+</span></span><span style="display:flex;"><span>logger <span style="color:#f92672">=</span> logging<span style="color:#f92672">.</span>getLogger()
+</span></span><span style="display:flex;"><span>logger<span style="color:#f92672">.</span>setLevel(logging<span style="color:#f92672">.</span>INFO)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Initialize Cognito client</span>
+</span></span><span style="display:flex;"><span>client <span style="color:#f92672">=</span> boto3<span style="color:#f92672">.</span>client(<span style="color:#e6db74">&#34;cognito-idp&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">lambda_handler</span>(event, context):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Handles the NEW_PASSWORD_REQUIRED challenge from Cognito
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Parse the request body</span>
+</span></span><span style="display:flex;"><span>        body <span style="color:#f92672">=</span> json<span style="color:#f92672">.</span>loads(event[<span style="color:#e6db74">&#34;body&#34;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Respond to the new password required challenge</span>
+</span></span><span style="display:flex;"><span>        response <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>respond_to_auth_challenge(
+</span></span><span style="display:flex;"><span>            ClientId<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;YOUR_CLIENT_ID&#34;</span>,
+</span></span><span style="display:flex;"><span>            ChallengeName<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;NEW_PASSWORD_REQUIRED&#34;</span>,
+</span></span><span style="display:flex;"><span>            Session<span style="color:#f92672">=</span>body[<span style="color:#e6db74">&#34;session&#34;</span>],
+</span></span><span style="display:flex;"><span>            ChallengeResponses<span style="color:#f92672">=</span>{
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;USERNAME&#34;</span>: body[<span style="color:#e6db74">&#34;username&#34;</span>],
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;NEW_PASSWORD&#34;</span>: body[<span style="color:#e6db74">&#34;new_password&#34;</span>],
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># Add any required attributes here if necessary</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        logger<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#34;Cognito respond to challenge response: </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#34;</span>, response)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Extract access token from the response</span>
+</span></span><span style="display:flex;"><span>        access_token <span style="color:#f92672">=</span> response[<span style="color:#e6db74">&#34;AuthenticationResult&#34;</span>][<span style="color:#e6db74">&#34;AccessToken&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Return successful response with the access token set in cookies</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;statusCode&#34;</span>: <span style="color:#ae81ff">200</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;headers&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;Set-Cookie&#34;</span>: <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;accessToken=</span><span style="color:#e6db74">{</span>access_token<span style="color:#e6db74">}</span><span style="color:#e6db74">; Path=/; Secure; HttpOnly; SameSite=None; Domain=.aws-educate.tw&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;body&#34;</span>: json<span style="color:#f92672">.</span>dumps({<span style="color:#e6db74">&#34;message&#34;</span>: <span style="color:#e6db74">&#34;Password changed successfully&#34;</span>}),
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span> ClientError <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Handle Cognito client errors</span>
+</span></span><span style="display:flex;"><span>        logger<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;Cognito client error: </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#34;</span>, e)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;statusCode&#34;</span>: <span style="color:#ae81ff">400</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;body&#34;</span>: json<span style="color:#f92672">.</span>dumps({<span style="color:#e6db74">&#34;message&#34;</span>: e<span style="color:#f92672">.</span>response[<span style="color:#e6db74">&#34;Error&#34;</span>][<span style="color:#e6db74">&#34;Message&#34;</span>]}),
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span> json<span style="color:#f92672">.</span>JSONDecodeError <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Handle JSON decoding errors</span>
+</span></span><span style="display:flex;"><span>        logger<span style="color:#f92672">.</span>error(<span style="color:#e6db74">&#34;JSON decode error: </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#34;</span>, e)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;statusCode&#34;</span>: <span style="color:#ae81ff">400</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;body&#34;</span>: json<span style="color:#f92672">.</span>dumps({<span style="color:#e6db74">&#34;message&#34;</span>: <span style="color:#e6db74">&#34;Invalid JSON format in request body&#34;</span>}),
+</span></span><span style="display:flex;"><span>        }
+</span></span></code></pre></div><p>這個 Lambda function 做了以下幾件事:</p>
+<ol>
+<li>接收包含 username、new password 和 session token 的 request</li>
+<li>使用 Cognito 的 <code>respond_to_auth_challenge</code> API 來處理 <code>NEW_PASSWORD_REQUIRED</code> challenge</li>
+<li>如果密碼更改成功，從 response 中提取 access token</li>
+<li>將 access token 設置在 cookie 中，並返回成功訊息</li>
+</ol>
+<p>透過這樣的處理，我們可以讓新用戶順利完成首次登入時的密碼更改流程，提供更好的 user experience。</p>
+<p>記得，在實際部署時，要根據你的具體需求來調整這個 function，比如錯誤處理、日誌記錄等。同時，也要確保前端能夠正確處理這個流程，在收到 <code>NEW_PASSWORD_REQUIRED</code> challenge 時，引導用戶到密碼更改的頁面。</p>
+<p>希望這個範例能幫助讀者更好地處理 AWS Cognito 的首次登入密碼更改流程</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://shiun.me/tags/aws/">AWS</a></li>
+      <li><a href="https://shiun.me/tags/aws-cognito/">AWS Cognito</a></li>
+      <li><a href="https://shiun.me/tags/aws-lambda/">AWS Lambda</a></li>
+      <li><a href="https://shiun.me/tags/serverless/">Serverless</a></li>
+      <li><a href="https://shiun.me/tags/security/">Security</a></li>
+      <li><a href="https://shiun.me/tags/authentication/">Authentication</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://shiun.me/blog/understanding-lambda-proxy-integration/">
+    <span class="title">Next »</span>
+    <br>
+    <span>深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 如何使用 Lambda 處理 AWS Cognito User 首次登入被系統要求強制變更密碼 on x"
+            href="https://x.com/intent/tweet/?text=%e5%a6%82%e4%bd%95%e4%bd%bf%e7%94%a8%20Lambda%20%e8%99%95%e7%90%86%20AWS%20Cognito%20User%20%e9%a6%96%e6%ac%a1%e7%99%bb%e5%85%a5%e8%a2%ab%e7%b3%bb%e7%b5%b1%e8%a6%81%e6%b1%82%e5%bc%b7%e5%88%b6%e8%ae%8a%e6%9b%b4%e5%af%86%e7%a2%bc&amp;url=https%3a%2f%2fshiun.me%2fblog%2faws-cognito-how-to-handle-force-change-password%2f&amp;hashtags=AWS%2cAWSCognito%2cAWSLambda%2cServerless%2cSecurity%2cAuthentication">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 如何使用 Lambda 處理 AWS Cognito User 首次登入被系統要求強制變更密碼 on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fshiun.me%2fblog%2faws-cognito-how-to-handle-force-change-password%2f&amp;title=%e5%a6%82%e4%bd%95%e4%bd%bf%e7%94%a8%20Lambda%20%e8%99%95%e7%90%86%20AWS%20Cognito%20User%20%e9%a6%96%e6%ac%a1%e7%99%bb%e5%85%a5%e8%a2%ab%e7%b3%bb%e7%b5%b1%e8%a6%81%e6%b1%82%e5%bc%b7%e5%88%b6%e8%ae%8a%e6%9b%b4%e5%af%86%e7%a2%bc&amp;summary=%e5%a6%82%e4%bd%95%e4%bd%bf%e7%94%a8%20Lambda%20%e8%99%95%e7%90%86%20AWS%20Cognito%20User%20%e9%a6%96%e6%ac%a1%e7%99%bb%e5%85%a5%e8%a2%ab%e7%b3%bb%e7%b5%b1%e8%a6%81%e6%b1%82%e5%bc%b7%e5%88%b6%e8%ae%8a%e6%9b%b4%e5%af%86%e7%a2%bc&amp;source=https%3a%2f%2fshiun.me%2fblog%2faws-cognito-how-to-handle-force-change-password%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 如何使用 Lambda 處理 AWS Cognito User 首次登入被系統要求強制變更密碼 on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fshiun.me%2fblog%2faws-cognito-how-to-handle-force-change-password%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 如何使用 Lambda 處理 AWS Cognito User 首次登入被系統要求強制變更密碼 on telegram"
+            href="https://telegram.me/share/url?text=%e5%a6%82%e4%bd%95%e4%bd%bf%e7%94%a8%20Lambda%20%e8%99%95%e7%90%86%20AWS%20Cognito%20User%20%e9%a6%96%e6%ac%a1%e7%99%bb%e5%85%a5%e8%a2%ab%e7%b3%bb%e7%b5%b1%e8%a6%81%e6%b1%82%e5%bc%b7%e5%88%b6%e8%ae%8a%e6%9b%b4%e5%af%86%e7%a2%bc&amp;url=https%3a%2f%2fshiun.me%2fblog%2faws-cognito-how-to-handle-force-change-password%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer><div class="disqus markdown"><div id="disqus_thread"></div>
+<script>
+  
+
+  
+
+  (function () {
+    
+    var d = document,
+      s = d.createElement("script");
+    s.src = "https://shiun-me.disqus.com/embed.js";
+    s.setAttribute("data-timestamp", +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript
+  >Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript"
+    >comments powered by Disqus.</a
+  ></noscript
+>
+</div>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://shiun.me/">Shiun</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

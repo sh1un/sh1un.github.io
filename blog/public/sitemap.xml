@@ -2,25 +2,46 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://shiun.me/tags/authentication/</loc>
+    <lastmod>2024-07-19T23:04:08+08:00</lastmod>
+  </url><url>
     <loc>https://shiun.me/tags/aws/</loc>
-    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
+    <lastmod>2024-07-19T23:04:08+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/categories/aws/</loc>
-    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
+    <lastmod>2024-07-19T23:04:08+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/aws-cognito/</loc>
+    <lastmod>2024-07-19T23:04:08+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/aws-lambda/</loc>
+    <lastmod>2024-07-19T23:04:08+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/blog/</loc>
+    <lastmod>2024-07-19T23:04:08+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/</loc>
+    <lastmod>2024-07-19T23:04:08+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/security/</loc>
+    <lastmod>2024-07-19T23:04:08+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/serverless/</loc>
+    <lastmod>2024-07-19T23:04:08+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/</loc>
+    <lastmod>2024-07-19T23:04:08+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/</loc>
+    <lastmod>2024-07-19T23:04:08+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/blog/aws-cognito-how-to-handle-force-change-password/</loc>
+    <lastmod>2024-07-19T23:04:08+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/aws-api-gateway/</loc>
     <lastmod>2024-06-14T23:41:33+08:00</lastmod>
   </url><url>
-    <loc>https://shiun.me/tags/aws-lambda/</loc>
-    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
-  </url><url>
     <loc>https://shiun.me/tags/backend-development/</loc>
-    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/blog/</loc>
-    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/categories/</loc>
     <lastmod>2024-06-14T23:41:33+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/cloud-computing/</loc>
@@ -32,16 +53,7 @@
     <loc>https://shiun.me/tags/lambda-proxy-integration/</loc>
     <lastmod>2024-06-14T23:41:33+08:00</lastmod>
   </url><url>
-    <loc>https://shiun.me/tags/serverless/</loc>
-    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
-  </url><url>
     <loc>https://shiun.me/categories/serverless/</loc>
-    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/</loc>
-    <lastmod>2024-06-14T23:41:33+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/</loc>
     <lastmod>2024-06-14T23:41:33+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/blog/understanding-lambda-proxy-integration/</loc>
