@@ -11,13 +11,62 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Fri, 19 Jul 2024 23:04:08 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 20 Jul 2024 23:06:18 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Agile Development</title>
+      <link>https://shiun.me/categories/agile-development/</link>
+      <pubDate>Sat, 20 Jul 2024 23:06:18 +0800</pubDate>
+      <guid>https://shiun.me/categories/agile-development/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>AI</title>
+      <link>https://shiun.me/categories/ai/</link>
+      <pubDate>Sat, 20 Jul 2024 23:06:18 +0800</pubDate>
+      <guid>https://shiun.me/categories/ai/</guid>
+      <description></description>
+    </item>
     <item>
       <title>AWS</title>
       <link>https://shiun.me/categories/aws/</link>
-      <pubDate>Fri, 19 Jul 2024 23:04:08 +0800</pubDate>
+      <pubDate>Sat, 20 Jul 2024 23:06:18 +0800</pubDate>
       <guid>https://shiun.me/categories/aws/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Azure</title>
+      <link>https://shiun.me/categories/azure/</link>
+      <pubDate>Sat, 20 Jul 2024 23:06:18 +0800</pubDate>
+      <guid>https://shiun.me/categories/azure/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Cloud Computing</title>
+      <link>https://shiun.me/categories/cloud-computing/</link>
+      <pubDate>Sat, 20 Jul 2024 23:06:18 +0800</pubDate>
+      <guid>https://shiun.me/categories/cloud-computing/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>GenAI</title>
+      <link>https://shiun.me/categories/genai/</link>
+      <pubDate>Sat, 20 Jul 2024 23:06:18 +0800</pubDate>
+      <guid>https://shiun.me/categories/genai/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Internship</title>
+      <link>https://shiun.me/categories/internship/</link>
+      <pubDate>Sat, 20 Jul 2024 23:06:18 +0800</pubDate>
+      <guid>https://shiun.me/categories/internship/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Scrum</title>
+      <link>https://shiun.me/categories/scrum/</link>
+      <pubDate>Sat, 20 Jul 2024 23:06:18 +0800</pubDate>
+      <guid>https://shiun.me/categories/scrum/</guid>
       <description></description>
     </item>
     <item>
@@ -46,13 +95,6 @@
       <link>https://shiun.me/categories/terraform/</link>
       <pubDate>Thu, 06 Jun 2024 10:50:53 +0800</pubDate>
       <guid>https://shiun.me/categories/terraform/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>AI</title>
-      <link>https://shiun.me/categories/ai/</link>
-      <pubDate>Tue, 21 May 2024 22:32:41 +0800</pubDate>
-      <guid>https://shiun.me/categories/ai/</guid>
       <description></description>
     </item>
     <item>
