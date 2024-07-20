@@ -1,5 +1,5 @@
 ---
-title: '2024 伊雲谷雲端工程師實習生實習心得'
+title: '2024 伊雲谷實習計畫 - 雲端工程師實習心得'
 date: 2024-07-20T23:06:18+08:00
 draft: true
 description: ""
@@ -10,8 +10,9 @@ keywords:
 ---
 # 我的 eCloudValley 雲端工程師實習經驗分享
 
-大家好，我是 Shiun，今天想和大家分享我在 eCloudValley 當雲端工程師實習生 (Cloud Engineer Intern) 的經歷。這段實習讓我學到了很多實用的雲端技術，同時也在工作中遇到了許多有趣的挑戰。
-![01-Shiun Solo picture](https://github.com/user-attachments/assets/aa30ff8d-9853-40ac-85f8-1cc7f1c6ea12)
+大家好，我是 Shiun，今天想和大家分享我在 eCloudValley 當雲端工程師實習生的經歷。這段實習讓我學到了很多實用的雲端技術，同時也在工作中遇到了許多有趣的挑戰。
+![01-Group photo](https://github.com/user-attachments/assets/c807fa99-33c0-4cf6-bb0e-35c6172e6c8c)
+
 
 ### 實習工作內容
 在 eCloudValley 的實習期間，我主要負責以下幾項工作：
@@ -37,7 +38,8 @@ keywords:
 
 #### 獲得 Best Tech Team
 專案在 4月底、5月初大改方向，而我們必須在 5 月底展演。儘管時程緊湊，但團隊合作逐漸流暢，我們在短短不到一個月內完成了應用開發。團隊的 PO (Product Owner) 帶領我們不斷練習簡報，最終在 5/31 的展演中獲得了 Best Tech Team 的獎項，這讓我們非常開心。
-![eCloudValley-Best-Tech-Team-Award](https://github.com/user-attachments/assets/24362616-a8a0-4761-adbf-6b8da5230653)
+![eCloudValley-Best-Tech-Team-Award](https://github.com/user-attachments/assets/3844d169-11ef-4bce-8737-4b78bf84f928)
+
 
 
 ### 實習中的專業學習心得
