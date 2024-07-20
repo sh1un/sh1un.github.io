@@ -226,6 +226,23 @@ if (!doNotTrack) {
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>前幾天寫了一篇 Serverless Framework 101，今天就來寫寫 AWS SAM 的教學，這兩個都是用來部署及管理 Serverless 應用的框架，兩者可以說是競爭對手關係！待之後有空再來寫一篇這兩個產品的比較
+Prerequisites 註冊 AWS 帳戶 建立 Admin IAM User 建立 access key ID and secret access key 安裝 AWS CLI 配置 AWS credentials 以上詳細內容請查看官方文檔: prerequisites
+安裝 AWS SAM CLI Mac 的用戶要注意一下，從 2023/9 開始，AWS 不會在維護 AWS SAM CLI 的 Homebrew Installer
+由於我現在是使用 Windows 作業系統的電腦，今天示範如何在 Windows 安裝 AWS SAM CLI
+Windows 安裝 Windows 安裝相當簡單，只要去官方文檔裡面下載 MSI File，接著無腦的 Next 按按按就裝好了 XD
+下載好之後，輸入指令 sam --version 檢查是否安裝成功...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-04-29 23:47:09 +0800 CST'>April 29, 2024</span>&nbsp;·&nbsp;9 min</footer>
+  <a class="entry-link" aria-label="post link to AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda" href="https://shiun.me/blog/aws-sam-101/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda
     </h2>
   </header>
@@ -286,24 +303,6 @@ $ docker images REPOSITORY TAG IMAGE ID CREATED SIZE docker-entrypoint latest fa
   </div>
   <footer class="entry-footer"><span title='2024-02-07 20:43:51 +0800 CST'>February 7, 2024</span>&nbsp;·&nbsp;2 min</footer>
   <a class="entry-link" aria-label="post link to Docker 初學常見問題 - CMD vs ENTRYPOINT 兩者的差異與範例" href="https://shiun.me/blog/dockerfile-cmd-vs-entrypoint/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Docker 踩坑紀錄 - 運行階段 Bind Mount 覆蓋 WORKDIR 的內容
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>我踩到了什麼坑 本文的背景延續自我之前的文章《一個專案需要多個 Dockerfile - 淺談建構上下文 (build context)》
-因為我們目前經手的專案會需要針對不同環境或是測試 Build 不同的 Image，為了讓目錄架構更具組織性且容易理解，我們根據不同的環境把各個環境的 Dockerfile, docker-compose.yaml, .sh 等等放在各個環境的目錄下，現在的目錄架構大概像這樣 ↓：
-E2Eproject/├── testenvironment1/│ └── Dockerfile├── testenvironment2/│ ├── docker-compose.yaml│ └── Dockerfile├── start-headless-tests.sh└── requirements.txt 由於我正在本地 Debug 這個專案，需要在本地運行 Docker-compose，我便很自然的執行 docker-compose -f ./cicd/headless/docker-compose.yaml up，結果 Docker 容器運行起來時，遇了一個錯誤：/bin/bash: /usr/src/app/cicd/headless/start-headless-tests.sh: No such file or directory。
-這個錯誤讓我想也想不透哪邊出錯，我一開始都是針對 Dockerfile 去做動作，但完全沒有用
-這邊就附上當時錯誤發生時的 Dockerfile 和 docker-compose.yaml，大家可以試著猜猜看是哪個環節導致錯誤！
-E2Eproject/cicd/headless/Dockerfile ↓
-# Dockerfile # Use the official Python base image from the DockerHub....</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-01-28 22:07:38 +0800 CST'>January 28, 2024</span>&nbsp;·&nbsp;3 min</footer>
-  <a class="entry-link" aria-label="post link to Docker 踩坑紀錄 - 運行階段 Bind Mount 覆蓋 WORKDIR 的內容" href="https://shiun.me/blog/docker-overwriting-workdir-contents-with-bind-mounts-at-run-time/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

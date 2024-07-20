@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cloud Engineering on Shiun</title>
+    <link>https://shiun.me/tags/cloud-engineering/</link>
+    <description>Recent content in Cloud Engineering on Shiun</description>
+    <image>
+      <title>Shiun</title>
+      <url>https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea</url>
+      <link>https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-tw</language>
+    <lastBuildDate>Sat, 20 Jul 2024 23:06:18 +0800</lastBuildDate>
+    <atom:link href="https://shiun.me/tags/cloud-engineering/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2024 伊雲谷實習計畫 - 雲端工程師實習心得</title>
+      <link>https://shiun.me/blog/2024-ecloudvalley-internship/</link>
+      <pubDate>Sat, 20 Jul 2024 23:06:18 +0800</pubDate>
+      <guid>https://shiun.me/blog/2024-ecloudvalley-internship/</guid>
+      <description>嗨大家好我是 Shiun，這篇文章分享了 2024 我在 eCloudValley 擔任雲端工程師實習生的心得和歷程。分享了在 AWS、Azure、DevOps 及 GenAI 專案中的經歷與個人成長</description>
+    </item>
+  </channel>
+</rss>
