@@ -3,17 +3,36 @@ title: 'Dynamic Preload for Performance Optimization'
 date: 2024-07-21T23:29:27+08:00
 draft: true
 description: ""
-tags: ["", ""]
-categories: [""]
+tags: ["AWS CloudFront", "AWS S3", "Preload", "Frontend Performance Optimization", "Next.js", "React", "Dynamic Loading", "Music Application"]
+categories: ["AWS", "CDN", "Frontend Development", "Performance Optimization"]
 keywords:
-- 
+- AWS CloudFront
+- AWS S3
+- CDN
+- Preload
+- Dynamic Preload
+- Frontend Performance Optimization
+- Next.js Performance
+- React Preload
+- Dynamic Resource Loading
+- Music Application Optimization
+- Preload in Next.js
+- JavaScript Preload
+- Web Performance Techniques
+- Audio Preloading
+- Improve User Experience
+- Fast Loading Times
+- Frontend Development
 ---
+程式碼在這邊的 `feature/preload` 分支: [https://github.com/sh1un/Nextjs-Musive-app](https://github.com/sh1un/Nextjs-Musive-app/tree/feature/preload)
 
-程式碼在這邊，在 `feature/preload` 分支喔
+此專案是一個 Next.js 專案，原作者為 [Ansh Rathod](https://www.linkedin.com/in/ansh-rathod/)，我已經過作者本人授權使用，因此 Fork 過來稍微改了一下。
 
-[https://github.com/sh1un/Nextjs-Musive-app](https://github.com/sh1un/Nextjs-Musive-app)
+**我本身不是一名專精於前端技術的開發者**，所以我所修改的 Code 都是由 ChatGPT-4 產生的。我今天這樣做的主要目的是想實驗 preload 是否能做到效能優化，以此來做一個簡單的 PoC。
 
-此專案原作者為 Ansh Rathod，是一個 Next.js 專案，我 Fork 過來稍微改了一下。我本身不是前端開發者，所以我所修改的 Code 都是由 ChatGPT-4 產生的。我今天這樣做的主要目的是想實驗 preload 是否能做到效能優化，以此來做一個簡單的 PoC。
+> 補充一下，這篇文章的內容本來是要放在 「[2024 AWS Educate 陪跑計畫的獎勵課程 - 雲端串流挑戰：復刻 Spotify 的技術旅程](https://www.instagram.com/p/C8UWAZXynuU/?hl=zh-tw&img_index=1)」中教學，此工作坊旨在教學如何利用 CloudFront 優化速度與降低延遲，但礙於當天工作坊的內容太滿已經塞不下了，所以當天工作坊就沒有講到 Preload，如果看到這篇文章，想要學學 CloudFront 歡迎參觀我們當天的教材 ([連結](https://aws-educate-tw.notion.site/20240705-Spotify-6b973b4e8d4d43d5bfb06815732f4e0b))
+
+---
 
 ## 什麼是 Preload?
 
@@ -33,6 +52,8 @@ Preload 是一種網頁性能優化技術，讓瀏覽器在頁面加載時預先
 ```
 
 這樣，瀏覽器會在頁面加載時預先下載 `file.mp3`，提高用戶播放音樂的速度。
+
+---
 
 ## 動態 Preload 的實現思路
 
@@ -55,7 +76,7 @@ Preload 是一種網頁性能優化技術，讓瀏覽器在頁面加載時預先
 
 - `GET /api/songs/random/{songs_count}`
 - Response (200)
-    
+
     ```json
     {
         "success": true,
@@ -76,7 +97,6 @@ Preload 是一種網頁性能優化技術，讓瀏覽器在頁面加載時預先
         ]
     }
     ```
-    
 
 先來看一些核心的程式碼，最後會附上完整的 `_app.tsx`。
 
@@ -257,22 +277,27 @@ false}
 export default MyApp;
 ```
 
+---
+
 ## 使用 Preload 前 vs 使用後
 
 ### 使用前
 
 請注意，第二首是按下播放按鈕後才開始下載音樂：
 
-![nextjs-no-dynamic-preload.gif](nextjs-no-dynamic-preload.gif)
+![nextjs-no-dynamic-preload](https://github.com/user-attachments/assets/38f7b6d1-a3d3-47a5-9126-f704195bcda7)
+
 
 ### 使用後
 
-![nextjs-use-dynamic-preload.gif](nextjs-use-dynamic-preload.gif)
+![nextjs-use-dynamic-preload](https://github.com/user-attachments/assets/7e219ea3-e105-47d9-b925-af12fff1d55c)
 
-![效果對比圖](效果對比圖.png)
+![devTool-screenshot](https://github.com/user-attachments/assets/3ae047b2-751e-4913-be18-5a887fc5da84)
+
+---
 
 ## 補充 - 在舊有的機器改成 Preload
-
+這邊內容僅適用於有照著[工作坊內容](https://aws-educate-tw.notion.site/20240705-Spotify-6b973b4e8d4d43d5bfb06815732f4e0b)實作的同學，以下步驟將教學你如何把原有的 Application 套用 Dynamic Preload：
 1. 連線上去 EC2
 2. `cd Nextjs-Musive-app`
 3. `git checkout feature/preload`
@@ -281,4 +306,3 @@ export default MyApp;
 6. `npm install`
 7. `npm run build`
 8. `pm2 restart nextjs-app`
-
