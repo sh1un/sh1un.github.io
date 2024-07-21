@@ -11,8 +11,15 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Sat, 20 Jul 2024 23:06:18 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 21 Jul 2024 23:29:27 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲</title>
+      <link>https://shiun.me/blog/dynamic-preload-for-performance-optimization/</link>
+      <pubDate>Sun, 21 Jul 2024 23:29:27 +0800</pubDate>
+      <guid>https://shiun.me/blog/dynamic-preload-for-performance-optimization/</guid>
+      <description>了解如何在 Next.js 音樂應用中使用動態 Preload 技術，顯著提升前端效能！本篇文章除了解釋 Preload 概念與實現、提供實際應用範例與程式碼，也附帶了 AWS CloudFront 相關教學內容，助你優化網站速度並提升用戶體驗</description>
+    </item>
     <item>
       <title>2024 伊雲谷實習計畫 - 雲端工程師實習心得</title>
       <link>https://shiun.me/blog/2024-ecloudvalley-internship/</link>

@@ -11,8 +11,64 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Sat, 20 Jul 2024 23:06:18 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 21 Jul 2024 23:29:27 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AWS CloudFront</title>
+      <link>https://shiun.me/tags/aws-cloudfront/</link>
+      <pubDate>Sun, 21 Jul 2024 23:29:27 +0800</pubDate>
+      <guid>https://shiun.me/tags/aws-cloudfront/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>AWS S3</title>
+      <link>https://shiun.me/tags/aws-s3/</link>
+      <pubDate>Sun, 21 Jul 2024 23:29:27 +0800</pubDate>
+      <guid>https://shiun.me/tags/aws-s3/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Dynamic Loading</title>
+      <link>https://shiun.me/tags/dynamic-loading/</link>
+      <pubDate>Sun, 21 Jul 2024 23:29:27 +0800</pubDate>
+      <guid>https://shiun.me/tags/dynamic-loading/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Frontend Performance Optimization</title>
+      <link>https://shiun.me/tags/frontend-performance-optimization/</link>
+      <pubDate>Sun, 21 Jul 2024 23:29:27 +0800</pubDate>
+      <guid>https://shiun.me/tags/frontend-performance-optimization/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Music Application</title>
+      <link>https://shiun.me/tags/music-application/</link>
+      <pubDate>Sun, 21 Jul 2024 23:29:27 +0800</pubDate>
+      <guid>https://shiun.me/tags/music-application/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Next.js</title>
+      <link>https://shiun.me/tags/next.js/</link>
+      <pubDate>Sun, 21 Jul 2024 23:29:27 +0800</pubDate>
+      <guid>https://shiun.me/tags/next.js/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Preload</title>
+      <link>https://shiun.me/tags/preload/</link>
+      <pubDate>Sun, 21 Jul 2024 23:29:27 +0800</pubDate>
+      <guid>https://shiun.me/tags/preload/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>React.js</title>
+      <link>https://shiun.me/tags/react.js/</link>
+      <pubDate>Sun, 21 Jul 2024 23:29:27 +0800</pubDate>
+      <guid>https://shiun.me/tags/react.js/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Agile Development</title>
       <link>https://shiun.me/tags/agile-development/</link>

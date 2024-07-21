@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
+<meta name="robots" content="index, follow" />
+<title>
+  在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲 | Shiun
+</title>
+<meta
+  name="keywords"
+  content="AWS CloudFront, AWS S3, CDN, Preload, Dynamic Preload, Frontend Performance Optimization, Next.js Performance, React Preload, Dynamic Resource Loading, Music Application Optimization, Preload in Next.js, JavaScript Preload, Web Performance Techniques, Audio Preloading, Improve User Experience, Fast Loading Times, Frontend Development"
+/> <meta name="description" content="了解如何在 Next.js 音樂應用中使用動態 Preload 技術，顯著提升前端效能！本篇文章除了解釋 Preload 概念與實現、提供實際應用範例與程式碼，也附帶了 AWS CloudFront 相關教學內容，助你優化網站速度並提升用戶體驗"> <meta name="author" content=""> <link rel="canonical" href="https://shiun.me/blog/dynamic-preload-for-performance-optimization/">
+<link
+  crossorigin="anonymous"
+  href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css"
+  integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A="
+  rel="preload stylesheet"
+  as="style"
+/> <link rel="icon" href="https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"> <link
+rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://shiun.me/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://shiun.me/apple-touch-icon.png"> <link rel="mask-icon" href="https://shiun.me/safari-pinned-tab.svg"> <meta name="theme-color" content="#2e2e33"> <meta name="msapplication-TileColor" content="#2e2e33"> <link rel="alternate" hreflang="en" href="https://shiun.me/blog/dynamic-preload-for-performance-optimization/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+<meta property="og:title" content="在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲" />
+<meta property="og:description" content="了解如何在 Next.js 音樂應用中使用動態 Preload 技術，顯著提升前端效能！本篇文章除了解釋 Preload 概念與實現、提供實際應用範例與程式碼，也附帶了 AWS CloudFront 相關教學內容，助你優化網站速度並提升用戶體驗" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/dynamic-preload-for-performance-optimization/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-07-21T23:29:27+08:00" />
+<meta property="article:modified_time" content="2024-07-21T23:29:27+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲"/>
+<meta name="twitter:description" content="了解如何在 Next.js 音樂應用中使用動態 Preload 技術，顯著提升前端效能！本篇文章除了解釋 Preload 概念與實現、提供實際應用範例與程式碼，也附帶了 AWS CloudFront 相關教學內容，助你優化網站速度並提升用戶體驗"/>
+
+
+<noscript>
+  <style>
+    #theme-toggle,
+    .top-link {
+      display: none;
+    }
+  </style>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --theme: rgb(29, 30, 32);
+        --entry: rgb(46, 46, 51);
+        --primary: rgb(218, 218, 219);
+        --secondary: rgb(155, 156, 157);
+        --tertiary: rgb(65, 66, 68);
+        --content: rgb(196, 196, 197);
+        --code-block-bg: rgb(46, 46, 51);
+        --code-bg: rgb(55, 56, 62);
+        --border: rgb(51, 51, 51);
+      }
+
+      .list {
+        background: var(--theme);
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-track {
+        background: 0 0;
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-thumb {
+        border-color: var(--theme);
+      }
+    }
+  </style>
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲" />
+<meta property="og:description" content="了解如何在 Next.js 音樂應用中使用動態 Preload 技術，顯著提升前端效能！本篇文章除了解釋 Preload 概念與實現、提供實際應用範例與程式碼，也附帶了 AWS CloudFront 相關教學內容，助你優化網站速度並提升用戶體驗" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/dynamic-preload-for-performance-optimization/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-07-21T23:29:27+08:00" />
+<meta property="article:modified_time" content="2024-07-21T23:29:27+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/>
+
+<meta name="twitter:title" content="在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲"/>
+<meta name="twitter:description" content="了解如何在 Next.js 音樂應用中使用動態 Preload 技術，顯著提升前端效能！本篇文章除了解釋 Preload 概念與實現、提供實際應用範例與程式碼，也附帶了 AWS CloudFront 相關教學內容，助你優化網站速度並提升用戶體驗"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Blogs",
+      "item": "https://shiun.me/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲",
+      "item": "https://shiun.me/blog/dynamic-preload-for-performance-optimization/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲",
+  "name": "在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲",
+  "description": "了解如何在 Next.js 音樂應用中使用動態 Preload 技術，顯著提升前端效能！本篇文章除了解釋 Preload 概念與實現、提供實際應用範例與程式碼，也附帶了 AWS CloudFront 相關教學內容，助你優化網站速度並提升用戶體驗",
+  "keywords": [
+    "AWS CloudFront", "AWS S3", "CDN", "Preload", "Dynamic Preload", "Frontend Performance Optimization", "Next.js Performance", "React Preload", "Dynamic Resource Loading", "Music Application Optimization", "Preload in Next.js", "JavaScript Preload", "Web Performance Techniques", "Audio Preloading", "Improve User Experience", "Fast Loading Times", "Frontend Development"
+  ],
+  "articleBody": "程式碼在這邊的 feature/preload 分支: https://github.com/sh1un/Nextjs-Musive-app\n此專案是一個 Next.js 專案，原作者為 Ansh Rathod，我已經過作者本人授權使用，因此 Fork 過來稍微改了一下。\n我本身不是一名專精於前端技術的開發者，所以我所修改的 Code 都是由 ChatGPT-4 產生的。我今天這樣做的主要目的是想實驗 preload 是否能做到效能優化，以此來做一個簡單的 PoC。\n補充一下，這篇文章的內容本來是要放在 「2024 AWS Educate 陪跑計畫的獎勵課程 - 雲端串流挑戰：復刻 Spotify 的技術旅程」中教學，此工作坊旨在教學如何利用 CloudFront 優化速度與降低延遲，但礙於當天工作坊的內容太滿已經塞不下了，所以當天工作坊就沒有講到 Preload，如果看到這篇文章，想要學學 CloudFront 歡迎參觀我們當天的教材 (連結)\n什麼是 Preload? Preload 是一種網頁性能優化技術，讓瀏覽器在頁面加載時預先加載指定的資源，這樣在使用這些資源時可以更快地顯示或播放。這可以減少等待時間，提升用戶體驗。\n你可以想成：原本你是要“按下去播放按鈕”才會開始下載音樂，現在我們提前幫你下載，你之後“按下去播放按鈕”就會立即播放。\n舉例 如果你在網頁上有一段影片或音樂，你可以用 preload 告訴瀏覽器提前下載這些文件，這樣當用戶點擊播放按鈕時，影片或音樂就會立即播放，而不是先等待下載。\n基本用法： 在 HTML 中，你可以在 標籤中使用 rel=\"preload\" 來預加載資源。例如：\n\u003clink rel=\"preload\" href=\"path/to/your/file.mp3\" as=\"audio\"\u003e 這樣，瀏覽器會在頁面加載時預先下載 file.mp3，提高用戶播放音樂的速度。\n動態 Preload 的實現思路 每個用戶的歌單都不一樣，所以我們當然不希望把 preload 的 href 寫死成一個 URL。\n解決方案 我們可以通過以下幾個步驟來實現動態的 preload：\nAPI 獲取歌單： 伺服器端提供一個 API，根據用戶的請求返回該用戶的歌單。這個 API 返回一個 JSON 結構，其中包含了音樂檔案的 URL 列表。 JavaScript 動態生成 Preload 標籤： 使用 JavaScript 在頁面加載後動態地從 API 獲取歌單，並為每個音樂文件創建 preload 標籤，將其添加到頁面的 中。 具體實現 注意⚠️ 我的寫法並非添加 preload 到頁面的 ，而是直接用 React 和 JS 本身提供的內建物件來達到同樣效果，詳見本段說明。\n因為我們的 Ansh 寫的後端應用有提供這支“取得指定數量隨機音樂 API”，我會以這支 API 來取得隨機歌單：\nGET /api/songs/random/{songs_count}\nResponse (200)\n{ \"success\": true, \"data\": [ { \"id\": 99123, \"duration\": 197.877531, \"track_name\": \"Marching Music -The Crusader By John Philip Sousa\", \"src\": \"https://cdn.pixabay.com/audio/2022/03/21/audio_1a944368a1.mp3\", \"cover_image\": { \"url\": \"https://images.unsplash.com/photo-1482954363933-4bed6bbea570?ixid=MnwzODAxMTZ8MHwxfHNlYXJjaHwxMjd8fGx1eHVyeXxlbnwwfHx8fDE2NjgyNjIzOTI\u0026ixlib=rb-4.0.3\", \"color\": \"#0c2640\" }, \"artist_name\": \"Jane Howe\", \"artist_id\": 25232863 }, ... ] } 先來看一些核心的程式碼，最後會附上完整的 _app.tsx。\n這段程式碼在 MyApp 組件的 useEffect 中實現了動態 preload：\nuseEffect(() =\u003e { // Fetch random songs and preload them const fetchAndPreloadSongs = async () =\u003e { try { const { topHits } = await homePageApi.getRandomArtists(); preloadSongs(topHits); } catch (error) { console.error(\"Error fetching random songs:\", error); } }; const preloadSongs = (songs: Song[]) =\u003e { songs.forEach((song) =\u003e { const audio = new Audio(); audio.src = song.src; audio.load(); audioElements.current.set(song.id, audio); console.log(`Preloading song: ${song.track_name}`); }); }; fetchAndPreloadSongs(); }, []); useEffect 這段程式碼在組件掛載 (mounted) 後執行，確保在頁面加載後立刻執行 preload 邏輯。 空的依賴陣列 [] 確保這段程式碼只在組件初始化時執行一次。 fetchAndPreloadSongs 該異步函數使用 homePageApi.getRandomArtists() 從 API 獲取隨機的音樂檔案。 獲取音樂後，調用 preloadSongs 函數進行 preload。 preloadSongs 該函數接收一個音樂列表，對每個音樂創建一個新的 Audio 對象。 設置 audio.src 為音樂的 URL，並調用 audio.load() 以便瀏覽器開始加載音樂文件。 將創建的 Audio 對象存儲在 audioElements 這個 Map 中，方便以後引用和控制。 _app.tsx 完整程式碼：\nimport \"../styles/globals.css\"; import type { AppProps } from \"next/app\"; import { Provider } from \"react-redux\"; import store from \"../stores/store\"; import NextNProgress from \"nextjs-progressbar\"; import { useRouter } from \"next/router\"; import AudioPlayer from \"../components/AudioPlayer/AudioPlayer\"; import SidebarItem from \"../components/sidebarItem\"; import Head from \"next/head\"; import \"react-toastify/dist/ReactToastify.css\"; import useDetectKeyboardOpen from \"use-detect-keyboard-open\"; import AddToCollectionModel from \"@/components/AddToCollectionModel\"; import { ToastContainer } from \"react-toastify\"; import { useEffect, useRef } from \"react\"; import homePageApi from \"../stores/homePage/homePageApi\"; import { Song } from \"@/interfaces/Track\"; function MyApp({ Component, pageProps }: AppProps) { const audioElements = useRef\u003cMap\u003cnumber, HTMLAudioElement\u003e\u003e(new Map()); useEffect(() =\u003e { // Fetch random songs and preload them const fetchAndPreloadSongs = async () =\u003e { try { const { topHits } = await homePageApi.getRandomArtists(); preloadSongs(topHits); } catch (error) { console.error(\"Error fetching random songs:\", error); } }; const preloadSongs = (songs: Song[]) =\u003e { songs.forEach((song) =\u003e { const audio = new Audio(); audio.src = song.src; audio.load(); audioElements.current.set(song.id, audio); console.log(`Preloading song: ${song.track_name}`); }); }; fetchAndPreloadSongs(); }, []); return ( \u003cProvider store={store}\u003e \u003cHead\u003e \u003clink rel=\"preload\" href=\"/musive-icons.ttf\" as=\"font\" crossOrigin=\"\" type=\"font/ttf\" /\u003e \u003clink rel=\"preload\" href=\"/ProximaNova/Proxima Nova Reg.otf\" as=\"font\" crossOrigin=\"\" type=\"font/otf\" /\u003e \u003clink rel=\"preload\" href=\"/ProximaNova/Proxima Nova Bold.otf\" as=\"font\" crossOrigin=\"\" type=\"font/otf\" /\u003e \u003c/Head\u003e \u003cNextNProgress color=\"#2bb540\" stopDelayMs={10} height={3} options={{ showSpinner: false }} /\u003e \u003cComponent {...pageProps} /\u003e \u003cAudioPlayerComponent /\u003e \u003c/Provider\u003e ); } function AudioPlayerComponent() { const router = useRouter(); const isKeyboardOpen = useDetectKeyboardOpen(); return ( \u003cdiv\u003e \u003cToastContainer position=\"top-center\" autoClose={1000} hideProgressBar newestOnTop={ false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme=\"dark\" /\u003e \u003cAddToCollectionModel /\u003e {router.pathname !== \"/login\" \u0026\u0026 router.pathname !== \"/register\" \u0026\u0026 router.pathname !== \"/_error\" \u0026\u0026 router.pathname !== \"/\" ? ( \u003cAudioPlayer className={isKeyboardOpen ? \"invisible\" : \"visible\"} /\u003e ) : ( \u003cdiv\u003e\u003c/div\u003e )} {router.pathname !== \"/login\" \u0026\u0026 router.pathname !== \"/register\" \u0026\u0026 router.pathname !== \"/_error\" \u0026\u0026 router.pathname !== \"/playing\" \u0026\u0026 router.pathname !== \"/\" \u0026\u0026 ( \u003cdiv className={`bg-[#121212] hidden mobile:block tablet:block fixed bottom-0 left-0 right-0 w-full pt-2 pb-1 z-20 ${ isKeyboardOpen ? \"invisible\" : \"visible\" }`} \u003e \u003cdiv className=\"flex flex-row justify-center \"\u003e \u003cSidebarItem name=\"home\" label=\"Home\" /\u003e \u003cSidebarItem name=\"search\" label=\"Search\" /\u003e \u003cSidebarItem name=\"library\" label=\"Library\" /\u003e \u003c/div\u003e \u003c/div\u003e )} \u003c/div\u003e ); } export default MyApp; 使用 Preload 前 vs 使用後 使用前 請注意，第二首是按下播放按鈕後才開始下載音樂：\n使用後 補充 - 在舊有的機器改成 Preload 這邊內容僅適用於有照著工作坊內容實作的同學，以下步驟將教學你如何把原有的 Application 套用 Dynamic Preload：\n連線上去 EC2 cd Nextjs-Musive-app git checkout feature/preload TOKEN=$(curl -X PUT \"http://169.254.169.254/latest/api/token\" -H \"X-aws-ec2-metadata-token-ttl-seconds: 21600\") export MUSIVE_API_URL=\"http://$(curl -H \"X-aws-ec2-metadata-token: $TOKEN\" http://169.254.169.254/latest/meta-data/public-ipv4):4444/api\" npm install npm run build pm2 restart nextjs-app Resources Notion - 20240705 獎勵課程 - 雲端串流挑戰：復刻 Spotify 的技術旅程 GitHub - Ansh-Rathod / Nextjs-Musive-app ",
+  "wordCount" : "649",
+  "inLanguage": "en",
+  "datePublished": "2024-07-21T23:29:27+08:00",
+  "dateModified": "2024-07-21T23:29:27+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://shiun.me/blog/dynamic-preload-for-performance-optimization/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Shiun",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://shiun.me/" accesskey="h" title="Shiun (Alt + H)">Shiun</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://shiun.me/blog/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.notion.site/Shiun-s-Learning-Journal-ded4cd4a3efd47b2805f2f99dee8f9a1?pvs=4" title="Notion">
+                    <span>Notion</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.linkedin.com/in/shiunchiu" title="About me">
+                    <span>About me</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://shiun.me/">Home</a>&nbsp;»&nbsp;<a href="https://shiun.me/blog/">Blogs</a></div>
+    <h1 class="post-title entry-hint-parent">
+      在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲
+    </h1>
+    <div class="post-description">
+      了解如何在 Next.js 音樂應用中使用動態 Preload 技術，顯著提升前端效能！本篇文章除了解釋 Preload 概念與實現、提供實際應用範例與程式碼，也附帶了 AWS CloudFront 相關教學內容，助你優化網站速度並提升用戶體驗
+    </div>
+    <div class="post-meta"><span title='2024-07-21 23:29:27 +0800 CST'>July 21, 2024</span>&nbsp;·&nbsp;4 min
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e4%bb%80%e9%ba%bc%e6%98%af-preload" aria-label="什麼是 Preload?">什麼是 Preload?</a><ul>
+                        
+                <li>
+                    <a href="#%e8%88%89%e4%be%8b" aria-label="舉例">舉例</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%8b%95%e6%85%8b-preload-%e7%9a%84%e5%af%a6%e7%8f%be%e6%80%9d%e8%b7%af" aria-label="動態 Preload 的實現思路">動態 Preload 的實現思路</a><ul>
+                        
+                <li>
+                    <a href="#%e8%a7%a3%e6%b1%ba%e6%96%b9%e6%a1%88" aria-label="解決方案">解決方案</a></li>
+                <li>
+                    <a href="#%e5%85%b7%e9%ab%94%e5%af%a6%e7%8f%be" aria-label="具體實現">具體實現</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e4%bd%bf%e7%94%a8-preload-%e5%89%8d-vs-%e4%bd%bf%e7%94%a8%e5%be%8c" aria-label="使用 Preload 前 vs 使用後">使用 Preload 前 vs 使用後</a><ul>
+                        
+                <li>
+                    <a href="#%e4%bd%bf%e7%94%a8%e5%89%8d" aria-label="使用前">使用前</a></li>
+                <li>
+                    <a href="#%e4%bd%bf%e7%94%a8%e5%be%8c" aria-label="使用後">使用後</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e8%a3%9c%e5%85%85---%e5%9c%a8%e8%88%8a%e6%9c%89%e7%9a%84%e6%a9%9f%e5%99%a8%e6%94%b9%e6%88%90-preload" aria-label="補充 - 在舊有的機器改成 Preload">補充 - 在舊有的機器改成 Preload</a></li>
+                <li>
+                    <a href="#resources" aria-label="Resources">Resources</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>程式碼在這邊的 <code>feature/preload</code> 分支: <a href="https://github.com/sh1un/Nextjs-Musive-app/tree/feature/preload">https://github.com/sh1un/Nextjs-Musive-app</a></p>
+<p>此專案是一個 Next.js 專案，原作者為 <a href="https://www.linkedin.com/in/ansh-rathod/">Ansh Rathod</a>，我已經過作者本人授權使用，因此 Fork 過來稍微改了一下。</p>
+<p><strong>我本身不是一名專精於前端技術的開發者</strong>，所以我所修改的 Code 都是由 ChatGPT-4 產生的。我今天這樣做的主要目的是想實驗 preload 是否能做到效能優化，以此來做一個簡單的 PoC。</p>
+<blockquote>
+<p>補充一下，這篇文章的內容本來是要放在 「<a href="https://www.instagram.com/p/C8UWAZXynuU/?hl=zh-tw&amp;img_index=1">2024 AWS Educate 陪跑計畫的獎勵課程 - 雲端串流挑戰：復刻 Spotify 的技術旅程</a>」中教學，此工作坊旨在教學如何利用 CloudFront 優化速度與降低延遲，但礙於當天工作坊的內容太滿已經塞不下了，所以當天工作坊就沒有講到 Preload，如果看到這篇文章，想要學學 CloudFront 歡迎參觀我們當天的教材 (<a href="https://aws-educate-tw.notion.site/20240705-Spotify-6b973b4e8d4d43d5bfb06815732f4e0b">連結</a>)</p>
+</blockquote>
+<hr>
+<h2 id="什麼是-preload">什麼是 Preload?<a hidden class="anchor" aria-hidden="true" href="#什麼是-preload">#</a></h2>
+<p>Preload 是一種網頁性能優化技術，讓瀏覽器在頁面加載時預先加載指定的資源，這樣在使用這些資源時可以更快地顯示或播放。這可以減少等待時間，提升用戶體驗。</p>
+<blockquote>
+<p>你可以想成：原本你是要“按下去播放按鈕”才會開始下載音樂，現在我們提前幫你下載，你之後“按下去播放按鈕”就會立即播放。</p>
+</blockquote>
+<h3 id="舉例">舉例<a hidden class="anchor" aria-hidden="true" href="#舉例">#</a></h3>
+<p>如果你在網頁上有一段影片或音樂，你可以用 preload 告訴瀏覽器提前下載這些文件，這樣當用戶點擊播放按鈕時，影片或音樂就會立即播放，而不是先等待下載。</p>
+<p>基本用法：
+在 HTML 中，你可以在 <code>&lt;link&gt;</code> 標籤中使用 <code>rel=&quot;preload&quot;</code> 來預加載資源。例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">link</span> <span style="color:#a6e22e">rel</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;preload&#34;</span> <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;path/to/your/file.mp3&#34;</span> <span style="color:#a6e22e">as</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;audio&#34;</span>&gt;
+</span></span></code></pre></div><p>這樣，瀏覽器會在頁面加載時預先下載 <code>file.mp3</code>，提高用戶播放音樂的速度。</p>
+<hr>
+<h2 id="動態-preload-的實現思路">動態 Preload 的實現思路<a hidden class="anchor" aria-hidden="true" href="#動態-preload-的實現思路">#</a></h2>
+<p>每個用戶的歌單都不一樣，所以我們當然不希望把 preload 的 <code>href</code> 寫死成一個 URL。</p>
+<h3 id="解決方案">解決方案<a hidden class="anchor" aria-hidden="true" href="#解決方案">#</a></h3>
+<p>我們可以通過以下幾個步驟來實現動態的 preload：</p>
+<ol>
+<li><strong>API 獲取歌單</strong>：
+伺服器端提供一個 API，根據用戶的請求返回該用戶的歌單。這個 API 返回一個 JSON 結構，其中包含了音樂檔案的 URL 列表。</li>
+<li><strong>JavaScript 動態生成 Preload 標籤</strong>：
+使用 JavaScript 在頁面加載後動態地從 API 獲取歌單，並為每個音樂文件創建 preload 標籤，將其添加到頁面的 <code>&lt;head&gt;</code> 中。</li>
+</ol>
+<h3 id="具體實現">具體實現<a hidden class="anchor" aria-hidden="true" href="#具體實現">#</a></h3>
+<blockquote>
+<p>注意⚠️ 我的寫法並非添加 preload 到頁面的 <code>&lt;head&gt;</code>，而是直接用 React 和 JS 本身提供的內建物件來達到同樣效果，詳見本段說明。</p>
+</blockquote>
+<p>因為我們的 Ansh 寫的後端應用有提供這支“取得指定數量隨機音樂 API”，我會以這支 API 來取得隨機歌單：</p>
+<ul>
+<li>
+<p><code>GET /api/songs/random/{songs_count}</code></p>
+</li>
+<li>
+<p>Response (200)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;success&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;data&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#ae81ff">99123</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;duration&#34;</span>: <span style="color:#ae81ff">197.877531</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;track_name&#34;</span>: <span style="color:#e6db74">&#34;Marching Music -The Crusader By John Philip Sousa&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;src&#34;</span>: <span style="color:#e6db74">&#34;https://cdn.pixabay.com/audio/2022/03/21/audio_1a944368a1.mp3&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;cover_image&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;url&#34;</span>: <span style="color:#e6db74">&#34;https://images.unsplash.com/photo-1482954363933-4bed6bbea570?ixid=MnwzODAxMTZ8MHwxfHNlYXJjaHwxMjd8fGx1eHVyeXxlbnwwfHx8fDE2NjgyNjIzOTI&amp;ixlib=rb-4.0.3&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&#34;color&#34;</span>: <span style="color:#e6db74">&#34;#0c2640&#34;</span>
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;artist_name&#34;</span>: <span style="color:#e6db74">&#34;Jane Howe&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;artist_id&#34;</span>: <span style="color:#ae81ff">25232863</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#960050;background-color:#1e0010">...</span>
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></li>
+</ul>
+<p>先來看一些核心的程式碼，最後會附上完整的 <code>_app.tsx</code>。</p>
+<p>這段程式碼在 <code>MyApp</code> 組件的 <code>useEffect</code> 中實現了動態 preload：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span><span style="color:#a6e22e">useEffect</span>(() <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// Fetch random songs and preload them
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">fetchAndPreloadSongs</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> () <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">topHits</span> } <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">homePageApi</span>.<span style="color:#a6e22e">getRandomArtists</span>();
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">preloadSongs</span>(<span style="color:#a6e22e">topHits</span>);
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">error</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">error</span>(<span style="color:#e6db74">&#34;Error fetching random songs:&#34;</span>, <span style="color:#a6e22e">error</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">preloadSongs</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">songs</span>: <span style="color:#66d9ef">Song</span>[]) <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">songs</span>.<span style="color:#a6e22e">forEach</span>((<span style="color:#a6e22e">song</span>) <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">audio</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Audio</span>();
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">audio</span>.<span style="color:#a6e22e">src</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">song</span>.<span style="color:#a6e22e">src</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">audio</span>.<span style="color:#a6e22e">load</span>();
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">audioElements</span>.<span style="color:#a6e22e">current</span>.<span style="color:#66d9ef">set</span>(<span style="color:#a6e22e">song</span>.<span style="color:#a6e22e">id</span>, <span style="color:#a6e22e">audio</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">`Preloading song: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">song</span>.<span style="color:#a6e22e">track_name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>);
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">fetchAndPreloadSongs</span>();
+</span></span><span style="display:flex;"><span>}, []);
+</span></span></code></pre></div><ul>
+<li><strong>useEffect</strong>
+<ul>
+<li>這段程式碼在組件掛載 (mounted) 後執行，確保在頁面加載後立刻執行 preload 邏輯。</li>
+<li>空的依賴陣列 <code>[]</code> 確保這段程式碼只在組件初始化時執行一次。</li>
+</ul>
+</li>
+<li><strong>fetchAndPreloadSongs</strong>
+<ul>
+<li>該異步函數使用 <code>homePageApi.getRandomArtists()</code> 從 API 獲取隨機的音樂檔案。</li>
+<li>獲取音樂後，調用 <code>preloadSongs</code> 函數進行 preload。</li>
+</ul>
+</li>
+<li><strong>preloadSongs</strong>
+<ul>
+<li>該函數接收一個音樂列表，對每個音樂創建一個新的 <code>Audio</code> 對象。</li>
+<li>設置 <code>audio.src</code> 為音樂的 URL，並調用 <code>audio.load()</code> 以便瀏覽器開始加載音樂文件。</li>
+<li>將創建的 <code>Audio</code> 對象存儲在 <code>audioElements</code> 這個 <code>Map</code> 中，方便以後引用和控制。</li>
+</ul>
+</li>
+</ul>
+<p><code>_app.tsx</code> 完整程式碼：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-tsx" data-lang="tsx"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#e6db74">&#34;../styles/globals.css&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#66d9ef">type</span> { <span style="color:#a6e22e">AppProps</span> } <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#34;next/app&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">Provider</span> } <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#34;react-redux&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">store</span> <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#34;../stores/store&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">NextNProgress</span> <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#34;nextjs-progressbar&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">useRouter</span> } <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#34;next/router&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">AudioPlayer</span> <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#34;../components/AudioPlayer/AudioPlayer&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">SidebarItem</span> <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#34;../components/sidebarItem&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">Head</span> <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#34;next/head&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#e6db74">&#34;react-toastify/dist/ReactToastify.css&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">useDetectKeyboardOpen</span> <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#34;use-detect-keyboard-open&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">AddToCollectionModel</span> <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#34;@/components/AddToCollectionModel&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">ToastContainer</span> } <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#34;react-toastify&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">useEffect</span>, <span style="color:#a6e22e">useRef</span> } <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#34;react&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">homePageApi</span> <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#34;../stores/homePage/homePageApi&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">Song</span> } <span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#34;@/interfaces/Track&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">MyApp</span>({ <span style="color:#a6e22e">Component</span>, <span style="color:#a6e22e">pageProps</span> }<span style="color:#f92672">:</span> <span style="color:#a6e22e">AppProps</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">audioElements</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">useRef</span>&lt;<span style="color:#f92672">Map</span><span style="color:#960050;background-color:#1e0010">&lt;</span><span style="color:#a6e22e">number</span><span style="color:#960050;background-color:#1e0010">,</span> <span style="color:#a6e22e">HTMLAudioElement</span>&gt;<span style="color:#f92672">&gt;</span>(<span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Map</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">useEffect</span>(() <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Fetch random songs and preload them
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">fetchAndPreloadSongs</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> () <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">topHits</span> } <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">homePageApi</span>.<span style="color:#a6e22e">getRandomArtists</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">preloadSongs</span>(<span style="color:#a6e22e">topHits</span>);
+</span></span><span style="display:flex;"><span>      } <span style="color:#66d9ef">catch</span> (<span style="color:#a6e22e">error</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">error</span>(<span style="color:#e6db74">&#34;Error fetching random songs:&#34;</span>, <span style="color:#a6e22e">error</span>);
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">preloadSongs</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">songs</span>: <span style="color:#66d9ef">Song</span>[]) <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">songs</span>.<span style="color:#a6e22e">forEach</span>((<span style="color:#a6e22e">song</span>) <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">audio</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Audio</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">audio</span>.<span style="color:#a6e22e">src</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">song</span>.<span style="color:#a6e22e">src</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">audio</span>.<span style="color:#a6e22e">load</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">audioElements</span>.<span style="color:#a6e22e">current</span>.<span style="color:#66d9ef">set</span>(<span style="color:#a6e22e">song</span>.<span style="color:#a6e22e">id</span>, <span style="color:#a6e22e">audio</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">`Preloading song: </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">song</span>.<span style="color:#a6e22e">track_name</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>);
+</span></span><span style="display:flex;"><span>      });
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fetchAndPreloadSongs</span>();
+</span></span><span style="display:flex;"><span>  }, []);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> (
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">Provider</span> <span style="color:#a6e22e">store</span><span style="color:#f92672">=</span>{<span style="color:#a6e22e">store</span>}&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">Head</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">link</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">rel</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;preload&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/musive-icons.ttf&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">as</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;font&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">crossOrigin</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;font/ttf&#34;</span>
+</span></span><span style="display:flex;"><span>        /&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">link</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">rel</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;preload&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/ProximaNova/Proxima Nova Reg.otf&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">as</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;font&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">crossOrigin</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;font/otf&#34;</span>
+</span></span><span style="display:flex;"><span>        /&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">link</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">rel</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;preload&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/ProximaNova/Proxima Nova Bold.otf&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">as</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;font&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">crossOrigin</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;font/otf&#34;</span>
+</span></span><span style="display:flex;"><span>        /&gt;
+</span></span><span style="display:flex;"><span>      &lt;/<span style="color:#f92672">Head</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">NextNProgress</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">color</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;#2bb540&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">stopDelayMs</span><span style="color:#f92672">=</span>{<span style="color:#ae81ff">10</span>}
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">height</span><span style="color:#f92672">=</span>{<span style="color:#ae81ff">3</span>}
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">options</span><span style="color:#f92672">=</span>{{ <span style="color:#a6e22e">showSpinner</span>: <span style="color:#66d9ef">false</span> }}
+</span></span><span style="display:flex;"><span>      /&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">Component</span> {<span style="color:#a6e22e">...pageProps</span>} /&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">AudioPlayerComponent</span> /&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">Provider</span>&gt;
+</span></span><span style="display:flex;"><span>  );
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">AudioPlayerComponent() {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">router</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">useRouter</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">isKeyboardOpen</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">useDetectKeyboardOpen</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> (
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">ToastContainer</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">position</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;top-center&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">autoClose</span><span style="color:#f92672">=</span>{<span style="color:#ae81ff">1000</span>}
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">hideProgressBar</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">newestOnTop</span><span style="color:#f92672">=</span>{
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">false</span>}
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">closeOnClick</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">rtl</span><span style="color:#f92672">=</span>{<span style="color:#66d9ef">false</span>}
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">pauseOnFocusLoss</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">draggable</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">pauseOnHover</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">theme</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;dark&#34;</span>
+</span></span><span style="display:flex;"><span>      /&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">AddToCollectionModel</span> /&gt;
+</span></span><span style="display:flex;"><span>      {<span style="color:#a6e22e">router</span>.<span style="color:#a6e22e">pathname</span> <span style="color:#f92672">!==</span> <span style="color:#e6db74">&#34;/login&#34;</span> <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">router</span>.<span style="color:#a6e22e">pathname</span> <span style="color:#f92672">!==</span> <span style="color:#e6db74">&#34;/register&#34;</span> <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">router</span>.<span style="color:#a6e22e">pathname</span> <span style="color:#f92672">!==</span> <span style="color:#e6db74">&#34;/_error&#34;</span> <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">router</span>.<span style="color:#a6e22e">pathname</span> <span style="color:#f92672">!==</span> <span style="color:#e6db74">&#34;/&#34;</span> <span style="color:#f92672">?</span> (
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">AudioPlayer</span> <span style="color:#a6e22e">className</span><span style="color:#f92672">=</span>{<span style="color:#a6e22e">isKeyboardOpen</span> <span style="color:#f92672">?</span> <span style="color:#e6db74">&#34;invisible&#34;</span> <span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;visible&#34;</span>} /&gt;
+</span></span><span style="display:flex;"><span>      ) <span style="color:#f92672">:</span> (
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">div</span>&gt;&lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>      )}
+</span></span><span style="display:flex;"><span>      {<span style="color:#a6e22e">router</span>.<span style="color:#a6e22e">pathname</span> <span style="color:#f92672">!==</span> <span style="color:#e6db74">&#34;/login&#34;</span> <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">router</span>.<span style="color:#a6e22e">pathname</span> <span style="color:#f92672">!==</span> <span style="color:#e6db74">&#34;/register&#34;</span> <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">router</span>.<span style="color:#a6e22e">pathname</span> <span style="color:#f92672">!==</span> <span style="color:#e6db74">&#34;/_error&#34;</span> <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">router</span>.<span style="color:#a6e22e">pathname</span> <span style="color:#f92672">!==</span> <span style="color:#e6db74">&#34;/playing&#34;</span> <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">router</span>.<span style="color:#a6e22e">pathname</span> <span style="color:#f92672">!==</span> <span style="color:#e6db74">&#34;/&#34;</span> <span style="color:#f92672">&amp;&amp;</span> (
+</span></span><span style="display:flex;"><span>          &lt;<span style="color:#f92672">div</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">className</span><span style="color:#f92672">=</span>{<span style="color:#e6db74">`bg-[#121212] hidden mobile:block tablet:block 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      fixed bottom-0 left-0 right-0 w-full pt-2 pb-1 z-20 </span><span style="color:#e6db74">${</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">isKeyboardOpen</span> <span style="color:#f92672">?</span> <span style="color:#e6db74">&#34;invisible&#34;</span> <span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;visible&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>}
+</span></span><span style="display:flex;"><span>          &gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">className</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;flex flex-row justify-center &#34;</span>&gt;
+</span></span><span style="display:flex;"><span>              &lt;<span style="color:#f92672">SidebarItem</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;home&#34;</span> <span style="color:#a6e22e">label</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Home&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>              &lt;<span style="color:#f92672">SidebarItem</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;search&#34;</span> <span style="color:#a6e22e">label</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Search&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>              &lt;<span style="color:#f92672">SidebarItem</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;library&#34;</span> <span style="color:#a6e22e">label</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Library&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>            &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>          &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>        )}
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>  );
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> <span style="color:#a6e22e">MyApp</span>;
+</span></span></code></pre></div><hr>
+<h2 id="使用-preload-前-vs-使用後">使用 Preload 前 vs 使用後<a hidden class="anchor" aria-hidden="true" href="#使用-preload-前-vs-使用後">#</a></h2>
+<h3 id="使用前">使用前<a hidden class="anchor" aria-hidden="true" href="#使用前">#</a></h3>
+<p>請注意，第二首是按下播放按鈕後才開始下載音樂：</p>
+<p><img loading="lazy" src="https://github.com/user-attachments/assets/38f7b6d1-a3d3-47a5-9126-f704195bcda7" alt="nextjs-no-dynamic-preload"  />
+</p>
+<h3 id="使用後">使用後<a hidden class="anchor" aria-hidden="true" href="#使用後">#</a></h3>
+<p><img loading="lazy" src="https://github.com/user-attachments/assets/7e219ea3-e105-47d9-b925-af12fff1d55c" alt="nextjs-use-dynamic-preload"  />
+</p>
+<p><img loading="lazy" src="https://github.com/user-attachments/assets/3ae047b2-751e-4913-be18-5a887fc5da84" alt="devTool-screenshot"  />
+</p>
+<hr>
+<h2 id="補充---在舊有的機器改成-preload">補充 - 在舊有的機器改成 Preload<a hidden class="anchor" aria-hidden="true" href="#補充---在舊有的機器改成-preload">#</a></h2>
+<p>這邊內容僅適用於有照著<a href="https://aws-educate-tw.notion.site/20240705-Spotify-6b973b4e8d4d43d5bfb06815732f4e0b">工作坊內容</a>實作的同學，以下步驟將教學你如何把原有的 Application 套用 Dynamic Preload：</p>
+<ol>
+<li>連線上去 EC2</li>
+<li><code>cd Nextjs-Musive-app</code></li>
+<li><code>git checkout feature/preload</code></li>
+<li><code>TOKEN=$(curl -X PUT &quot;http://169.254.169.254/latest/api/token&quot; -H &quot;X-aws-ec2-metadata-token-ttl-seconds: 21600&quot;)</code></li>
+<li><code>export MUSIVE_API_URL=&quot;http://$(curl -H &quot;X-aws-ec2-metadata-token: $TOKEN&quot; http://169.254.169.254/latest/meta-data/public-ipv4):4444/api&quot;</code></li>
+<li><code>npm install</code></li>
+<li><code>npm run build</code></li>
+<li><code>pm2 restart nextjs-app</code></li>
+</ol>
+<h2 id="resources">Resources<a hidden class="anchor" aria-hidden="true" href="#resources">#</a></h2>
+<ul>
+<li><a href="https://aws-educate-tw.notion.site/20240705-Spotify-6b973b4e8d4d43d5bfb06815732f4e0b">Notion - 20240705 獎勵課程 - 雲端串流挑戰：復刻 Spotify 的技術旅程</a></li>
+<li><a href="https://github.com/Ansh-Rathod/Nextjs-Musive-app">GitHub - Ansh-Rathod / Nextjs-Musive-app</a></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://shiun.me/tags/aws-cloudfront/">AWS CloudFront</a></li>
+      <li><a href="https://shiun.me/tags/aws-s3/">AWS S3</a></li>
+      <li><a href="https://shiun.me/tags/preload/">Preload</a></li>
+      <li><a href="https://shiun.me/tags/frontend-performance-optimization/">Frontend Performance Optimization</a></li>
+      <li><a href="https://shiun.me/tags/next.js/">Next.js</a></li>
+      <li><a href="https://shiun.me/tags/react.js/">React.js</a></li>
+      <li><a href="https://shiun.me/tags/dynamic-loading/">Dynamic Loading</a></li>
+      <li><a href="https://shiun.me/tags/music-application/">Music Application</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://shiun.me/blog/2024-ecloudvalley-internship/">
+    <span class="title">Next »</span>
+    <br>
+    <span>2024 伊雲谷實習計畫 - 雲端工程師實習心得</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲 on x"
+            href="https://x.com/intent/tweet/?text=%e5%9c%a8%20Next.js%20%e9%9f%b3%e6%a8%82%e6%87%89%e7%94%a8%e4%b8%ad%e4%bd%bf%e7%94%a8%e5%8b%95%e6%85%8b%20Preload%20%e6%8a%80%e8%a1%93%e6%8f%90%e5%8d%87%e5%89%8d%e7%ab%af%e6%95%88%e8%83%bd%e9%99%8d%e4%bd%8e%e5%bb%b6%e9%81%b2&amp;url=https%3a%2f%2fshiun.me%2fblog%2fdynamic-preload-for-performance-optimization%2f&amp;hashtags=AWSCloudFront%2cAWSS3%2cPreload%2cFrontendPerformanceOptimization%2cNext.js%2cReact.js%2cDynamicLoading%2cMusicApplication">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲 on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fshiun.me%2fblog%2fdynamic-preload-for-performance-optimization%2f&amp;title=%e5%9c%a8%20Next.js%20%e9%9f%b3%e6%a8%82%e6%87%89%e7%94%a8%e4%b8%ad%e4%bd%bf%e7%94%a8%e5%8b%95%e6%85%8b%20Preload%20%e6%8a%80%e8%a1%93%e6%8f%90%e5%8d%87%e5%89%8d%e7%ab%af%e6%95%88%e8%83%bd%e9%99%8d%e4%bd%8e%e5%bb%b6%e9%81%b2&amp;summary=%e5%9c%a8%20Next.js%20%e9%9f%b3%e6%a8%82%e6%87%89%e7%94%a8%e4%b8%ad%e4%bd%bf%e7%94%a8%e5%8b%95%e6%85%8b%20Preload%20%e6%8a%80%e8%a1%93%e6%8f%90%e5%8d%87%e5%89%8d%e7%ab%af%e6%95%88%e8%83%bd%e9%99%8d%e4%bd%8e%e5%bb%b6%e9%81%b2&amp;source=https%3a%2f%2fshiun.me%2fblog%2fdynamic-preload-for-performance-optimization%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲 on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fshiun.me%2fblog%2fdynamic-preload-for-performance-optimization%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲 on telegram"
+            href="https://telegram.me/share/url?text=%e5%9c%a8%20Next.js%20%e9%9f%b3%e6%a8%82%e6%87%89%e7%94%a8%e4%b8%ad%e4%bd%bf%e7%94%a8%e5%8b%95%e6%85%8b%20Preload%20%e6%8a%80%e8%a1%93%e6%8f%90%e5%8d%87%e5%89%8d%e7%ab%af%e6%95%88%e8%83%bd%e9%99%8d%e4%bd%8e%e5%bb%b6%e9%81%b2&amp;url=https%3a%2f%2fshiun.me%2fblog%2fdynamic-preload-for-performance-optimization%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer><div class="disqus markdown"><div id="disqus_thread"></div>
+<script>
+  
+
+  
+
+  (function () {
+    
+    var d = document,
+      s = d.createElement("script");
+    s.src = "https://shiun-me.disqus.com/embed.js";
+    s.setAttribute("data-timestamp", +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript
+  >Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript"
+    >comments powered by Disqus.</a
+  ></noscript
+>
+</div>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://shiun.me/">Shiun</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

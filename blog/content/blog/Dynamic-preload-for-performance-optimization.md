@@ -1,7 +1,7 @@
 ---
 title: '在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲'
 date: 2024-07-21T23:29:27+08:00
-draft: true
+draft: false
 description: "了解如何在 Next.js 音樂應用中使用動態 Preload 技術，顯著提升前端效能！本篇文章除了解釋 Preload 概念與實現、提供實際應用範例與程式碼，也附帶了 AWS CloudFront 相關教學內容，助你優化網站速度並提升用戶體驗"
 tags: ["AWS CloudFront", "AWS S3", "Preload", "Frontend Performance Optimization", "Next.js", "React.js", "Dynamic Loading", "Music Application"]
 categories: ["AWS", "CDN", "Frontend Development", "Performance Optimization"]
