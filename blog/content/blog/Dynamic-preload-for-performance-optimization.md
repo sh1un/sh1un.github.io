@@ -287,7 +287,6 @@ export default MyApp;
 
 ![nextjs-no-dynamic-preload](https://github.com/user-attachments/assets/38f7b6d1-a3d3-47a5-9126-f704195bcda7)
 
-
 ### 使用後
 
 ![nextjs-use-dynamic-preload](https://github.com/user-attachments/assets/7e219ea3-e105-47d9-b925-af12fff1d55c)
@@ -297,7 +296,9 @@ export default MyApp;
 ---
 
 ## 補充 - 在舊有的機器改成 Preload
+
 這邊內容僅適用於有照著[工作坊內容](https://aws-educate-tw.notion.site/20240705-Spotify-6b973b4e8d4d43d5bfb06815732f4e0b)實作的同學，以下步驟將教學你如何把原有的 Application 套用 Dynamic Preload：
+
 1. 連線上去 EC2
 2. `cd Nextjs-Musive-app`
 3. `git checkout feature/preload`
