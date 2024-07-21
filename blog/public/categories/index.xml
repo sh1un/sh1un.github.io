@@ -11,8 +11,36 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Sat, 20 Jul 2024 23:06:18 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 21 Jul 2024 23:29:27 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AWS</title>
+      <link>https://shiun.me/categories/aws/</link>
+      <pubDate>Sun, 21 Jul 2024 23:29:27 +0800</pubDate>
+      <guid>https://shiun.me/categories/aws/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>CDN</title>
+      <link>https://shiun.me/categories/cdn/</link>
+      <pubDate>Sun, 21 Jul 2024 23:29:27 +0800</pubDate>
+      <guid>https://shiun.me/categories/cdn/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Frontend Development</title>
+      <link>https://shiun.me/categories/frontend-development/</link>
+      <pubDate>Sun, 21 Jul 2024 23:29:27 +0800</pubDate>
+      <guid>https://shiun.me/categories/frontend-development/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Performance Optimization</title>
+      <link>https://shiun.me/categories/performance-optimization/</link>
+      <pubDate>Sun, 21 Jul 2024 23:29:27 +0800</pubDate>
+      <guid>https://shiun.me/categories/performance-optimization/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Agile Development</title>
       <link>https://shiun.me/categories/agile-development/</link>
@@ -25,13 +53,6 @@
       <link>https://shiun.me/categories/ai/</link>
       <pubDate>Sat, 20 Jul 2024 23:06:18 +0800</pubDate>
       <guid>https://shiun.me/categories/ai/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>AWS</title>
-      <link>https://shiun.me/categories/aws/</link>
-      <pubDate>Sat, 20 Jul 2024 23:06:18 +0800</pubDate>
-      <guid>https://shiun.me/categories/aws/</guid>
       <description></description>
     </item>
     <item>
