@@ -1,9 +1,9 @@
 ---
-title: 'Dynamic Preload for Performance Optimization'
+title: '在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲'
 date: 2024-07-21T23:29:27+08:00
 draft: true
-description: ""
-tags: ["AWS CloudFront", "AWS S3", "Preload", "Frontend Performance Optimization", "Next.js", "React", "Dynamic Loading", "Music Application"]
+description: "了解如何在 Next.js 音樂應用中使用動態 Preload 技術，顯著提升前端效能！本篇文章除了解釋 Preload 概念與實現、提供實際應用範例與程式碼，也附帶了 AWS CloudFront 相關教學內容，助你優化網站速度並提升用戶體驗"
+tags: ["AWS CloudFront", "AWS S3", "Preload", "Frontend Performance Optimization", "Next.js", "React.js", "Dynamic Loading", "Music Application"]
 categories: ["AWS", "CDN", "Frontend Development", "Performance Optimization"]
 keywords:
 - AWS CloudFront
@@ -306,3 +306,8 @@ export default MyApp;
 6. `npm install`
 7. `npm run build`
 8. `pm2 restart nextjs-app`
+
+## Resources
+
+- [Notion - 20240705 獎勵課程 - 雲端串流挑戰：復刻 Spotify 的技術旅程](https://aws-educate-tw.notion.site/20240705-Spotify-6b973b4e8d4d43d5bfb06815732f4e0b)
+- [GitHub - Ansh-Rathod / Nextjs-Musive-app](https://github.com/Ansh-Rathod/Nextjs-Musive-app)
