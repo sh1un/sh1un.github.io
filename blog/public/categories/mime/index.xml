@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>MIME on Shiun</title>
+    <link>https://shiun.me/categories/mime/</link>
+    <description>Recent content in MIME on Shiun</description>
+    <image>
+      <title>Shiun</title>
+      <url>https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea</url>
+      <link>https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-tw</language>
+    <lastBuildDate>Tue, 06 Aug 2024 02:25:14 +0800</lastBuildDate>
+    <atom:link href="https://shiun.me/categories/mime/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐</title>
+      <link>https://shiun.me/blog/troubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids/</link>
+      <pubDate>Tue, 06 Aug 2024 02:25:14 +0800</pubDate>
+      <guid>https://shiun.me/blog/troubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids/</guid>
+      <description>最近用 AWS SES, S3, Lambda 開發了轉寄信件的功能，但是轉寄出去的信件卻無法顯示內嵌圖片，但是我不想把圖片上傳到公開的 S3 Bucket 並依賴 URL 顯示出圖片，因此我仔細研究了 MIME ，透過這篇文章講解電子郵件內嵌圖片的原理 (不依賴外部 URL)。</description>
+    </item>
+  </channel>
+</rss>

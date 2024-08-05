@@ -11,8 +11,15 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Sun, 21 Jul 2024 23:29:27 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 06 Aug 2024 02:25:14 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/categories/aws/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐</title>
+      <link>https://shiun.me/blog/troubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids/</link>
+      <pubDate>Tue, 06 Aug 2024 02:25:14 +0800</pubDate>
+      <guid>https://shiun.me/blog/troubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids/</guid>
+      <description>最近用 AWS SES, S3, Lambda 開發了轉寄信件的功能，但是轉寄出去的信件卻無法顯示內嵌圖片，但是我不想把圖片上傳到公開的 S3 Bucket 並依賴 URL 顯示出圖片，因此我仔細研究了 MIME ，透過這篇文章講解電子郵件內嵌圖片的原理 (不依賴外部 URL)。</description>
+    </item>
     <item>
       <title>在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲</title>
       <link>https://shiun.me/blog/dynamic-preload-for-performance-optimization/</link>
