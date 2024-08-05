@@ -211,6 +211,25 @@ if (!doNotTrack) {
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>我遇到了什麼問題 最近我用 SES, S3, Lambda 開發了轉寄信件的功能，簡單介紹一下這功能： 假設我就職於公司的開發部門，我們對外有一個信箱是 dev@example.com 當客戶遇到軟體開發上的問題時寄信到 dev@example.com，開發部門的所有同仁就會在自己的信箱收到此客戶寄來的電子郵件，重點是開發部門的同仁們都可以用自己的帳號回覆該客戶
+而開發好這功能後，我遇到一個問題 — 轉寄出去的信件沒辦法正確顯示內嵌圖片
+關於轉寄信件的程式碼我放在 GitHub 上囉 (連結)，之後有時間會寫一篇 Forward Email 的完整教學，或是也可以關注我的 Notion，我每天都會寫筆記記錄自己的學習過程
+讓我們直接看例子 首先，我登入私人帳號模擬我是客戶，寄信給 test@aws-educate.tw，下圖是當時寄出去的內容: 寄給 test@aws-educate.tw 後，SES 會收到信，然後根據我配置的 Receipt rule，原始郵件檔案會被儲存至我指定的 S3 Bucket
+延續 用 SES, S3, Lambda 實現轉寄信件功能 ，當我嘗試在轉寄出去的信件中內嵌圖片，最後收到轉寄來的信，都會出現下圖的現象：圖片沒辦法內嵌在裡面，倒是跑去附件了
+我起初嘗試的解法 後來下面這篇 Stack Overflow，裡面有人提到 Gmail 還不支援顯示 base64 編碼的圖片 (有待確認，希望有人可以告訴我正確答案)
+As of January 2020, Gmail still does not support base64 encoded images.
+Source: Add embedded image in emails in AWS SES service...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-08-06 02:25:14 +0800 CST'>August 6, 2024</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to 從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐" href="https://shiun.me/blog/troubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">如何使用 Lambda 處理 AWS Cognito User 首次登入被系統要求強制變更密碼
     </h2>
   </header>
@@ -270,23 +289,12 @@ Windows 安裝 Windows 安裝相當簡單，只要去官方文檔裡面下載 MS
   <footer class="entry-footer"><span title='2024-04-28 04:27:23 +0800 CST'>April 28, 2024</span>&nbsp;·&nbsp;3 min</footer>
   <a class="entry-link" aria-label="post link to Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda" href="https://shiun.me/blog/serverless-framework-101/"></a>
 </article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>EventBridge 簡介 EventBridge Scheduler 是 AWS 在 2022/11 推出的新服務，相較於傳統事件驅動的 EventBridge，新推出的 Scheduler 是時間驅動的一個服務，你可以很輕易的在上面設置一些排程任務去調用 AWS 的其他服務，截至 2024/04/06，官方文件是顯示可以調用 AWS 超過 270 種服務，就我目前使用下來的心得，真的是相當易用！
-常見的使用場景:
-自動調整服務容量: 如 Amazon ECS 任務的數量或今天要介紹的 Aurora Serverless V2 ACU (今天要示範的) 自動化維護任務: 定時啟動或停止 EC2 Instance，以節省成本或進行系統維護。 SasS 訂閱即將到期通知: 蠻多 SaaS 系統可能會需要在用戶快到期時發送信件通知客戶續訂 架構說明 關於本文，我會預設讀者們對於 AWS 有基本的操作能力和認識，對於一些較瑣碎的動作會省略不講解
-本文要教學的是排程每天固定時間，會透過 EventBridge Scheduler 調用 Lambda Function 然後將 Aurora Serverless V2 的 ACU 降低。
-關於這個動作，我們其實要拆解成兩個部分:
-用 Lambda 去調整 Aurora Serverless v2 ACU 用 EventBridge 去 Trigger Lambda 下圖是從 AWS 官方 Blog 下載下來的架構圖，純示意圖大概讓各位認識 EventBridge 和 Lambda 的配合 整體的步驟大概會是...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-04-06 23:45:32 +0800 CST'>April 6, 2024</span>&nbsp;·&nbsp;2 min</footer>
-  <a class="entry-link" aria-label="post link to 如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU" href="https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/"></a>
-</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="next" href="https://shiun.me/tags/aws-lambda/page/2/">Next&nbsp;&nbsp;»
+    </a>
+  </nav>
+</footer>
     </main>
     
 <footer class="footer">

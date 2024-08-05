@@ -226,6 +226,23 @@ if (!doNotTrack) {
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>EventBridge 簡介 EventBridge Scheduler 是 AWS 在 2022/11 推出的新服務，相較於傳統事件驅動的 EventBridge，新推出的 Scheduler 是時間驅動的一個服務，你可以很輕易的在上面設置一些排程任務去調用 AWS 的其他服務，截至 2024/04/06，官方文件是顯示可以調用 AWS 超過 270 種服務，就我目前使用下來的心得，真的是相當易用！
+常見的使用場景:
+自動調整服務容量: 如 Amazon ECS 任務的數量或今天要介紹的 Aurora Serverless V2 ACU (今天要示範的) 自動化維護任務: 定時啟動或停止 EC2 Instance，以節省成本或進行系統維護。 SasS 訂閱即將到期通知: 蠻多 SaaS 系統可能會需要在用戶快到期時發送信件通知客戶續訂 架構說明 關於本文，我會預設讀者們對於 AWS 有基本的操作能力和認識，對於一些較瑣碎的動作會省略不講解
+本文要教學的是排程每天固定時間，會透過 EventBridge Scheduler 調用 Lambda Function 然後將 Aurora Serverless V2 的 ACU 降低。
+關於這個動作，我們其實要拆解成兩個部分:
+用 Lambda 去調整 Aurora Serverless v2 ACU 用 EventBridge 去 Trigger Lambda 下圖是從 AWS 官方 Blog 下載下來的架構圖，純示意圖大概讓各位認識 EventBridge 和 Lambda 的配合 整體的步驟大概會是...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-04-06 23:45:32 +0800 CST'>April 6, 2024</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to 如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU" href="https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">Docker 初學常見問題 - CMD vs ENTRYPOINT 兩者的差異與範例
     </h2>
   </header>
@@ -290,29 +307,12 @@ E2Eproject/├── testenvironment1/│ └── Dockerfile├── teste
   <footer class="entry-footer"><span title='2024-01-20 18:54:37 +0800 CST'>January 20, 2024</span>&nbsp;·&nbsp;3 min</footer>
   <a class="entry-link" aria-label="post link to 一個專案需要多個 Dockerfile - 淺談建構上下文 (build context)" href="https://shiun.me/blog/a-project-with-multiple-dockerfiles---an-introduction-to-build-context/"></a>
 </article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">這個網站的第一篇文章 - 關於我 以及架站的動機
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>大家好我是 Shiun，這篇是我的個人網站的第一篇文章，會記錄我的動機以及現在的時空背景，以此來記錄一下自己的個人成長，未來回頭來看看自己成長多少
-架設網站的動機 動機與原因 會想要架設個人網站主要有以下原因：
-想要記錄自己的個人成長，以及隨手筆記 受到 Nic 的啟發 (Youtube連結)，覺得對於未來職涯的道路上會有所幫助，能夠建立個人品牌，彰顯專業 自己本身就很熱愛分享知識、技術，而且很享受上台演講的氛圍 看起來很帥 2024 年 1 月，下定決心 一直以來都想架一個自己的個人網站，但遲遲一直沒有下手，絕大部分是因為懶 XD，而我一直以來都會把自己的想法紀錄在 Google Keep 或是 Dropbox Paper
-直到 2024/01 下定決心今年的新希望(目標)一定要架好個人網站，開始寫文章，而且我今年(2024)也準備要畢業了，即將面對職場，這時候再不趕快產出有質量的內容就太虧了
-關於我 Hi 我是 Shiun，家裡有兩隻貓(娜娜 &amp; 妮妮😺😺) 我目前就讀於某私立大學的資管系(2024 畢業)，同時也就職於：
-AWS Educate 5th Cloud Ambassador - Technical Support @AWS Backend Engineer Intern @eGroupAI 在 2024 年 3 月要接任：
-AWS Educate 6th Cloud Ambassador Team Lead (技術) @AWS Cloud Engineer Intern @eCloudValley 主要專精於後端與雲端及 DevOps 方面的技術：
-Spring boot Jenkins AWS Docker Selenium Pytest 除此之外，我也很擅長擔任領導者的角色，在求學職涯中，我幾乎都是擔任領導者的職位，像是在大學畢業專題中我也擔任了組長、PM、Product Owner、Backend Development，在畢業專題(作品連結)中上實踐了敏捷式開發(Scrum, Kanban)</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-01-19 14:29:30 +0800 CST'>January 19, 2024</span>&nbsp;·&nbsp;1 min</footer>
-  <a class="entry-link" aria-label="post link to 這個網站的第一篇文章 - 關於我 以及架站的動機" href="https://shiun.me/blog/my-first/"></a>
-</article>
 <footer class="page-footer">
   <nav class="pagination">
     <a class="prev" href="https://shiun.me/blog/page/2/">
       «&nbsp;Prev&nbsp;
+    </a>
+    <a class="next" href="https://shiun.me/blog/page/4/">Next&nbsp;&nbsp;»
     </a>
   </nav>
 </footer>

@@ -11,13 +11,34 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Sun, 21 Jul 2024 23:29:27 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 06 Aug 2024 02:25:14 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>AWS</title>
       <link>https://shiun.me/categories/aws/</link>
-      <pubDate>Sun, 21 Jul 2024 23:29:27 +0800</pubDate>
+      <pubDate>Tue, 06 Aug 2024 02:25:14 +0800</pubDate>
       <guid>https://shiun.me/categories/aws/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Email</title>
+      <link>https://shiun.me/categories/email/</link>
+      <pubDate>Tue, 06 Aug 2024 02:25:14 +0800</pubDate>
+      <guid>https://shiun.me/categories/email/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>MIME</title>
+      <link>https://shiun.me/categories/mime/</link>
+      <pubDate>Tue, 06 Aug 2024 02:25:14 +0800</pubDate>
+      <guid>https://shiun.me/categories/mime/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Network</title>
+      <link>https://shiun.me/categories/network/</link>
+      <pubDate>Tue, 06 Aug 2024 02:25:14 +0800</pubDate>
+      <guid>https://shiun.me/categories/network/</guid>
       <description></description>
     </item>
     <item>
@@ -144,13 +165,6 @@
       <link>https://shiun.me/categories/aws-sam/</link>
       <pubDate>Mon, 29 Apr 2024 23:47:09 +0800</pubDate>
       <guid>https://shiun.me/categories/aws-sam/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Network</title>
-      <link>https://shiun.me/categories/network/</link>
-      <pubDate>Sun, 21 Apr 2024 01:04:16 +0800</pubDate>
-      <guid>https://shiun.me/categories/network/</guid>
       <description></description>
     </item>
     <item>

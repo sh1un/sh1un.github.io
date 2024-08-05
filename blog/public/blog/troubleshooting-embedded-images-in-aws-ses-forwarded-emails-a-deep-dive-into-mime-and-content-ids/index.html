@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
+<meta name="robots" content="index, follow" />
+<title>
+  從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐 | Shiun
+</title>
+<meta
+  name="keywords"
+  content="AWS SES, Lambda, S3, MIME, Multipurpose Internet Mail Extensions, email forwarding, embedded images, image display issues, base64 encoding, email format, troubleshooting, inline images, multipart/related, 電子郵件轉寄, 內嵌圖片"
+/> <meta name="description" content="最近用 AWS SES, S3, Lambda 開發了轉寄信件的功能，但是轉寄出去的信件卻無法顯示內嵌圖片，但是我不想把圖片上傳到公開的 S3 Bucket 並依賴 URL 顯示出圖片，因此我仔細研究了 MIME ，透過這篇文章講解電子郵件內嵌圖片的原理 (不依賴外部 URL)。"> <meta name="author" content=""> <link rel="canonical" href="https://shiun.me/blog/troubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids/">
+<link
+  crossorigin="anonymous"
+  href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css"
+  integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A="
+  rel="preload stylesheet"
+  as="style"
+/> <link rel="icon" href="https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"> <link
+rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://shiun.me/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://shiun.me/apple-touch-icon.png"> <link rel="mask-icon" href="https://shiun.me/safari-pinned-tab.svg"> <meta name="theme-color" content="#2e2e33"> <meta name="msapplication-TileColor" content="#2e2e33"> <link rel="alternate" hreflang="en" href="https://shiun.me/blog/troubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids/" />
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+<meta property="og:title" content="從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐" />
+<meta property="og:description" content="最近用 AWS SES, S3, Lambda 開發了轉寄信件的功能，但是轉寄出去的信件卻無法顯示內嵌圖片，但是我不想把圖片上傳到公開的 S3 Bucket 並依賴 URL 顯示出圖片，因此我仔細研究了 MIME ，透過這篇文章講解電子郵件內嵌圖片的原理 (不依賴外部 URL)。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/troubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-08-06T02:25:14+08:00" />
+<meta property="article:modified_time" content="2024-08-06T02:25:14+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐"/>
+<meta name="twitter:description" content="最近用 AWS SES, S3, Lambda 開發了轉寄信件的功能，但是轉寄出去的信件卻無法顯示內嵌圖片，但是我不想把圖片上傳到公開的 S3 Bucket 並依賴 URL 顯示出圖片，因此我仔細研究了 MIME ，透過這篇文章講解電子郵件內嵌圖片的原理 (不依賴外部 URL)。"/>
+
+
+<noscript>
+  <style>
+    #theme-toggle,
+    .top-link {
+      display: none;
+    }
+  </style>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --theme: rgb(29, 30, 32);
+        --entry: rgb(46, 46, 51);
+        --primary: rgb(218, 218, 219);
+        --secondary: rgb(155, 156, 157);
+        --tertiary: rgb(65, 66, 68);
+        --content: rgb(196, 196, 197);
+        --code-block-bg: rgb(46, 46, 51);
+        --code-bg: rgb(55, 56, 62);
+        --border: rgb(51, 51, 51);
+      }
+
+      .list {
+        background: var(--theme);
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-track {
+        background: 0 0;
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-thumb {
+        border-color: var(--theme);
+      }
+    }
+  </style>
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐" />
+<meta property="og:description" content="最近用 AWS SES, S3, Lambda 開發了轉寄信件的功能，但是轉寄出去的信件卻無法顯示內嵌圖片，但是我不想把圖片上傳到公開的 S3 Bucket 並依賴 URL 顯示出圖片，因此我仔細研究了 MIME ，透過這篇文章講解電子郵件內嵌圖片的原理 (不依賴外部 URL)。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/troubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-08-06T02:25:14+08:00" />
+<meta property="article:modified_time" content="2024-08-06T02:25:14+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/>
+
+<meta name="twitter:title" content="從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐"/>
+<meta name="twitter:description" content="最近用 AWS SES, S3, Lambda 開發了轉寄信件的功能，但是轉寄出去的信件卻無法顯示內嵌圖片，但是我不想把圖片上傳到公開的 S3 Bucket 並依賴 URL 顯示出圖片，因此我仔細研究了 MIME ，透過這篇文章講解電子郵件內嵌圖片的原理 (不依賴外部 URL)。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Blogs",
+      "item": "https://shiun.me/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐",
+      "item": "https://shiun.me/blog/troubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐",
+  "name": "從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐",
+  "description": "最近用 AWS SES, S3, Lambda 開發了轉寄信件的功能，但是轉寄出去的信件卻無法顯示內嵌圖片，但是我不想把圖片上傳到公開的 S3 Bucket 並依賴 URL 顯示出圖片，因此我仔細研究了 MIME ，透過這篇文章講解電子郵件內嵌圖片的原理 (不依賴外部 URL)。",
+  "keywords": [
+    "AWS SES", "Lambda", "S3", "MIME", "Multipurpose Internet Mail Extensions", "email forwarding", "embedded images", "image display issues", "base64 encoding", "email format", "troubleshooting", "inline images", "multipart/related", "電子郵件轉寄", "內嵌圖片"
+  ],
+  "articleBody": "我遇到了什麼問題 最近我用 SES, S3, Lambda 開發了轉寄信件的功能，簡單介紹一下這功能： 假設我就職於公司的開發部門，我們對外有一個信箱是 dev@example.com 當客戶遇到軟體開發上的問題時寄信到 dev@example.com，開發部門的所有同仁就會在自己的信箱收到此客戶寄來的電子郵件，重點是開發部門的同仁們都可以用自己的帳號回覆該客戶\n而開發好這功能後，我遇到一個問題 — 轉寄出去的信件沒辦法正確顯示內嵌圖片\n關於轉寄信件的程式碼我放在 GitHub 上囉 (連結)，之後有時間會寫一篇 Forward Email 的完整教學，或是也可以關注我的 Notion，我每天都會寫筆記記錄自己的學習過程\n讓我們直接看例子 首先，我登入私人帳號模擬我是客戶，寄信給 test@aws-educate.tw，下圖是當時寄出去的內容: 寄給 test@aws-educate.tw 後，SES 會收到信，然後根據我配置的 Receipt rule，原始郵件檔案會被儲存至我指定的 S3 Bucket\n延續 用 SES, S3, Lambda 實現轉寄信件功能 ，當我嘗試在轉寄出去的信件中內嵌圖片，最後收到轉寄來的信，都會出現下圖的現象：圖片沒辦法內嵌在裡面，倒是跑去附件了\n我起初嘗試的解法 後來下面這篇 Stack Overflow，裡面有人提到 Gmail 還不支援顯示 base64 編碼的圖片 (有待確認，希望有人可以告訴我正確答案)\nAs of January 2020, Gmail still does not support base64 encoded images.\nSource: Add embedded image in emails in AWS SES service\n因此使用 Data URI: 嵌入圖片的方式現在可以打消念頭了\n接著可能會有人說，那把圖片上傳到 S3，拿到 Object URL，接著在 標籤裡面指定圖片網址不就好，例如: 沒錯，我認為這方法可行，我試過了，但採了無數坑最後失敗告終… 像是把圖片提取出來儲存好，再修改 Message 的內容比我想像中麻煩\n沒多久後我想了又想，我只是想要轉寄信件為什麼我要想得那麼複雜，不是應該改個 Message 的 From, To 和 Reply-to 標頭就好了，信件內容就保持原封不動，何必徒增額外功夫先把圖片提取出來，然後想辦法把圖片插入原本的內容中\n總而言之，踏過的那些坑，讓我已經對 MIME 研究了一番，所以這篇就來認識一下 MIME 內嵌圖片的原理吧\n認識 MIME 的 boundary 在 MIME 訊息中，boundary 是一個用於分隔不同部分的字串。當一封郵件包含多個部分時，例如文字、HTML、圖片或附件，boundary 就用來標記每個部分的開始和結束。\nboundary 的格式：\nboundary 是一個獨特的字串，通常由兩個連字號 (–) 開頭，後面跟著一串隨機字元。例如：\n-000000000000d37ee1061ed29569 如何知道 boundary 的開始和結束：\nContent-Type 標頭： 在郵件的 Content-Type 標頭中，會指定 multipart 的類型 (例如 multipart/mixed、multipart/alternative)，並在 boundary 參數中定義 boundary 字串。 例如：Content-Type: multipart/mixed; boundary=\"000000000000d37ee1061ed29569\" 分隔符： 每個部分的開頭都會有一個分隔符，由兩個連字號 (–) 和 boundary 字串組成，後面跟著一個換行符 (\\r\\n)。 例如：-000000000000d37ee1061ed29569 結束標記： 郵件的最後一個部分結束後，會有一個結束標記，由兩個連字號 (–)、boundary 字串和兩個連字號 (–) 組成，後面跟著一個換行符 (\\r\\n)。 例如：-000000000000d37ee1061ed29569-- 範例：\nContent-Type: multipart/mixed; boundary=\"boundary-string\" --boundary-string Content-Type: text/plain This is the email body. --boundary-string Content-Type: image/jpeg Content-Transfer-Encoding: base64 ... (base64 encoded image data) ... --boundary-string-- 在上面的例子中：\nboundary-string 是 boundary 字串 -boundary-string 是每個部分的開頭 -boundary-string-- 是郵件的結束標記 實現內嵌圖片核心原理 觀察 Message 在 MIME 的上下文中，message 是指完整的網際網路消息，在這篇文章的話指的就是一封電子郵件\n可以看下方的內容，這是我去 S3 Bucket 把郵件原始檔案 (Message) 下載下來節錄的一個片段，對應了本文開頭圖片的信件內容\n# 以上略 .... Content-Type: multipart/related; boundary=\"000000000000d37ee1061ed2956a\" --000000000000d37ee1061ed2956a Content-Type: multipart/alternative; boundary=\"000000000000d37ee1061ed29569\" --000000000000d37ee1061ed29569 Content-Type: text/plain; charset=\"UTF-8\" test 1047 test 1047test 1047 [image: image.png] --000000000000d37ee1061ed29569 Content-Type: text/html; charset=\"UTF-8\" Content-Transfer-Encoding: quoted-printable test 1047\nt= est 1047test 1047\n",
+  "wordCount" : "322",
+  "inLanguage": "en",
+  "datePublished": "2024-08-06T02:25:14+08:00",
+  "dateModified": "2024-08-06T02:25:14+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://shiun.me/blog/troubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Shiun",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://shiun.me/" accesskey="h" title="Shiun (Alt + H)">Shiun</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://shiun.me/blog/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.notion.site/Shiun-s-Learning-Journal-ded4cd4a3efd47b2805f2f99dee8f9a1?pvs=4" title="Notion">
+                    <span>Notion</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.linkedin.com/in/shiunchiu" title="About me">
+                    <span>About me</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://shiun.me/">Home</a>&nbsp;»&nbsp;<a href="https://shiun.me/blog/">Blogs</a></div>
+    <h1 class="post-title entry-hint-parent">
+      從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐
+    </h1>
+    <div class="post-description">
+      最近用 AWS SES, S3, Lambda 開發了轉寄信件的功能，但是轉寄出去的信件卻無法顯示內嵌圖片，但是我不想把圖片上傳到公開的 S3 Bucket 並依賴 URL 顯示出圖片，因此我仔細研究了 MIME ，透過這篇文章講解電子郵件內嵌圖片的原理 (不依賴外部 URL)。
+    </div>
+    <div class="post-meta"><span title='2024-08-06 02:25:14 +0800 CST'>August 6, 2024</span>&nbsp;·&nbsp;2 min
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e6%88%91%e9%81%87%e5%88%b0%e4%ba%86%e4%bb%80%e9%ba%bc%e5%95%8f%e9%a1%8c" aria-label="我遇到了什麼問題">我遇到了什麼問題</a><ul>
+                        
+                <li>
+                    <a href="#%e8%ae%93%e6%88%91%e5%80%91%e7%9b%b4%e6%8e%a5%e7%9c%8b%e4%be%8b%e5%ad%90" aria-label="讓我們直接看例子">讓我們直接看例子</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%88%91%e8%b5%b7%e5%88%9d%e5%98%97%e8%a9%a6%e7%9a%84%e8%a7%a3%e6%b3%95" aria-label="我起初嘗試的解法">我起初嘗試的解法</a></li>
+                <li>
+                    <a href="#%e8%aa%8d%e8%ad%98-mime-%e7%9a%84-boundary" aria-label="認識 MIME 的 boundary">認識 MIME 的 boundary</a></li>
+                <li>
+                    <a href="#%e5%af%a6%e7%8f%be%e5%85%a7%e5%b5%8c%e5%9c%96%e7%89%87%e6%a0%b8%e5%bf%83%e5%8e%9f%e7%90%86" aria-label="實現內嵌圖片核心原理">實現內嵌圖片核心原理</a><ul>
+                        
+                <li>
+                    <a href="#%e8%a7%80%e5%af%9f-message" aria-label="觀察 Message">觀察 Message</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%8f%83%e8%80%83%e8%b3%87%e6%96%99" aria-label="參考資料">參考資料</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="我遇到了什麼問題">我遇到了什麼問題<a hidden class="anchor" aria-hidden="true" href="#我遇到了什麼問題">#</a></h2>
+<p>最近我用 SES, S3, Lambda 開發了轉寄信件的功能，簡單介紹一下這功能：
+假設我就職於公司的開發部門，我們對外有一個信箱是 <a href="mailto:dev@example.com">dev@example.com</a>
+當客戶遇到軟體開發上的問題時寄信到 <a href="mailto:dev@example.com">dev@example.com</a>，開發部門的所有同仁就會在自己的信箱收到此客戶寄來的電子郵件，重點是開發部門的同仁們都可以用自己的帳號回覆該客戶</p>
+<p>而開發好這功能後，我遇到一個問題 — <strong>轉寄出去的信件沒辦法正確顯示內嵌圖片</strong></p>
+<blockquote>
+<p>關於轉寄信件的程式碼我放在 GitHub 上囉 (<a href="https://github.com/aws-educate-tw/serverless-email-forwarder">連結</a>)，之後有時間會寫一篇 Forward Email 的完整教學，或是也可以關注我的 <a href="https://shiun.notion.site/Shiun-s-Learning-Journal-ded4cd4a3efd47b2805f2f99dee8f9a1">Notion</a>，我每天都會寫筆記記錄自己的學習過程</p>
+</blockquote>
+<h3 id="讓我們直接看例子">讓我們直接看例子<a hidden class="anchor" aria-hidden="true" href="#讓我們直接看例子">#</a></h3>
+<p>首先，我登入私人帳號模擬我是客戶，寄信給 <a href="mailto:test@aws-educate.tw">test@aws-educate.tw</a>，下圖是當時寄出去的內容:
+<img loading="lazy" src="https://github.com/user-attachments/assets/1cbf769f-7b8f-46e9-bb8f-240ad7d1fb32" alt="Original-email"  />
+</p>
+<p>寄給 <a href="mailto:test@aws-educate.tw">test@aws-educate.tw</a> 後，SES 會收到信，然後根據我配置的 Receipt rule，原始郵件檔案會被儲存至我指定的 S3 Bucket</p>
+<p>延續 <a href="https://www.notion.so/SES-S3-Lambda-18fbed65f6ba41369b89292136e669ec?pvs=21">用 SES, S3, Lambda 實現轉寄信件功能</a> ，當我嘗試在轉寄出去的信件中內嵌圖片，最後收到轉寄來的信，都會出現下圖的現象：圖片沒辦法內嵌在裡面，倒是跑去附件了</p>
+<p><img loading="lazy" src="https://github.com/user-attachments/assets/16da38b8-cb36-4d55-b786-6a2f48c8c2ff" alt="Forwarded-email"  />
+</p>
+<hr>
+<h2 id="我起初嘗試的解法">我起初嘗試的解法<a hidden class="anchor" aria-hidden="true" href="#我起初嘗試的解法">#</a></h2>
+<p>後來下面這篇 Stack Overflow，裡面有人提到 Gmail 還不支援顯示 base64 編碼的圖片 (有待確認，希望有人可以告訴我正確答案)</p>
+<blockquote>
+<p>As of January 2020, Gmail still does not support base64 encoded images.</p>
+<p>Source: <a href="https://stackoverflow.com/questions/48587432/add-embedded-image-in-emails-in-aws-ses-service">Add embedded image in emails in AWS SES service</a></p>
+</blockquote>
+<p>因此使用 Data URI: <code>&lt;img src=&quot;data:image/png;base64,iVBORw0KGgoAA&quot; alt=&quot;Image&quot;&gt;</code> 嵌入圖片的方式現在可以打消念頭了</p>
+<p>接著可能會有人說，那把圖片上傳到 S3，拿到 Object URL，接著在 <code>&lt;img&gt;</code> 標籤裡面指定圖片網址不就好，例如: <code>&lt;img src=&quot;https://example.com/assets/image.png&quot; alt=&quot;image&quot;&gt;</code>
+沒錯，我認為這方法可行，我試過了，但採了無數坑最後失敗告終&hellip; 像是把圖片提取出來儲存好，再修改 Message 的內容比我想像中麻煩</p>
+<p>沒多久後我想了又想，我只是想要轉寄信件為什麼我要想得那麼複雜，不是應該改個 Message 的 <code>From</code>, <code>To</code> 和 <code>Reply-to</code> 標頭就好了，信件內容就保持原封不動，何必徒增額外功夫先把圖片提取出來，然後想辦法把圖片插入原本的內容中</p>
+<p>總而言之，踏過的那些坑，讓我已經對 MIME 研究了一番，所以這篇就來認識一下 MIME 內嵌圖片的原理吧</p>
+<hr>
+<h2 id="認識-mime-的-boundary">認識 MIME 的 boundary<a hidden class="anchor" aria-hidden="true" href="#認識-mime-的-boundary">#</a></h2>
+<p>在 <a href="https://zh.wikipedia.org/zh-tw/%E5%A4%9A%E7%94%A8%E9%80%94%E4%BA%92%E8%81%AF%E7%B6%B2%E9%83%B5%E4%BB%B6%E6%93%B4%E5%B1%95">MIME</a> 訊息中，boundary 是一個用於分隔不同部分的字串。當一封郵件包含多個部分時，例如文字、HTML、圖片或附件，boundary 就用來標記每個部分的開始和結束。</p>
+<p><strong>boundary 的格式：</strong></p>
+<p>boundary 是一個獨特的字串，通常由兩個連字號 (&ndash;) 開頭，後面跟著一串隨機字元。例如：</p>
+<ul>
+<li><code>-000000000000d37ee1061ed29569</code></li>
+</ul>
+<p><strong>如何知道 boundary 的開始和結束：</strong></p>
+<ol>
+<li><strong>Content-Type 標頭：</strong>
+<ul>
+<li>在郵件的 <code>Content-Type</code> 標頭中，會指定 <code>multipart</code> 的類型 (例如 <code>multipart/mixed</code>、<code>multipart/alternative</code>)，並在 <code>boundary</code> 參數中定義 boundary 字串。</li>
+<li>例如：<code>Content-Type: multipart/mixed; boundary=&quot;000000000000d37ee1061ed29569&quot;</code></li>
+</ul>
+</li>
+<li><strong>分隔符：</strong>
+<ul>
+<li>每個部分的開頭都會有一個分隔符，由兩個連字號 (&ndash;) 和 boundary 字串組成，後面跟著一個換行符 (\r\n)。</li>
+<li>例如：<code>-000000000000d37ee1061ed29569</code></li>
+</ul>
+</li>
+<li><strong>結束標記：</strong>
+<ul>
+<li>郵件的最後一個部分結束後，會有一個結束標記，由兩個連字號 (&ndash;)、boundary 字串和兩個連字號 (&ndash;) 組成，後面跟著一個換行符 (\r\n)。</li>
+<li>例如：<code>-000000000000d37ee1061ed29569--</code></li>
+</ul>
+</li>
+</ol>
+<p><strong>範例：</strong></p>
+<pre tabindex="0"><code>Content-Type: multipart/mixed; boundary=&#34;boundary-string&#34;
+
+--boundary-string
+Content-Type: text/plain
+
+This is the email body.
+
+--boundary-string
+Content-Type: image/jpeg
+Content-Transfer-Encoding: base64
+
+... (base64 encoded image data) ...
+
+--boundary-string--
+</code></pre><p>在上面的例子中：</p>
+<ul>
+<li><code>boundary-string</code> 是 boundary 字串</li>
+<li><code>-boundary-string</code> 是每個部分的開頭</li>
+<li><code>-boundary-string--</code> 是郵件的結束標記</li>
+</ul>
+<hr>
+<h2 id="實現內嵌圖片核心原理">實現內嵌圖片核心原理<a hidden class="anchor" aria-hidden="true" href="#實現內嵌圖片核心原理">#</a></h2>
+<h3 id="觀察-message">觀察 Message<a hidden class="anchor" aria-hidden="true" href="#觀察-message">#</a></h3>
+<blockquote>
+<p>在 MIME 的上下文中，<strong>message</strong> 是指完整的網際網路消息，在這篇文章的話指的就是一封電子郵件</p>
+</blockquote>
+<p>可以看下方的內容，這是我去 S3 Bucket 把郵件原始檔案 (Message) 下載下來節錄的一個片段，對應了本文開頭圖片的信件內容</p>
+<pre tabindex="0"><code># 以上略 ....
+
+Content-Type: multipart/related; boundary=&#34;000000000000d37ee1061ed2956a&#34;
+
+--000000000000d37ee1061ed2956a
+Content-Type: multipart/alternative; boundary=&#34;000000000000d37ee1061ed29569&#34;
+
+--000000000000d37ee1061ed29569
+Content-Type: text/plain; charset=&#34;UTF-8&#34;
+
+test 1047
+test 1047test 1047
+
+[image: image.png]
+
+--000000000000d37ee1061ed29569
+Content-Type: text/html; charset=&#34;UTF-8&#34;
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div dir=3D&#34;ltr&#34;&gt;&lt;div dir=3D&#34;ltr&#34; class=3D&#34;gmail_signature&#34; data-smartmail=
+=3D&#34;gmail_signature&#34;&gt;&lt;div dir=3D&#34;ltr&#34;&gt;test 1047&lt;br&gt;&lt;/div&gt;&lt;div dir=3D&#34;ltr&#34;&gt;t=
+est 1047test 1047&lt;br&gt;&lt;/div&gt;&lt;div dir=3D&#34;ltr&#34;&gt;&lt;br&gt;&lt;/div&gt;&lt;div dir=3D&#34;ltr&#34;&gt;&lt;img=
+ src=3D&#34;cid:ii_lzeypikh0&#34; alt=3D&#34;image.png&#34; width=3D&#34;176&#34; height=3D&#34;219&#34;&gt;&lt;b=
+r&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+
+--000000000000d37ee1061ed29569--
+--000000000000d37ee1061ed2956a
+
+# 以下略 ...
+</code></pre><p>在這裡你要先注意到：我們在外層使用到了 <code>multipart/related</code> ，這是 MIME 的一種訊息格式，用於將一個主文件 (main document) 與其相關資源 (related resources) 組合在一起。</p>
+<p>以我們現在的情境，使用到 <code>multipart/related</code> 就是要拿來內嵌圖片在我們信件內容中</p>
+<p>接著下方其實還有一段內容，是我在信件內的想要內嵌圖片:</p>
+<pre tabindex="0"><code>Content-Type: image/png; name=&#34;image.png&#34;
+Content-Disposition: inline; filename=&#34;image.png&#34;
+Content-Transfer-Encoding: base64
+Content-ID: &lt;ii_lzeypikh0&gt;
+X-Attachment-Id: ii_lzeypikh0
+
+iVBORw0KGgoAAAANSUhEUgAAALAAAADbCAIAAABC5oyQAAAQQ0lEQVR4Ae2dz2sbRxvH339hiQkB
+45IQ3CSu1IY0IAolhwRXlDqxsB3IQXUP8am02CRg8NU1tLm4PlSJ6KWlF1kWpoUUAkbVLj3pIogR
+6CK37sEH51CffElA+KWe8DAzO
+
+# 以下略 ...
+</code></pre><p>你可以注意到上方的內容有這段: <code>Content-ID: &lt;ii_lzeypikh0&gt;</code> ，這是這張圖片的在這個郵件內的唯一識別符，這個ID可以在 HTML 內容中使用 <code>cid:</code> 引用。</p>
+<p>因此，實現內嵌圖片的核心除了 <code>multipart/related</code> 以外，還有這段 HTML: <code>&lt;img src=&quot;cid:ii_lzeypikh0&quot; alt=&quot;image.png&quot; width=&quot;176&quot; height=&quot;219&quot;&gt;</code></p>
+<ul>
+<li>其屬性如下：
+<ul>
+<li><code>src=&quot;cid:ii_lzeypikh0&quot;</code>：表示圖片來源是一個Content-ID，通常在郵件中用來內嵌圖片。</li>
+<li><code>alt=&quot;image.png&quot;</code>：替代文字，在圖片無法顯示時顯示此文字。</li>
+<li><code>width=&quot;176&quot;</code>：圖片的寬度為176像素。</li>
+<li><code>height=&quot;219&quot;</code>：圖片的高度為219像素。</li>
+</ul>
+</li>
+</ul>
+<p>你可能會感到疑惑，通常這裡比較常見就是放圖片 URL，例如 <code>src=&quot;https://my-image.com/image.png&quot;</code></p>
+<p>然而，這裡的 <code>src=&quot;cid:ii_lzeypikh0&quot;</code> 是一種特殊的用法，用於電子郵件內嵌圖片。這種用法的 <code>cid</code>（Content-ID）表示圖片是電子郵件的一部分，而不是從外部連結加載。這樣的圖片內嵌方法通常用於確保圖片能夠在收件人的郵件客戶端中正確顯示，而不會受到外部圖片加載問題的影響。</p>
+<hr>
+<h2 id="參考資料">參考資料<a hidden class="anchor" aria-hidden="true" href="#參考資料">#</a></h2>
+<ul>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc2822">RFC 2822: Internet Message Format</a></li>
+<li><a href="https://zh.wikipedia.org/zh-tw/%E5%A4%9A%E7%94%A8%E9%80%94%E4%BA%92%E8%81%AF%E7%B6%B2%E9%83%B5%E4%BB%B6%E6%93%B4%E5%B1%95">多用途網際網路郵件擴展 - 維基百科，自由的百科全書</a></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://shiun.me/tags/aws-ses/">AWS SES</a></li>
+      <li><a href="https://shiun.me/tags/aws-lambda/">AWS Lambda</a></li>
+      <li><a href="https://shiun.me/tags/aws-s3/">AWS S3</a></li>
+      <li><a href="https://shiun.me/tags/mime/">MIME</a></li>
+      <li><a href="https://shiun.me/tags/email-forwarding/">Email Forwarding</a></li>
+      <li><a href="https://shiun.me/tags/base64/">Base64</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://shiun.me/blog/dynamic-preload-for-performance-optimization/">
+    <span class="title">Next »</span>
+    <br>
+    <span>在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐 on x"
+            href="https://x.com/intent/tweet/?text=%e5%be%9e%20AWS%20SES%20%e8%bd%89%e5%af%84%e4%bf%a1%e4%bb%b6%e7%84%a1%e6%b3%95%e6%ad%a3%e7%a2%ba%e9%a1%af%e7%a4%ba%e5%85%a7%e5%b5%8c%e5%9c%96%e7%89%87%e8%ab%87%e8%b5%b7%ef%bc%9aMIME%20%e5%85%a7%e5%b5%8c%e5%9c%96%e7%89%87%e5%8e%9f%e7%90%86%e8%88%87%e5%af%a6%e8%b8%90&amp;url=https%3a%2f%2fshiun.me%2fblog%2ftroubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids%2f&amp;hashtags=AWSSES%2cAWSLambda%2cAWSS3%2cMIME%2cEmailforwarding%2cBase64">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐 on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fshiun.me%2fblog%2ftroubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids%2f&amp;title=%e5%be%9e%20AWS%20SES%20%e8%bd%89%e5%af%84%e4%bf%a1%e4%bb%b6%e7%84%a1%e6%b3%95%e6%ad%a3%e7%a2%ba%e9%a1%af%e7%a4%ba%e5%85%a7%e5%b5%8c%e5%9c%96%e7%89%87%e8%ab%87%e8%b5%b7%ef%bc%9aMIME%20%e5%85%a7%e5%b5%8c%e5%9c%96%e7%89%87%e5%8e%9f%e7%90%86%e8%88%87%e5%af%a6%e8%b8%90&amp;summary=%e5%be%9e%20AWS%20SES%20%e8%bd%89%e5%af%84%e4%bf%a1%e4%bb%b6%e7%84%a1%e6%b3%95%e6%ad%a3%e7%a2%ba%e9%a1%af%e7%a4%ba%e5%85%a7%e5%b5%8c%e5%9c%96%e7%89%87%e8%ab%87%e8%b5%b7%ef%bc%9aMIME%20%e5%85%a7%e5%b5%8c%e5%9c%96%e7%89%87%e5%8e%9f%e7%90%86%e8%88%87%e5%af%a6%e8%b8%90&amp;source=https%3a%2f%2fshiun.me%2fblog%2ftroubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐 on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fshiun.me%2fblog%2ftroubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐 on telegram"
+            href="https://telegram.me/share/url?text=%e5%be%9e%20AWS%20SES%20%e8%bd%89%e5%af%84%e4%bf%a1%e4%bb%b6%e7%84%a1%e6%b3%95%e6%ad%a3%e7%a2%ba%e9%a1%af%e7%a4%ba%e5%85%a7%e5%b5%8c%e5%9c%96%e7%89%87%e8%ab%87%e8%b5%b7%ef%bc%9aMIME%20%e5%85%a7%e5%b5%8c%e5%9c%96%e7%89%87%e5%8e%9f%e7%90%86%e8%88%87%e5%af%a6%e8%b8%90&amp;url=https%3a%2f%2fshiun.me%2fblog%2ftroubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer><div class="disqus markdown"><div id="disqus_thread"></div>
+<script>
+  
+
+  
+
+  (function () {
+    
+    var d = document,
+      s = d.createElement("script");
+    s.src = "https://shiun-me.disqus.com/embed.js";
+    s.setAttribute("data-timestamp", +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript
+  >Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript"
+    >comments powered by Disqus.</a
+  ></noscript
+>
+</div>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://shiun.me/">Shiun</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

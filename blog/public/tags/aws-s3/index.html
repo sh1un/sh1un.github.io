@@ -211,6 +211,25 @@ if (!doNotTrack) {
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>我遇到了什麼問題 最近我用 SES, S3, Lambda 開發了轉寄信件的功能，簡單介紹一下這功能： 假設我就職於公司的開發部門，我們對外有一個信箱是 dev@example.com 當客戶遇到軟體開發上的問題時寄信到 dev@example.com，開發部門的所有同仁就會在自己的信箱收到此客戶寄來的電子郵件，重點是開發部門的同仁們都可以用自己的帳號回覆該客戶
+而開發好這功能後，我遇到一個問題 — 轉寄出去的信件沒辦法正確顯示內嵌圖片
+關於轉寄信件的程式碼我放在 GitHub 上囉 (連結)，之後有時間會寫一篇 Forward Email 的完整教學，或是也可以關注我的 Notion，我每天都會寫筆記記錄自己的學習過程
+讓我們直接看例子 首先，我登入私人帳號模擬我是客戶，寄信給 test@aws-educate.tw，下圖是當時寄出去的內容: 寄給 test@aws-educate.tw 後，SES 會收到信，然後根據我配置的 Receipt rule，原始郵件檔案會被儲存至我指定的 S3 Bucket
+延續 用 SES, S3, Lambda 實現轉寄信件功能 ，當我嘗試在轉寄出去的信件中內嵌圖片，最後收到轉寄來的信，都會出現下圖的現象：圖片沒辦法內嵌在裡面，倒是跑去附件了
+我起初嘗試的解法 後來下面這篇 Stack Overflow，裡面有人提到 Gmail 還不支援顯示 base64 編碼的圖片 (有待確認，希望有人可以告訴我正確答案)
+As of January 2020, Gmail still does not support base64 encoded images.
+Source: Add embedded image in emails in AWS SES service...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-08-06 02:25:14 +0800 CST'>August 6, 2024</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to 從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐" href="https://shiun.me/blog/troubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲
     </h2>
   </header>

@@ -226,6 +226,21 @@ if (!doNotTrack) {
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">要導入 IaC？用 Terraform Import 導入現有資源
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Terraform Import 簡介 Terraform Import 是 Terraform 中的一個功能，允許你將現有的基礎設施資源導入到 Terraform 的狀態文件中。這樣，你可以將已有的基礎設施與 Terraform 的配置文件同步，並開始使用 Terraform 來管理這些資源
+什麼時候需要用到 terraform import？ terraform import 並不是一個自動偵測 AWS 資源上的東西，然後自動幫忙寫程式碼的工具 如果你以前沒有使用任何 IaC 的工具，都是直接在 AWS Console 上管理和創建資源，但現在想要導入 IaC，然後把那些「現有資源」導入到 Terraform 來管理，那你就會需要用到 terraform import
+terraform import 的主要目的是將已經存在的基礎設施資源導入到 Terraform 的狀態文件中，這樣你就可以用 Terraform 來管理這些資源。例如，如果你有一個已經存在的 AWS EC2 實例，而你現在想開始用 Terraform 來管理它，你需要導入這個實例以便 Terraform 知道它的存在和當前狀態
+Synopsis $ terraform import [options] ADDRESS ID ADDRESS 是 Terraform 配置中資源的地址。例如，aws_instance.my_instance ID 是資源的唯一標識符，這個值根據不同的資源類型會有所不同。例如，對於 AWS EC2 實例，這個 ID 是實例的 ID（例如 i-1234567890abcdef0） Example $ terraform import aws_instance....</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-06-06 10:50:53 +0800 CST'>June 6, 2024</span>&nbsp;·&nbsp;3 min</footer>
+  <a class="entry-link" aria-label="post link to 要導入 IaC？用 Terraform Import 導入現有資源" href="https://shiun.me/blog/how-to-use-terraform-import-to-import-existing-resources-into-iac/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄
     </h2>
   </header>
@@ -289,23 +304,6 @@ NAT Gateway 收費 = NAT Gateway 開啟時間 USD 0....</p>
   </div>
   <footer class="entry-footer"><span title='2024-04-21 01:04:16 +0800 CST'>April 21, 2024</span>&nbsp;·&nbsp;1 min</footer>
   <a class="entry-link" aria-label="post link to AWS Internet Gateway vs NAT Gateway 及使用心得分享" href="https://shiun.me/blog/internet-gateway-vs-nat-gateway/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>EventBridge 簡介 EventBridge Scheduler 是 AWS 在 2022/11 推出的新服務，相較於傳統事件驅動的 EventBridge，新推出的 Scheduler 是時間驅動的一個服務，你可以很輕易的在上面設置一些排程任務去調用 AWS 的其他服務，截至 2024/04/06，官方文件是顯示可以調用 AWS 超過 270 種服務，就我目前使用下來的心得，真的是相當易用！
-常見的使用場景:
-自動調整服務容量: 如 Amazon ECS 任務的數量或今天要介紹的 Aurora Serverless V2 ACU (今天要示範的) 自動化維護任務: 定時啟動或停止 EC2 Instance，以節省成本或進行系統維護。 SasS 訂閱即將到期通知: 蠻多 SaaS 系統可能會需要在用戶快到期時發送信件通知客戶續訂 架構說明 關於本文，我會預設讀者們對於 AWS 有基本的操作能力和認識，對於一些較瑣碎的動作會省略不講解
-本文要教學的是排程每天固定時間，會透過 EventBridge Scheduler 調用 Lambda Function 然後將 Aurora Serverless V2 的 ACU 降低。
-關於這個動作，我們其實要拆解成兩個部分:
-用 Lambda 去調整 Aurora Serverless v2 ACU 用 EventBridge 去 Trigger Lambda 下圖是從 AWS 官方 Blog 下載下來的架構圖，純示意圖大概讓各位認識 EventBridge 和 Lambda 的配合 整體的步驟大概會是...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-04-06 23:45:32 +0800 CST'>April 6, 2024</span>&nbsp;·&nbsp;2 min</footer>
-  <a class="entry-link" aria-label="post link to 如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU" href="https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
