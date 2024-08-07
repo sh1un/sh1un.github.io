@@ -42,6 +42,8 @@ keywords:
 
 延續 [用 SES, S3, Lambda 實現轉寄信件功能](https://www.notion.so/SES-S3-Lambda-18fbed65f6ba41369b89292136e669ec?pvs=21) ，當我嘗試在轉寄出去的信件中內嵌圖片，最後收到轉寄來的信，都會出現下圖的現象：圖片沒辦法內嵌在裡面，倒是跑去附件了
 
+> 寫文章時，已經把原本轉寄過來的信件刪了，所以下圖信件主旨跟前一張圖片不一樣不要介意，下圖信件已經詮釋我想表達的現象了 XD
+
 ![Forwarded-email](https://github.com/user-attachments/assets/16da38b8-cb36-4d55-b786-6a2f48c8c2ff)
 
 ---
