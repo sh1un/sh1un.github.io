@@ -11,8 +11,22 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Tue, 06 Aug 2024 02:25:14 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 08 Aug 2024 21:27:44 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>DNS</title>
+      <link>https://shiun.me/categories/dns/</link>
+      <pubDate>Thu, 08 Aug 2024 21:27:44 +0800</pubDate>
+      <guid>https://shiun.me/categories/dns/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Network</title>
+      <link>https://shiun.me/categories/network/</link>
+      <pubDate>Thu, 08 Aug 2024 21:27:44 +0800</pubDate>
+      <guid>https://shiun.me/categories/network/</guid>
+      <description></description>
+    </item>
     <item>
       <title>AWS</title>
       <link>https://shiun.me/categories/aws/</link>
@@ -32,13 +46,6 @@
       <link>https://shiun.me/categories/mime/</link>
       <pubDate>Tue, 06 Aug 2024 02:25:14 +0800</pubDate>
       <guid>https://shiun.me/categories/mime/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Network</title>
-      <link>https://shiun.me/categories/network/</link>
-      <pubDate>Tue, 06 Aug 2024 02:25:14 +0800</pubDate>
-      <guid>https://shiun.me/categories/network/</guid>
       <description></description>
     </item>
     <item>

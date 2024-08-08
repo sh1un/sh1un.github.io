@@ -11,8 +11,36 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Tue, 06 Aug 2024 02:25:14 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 08 Aug 2024 21:27:44 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>DNS</title>
+      <link>https://shiun.me/tags/dns/</link>
+      <pubDate>Thu, 08 Aug 2024 21:27:44 +0800</pubDate>
+      <guid>https://shiun.me/tags/dns/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Email</title>
+      <link>https://shiun.me/tags/email/</link>
+      <pubDate>Thu, 08 Aug 2024 21:27:44 +0800</pubDate>
+      <guid>https://shiun.me/tags/email/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Network</title>
+      <link>https://shiun.me/tags/network/</link>
+      <pubDate>Thu, 08 Aug 2024 21:27:44 +0800</pubDate>
+      <guid>https://shiun.me/tags/network/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>SMTP</title>
+      <link>https://shiun.me/tags/smtp/</link>
+      <pubDate>Thu, 08 Aug 2024 21:27:44 +0800</pubDate>
+      <guid>https://shiun.me/tags/smtp/</guid>
+      <description></description>
+    </item>
     <item>
       <title>AWS Lambda</title>
       <link>https://shiun.me/tags/aws-lambda/</link>
@@ -389,13 +417,6 @@
       <link>https://shiun.me/tags/nat-gateway/</link>
       <pubDate>Sun, 21 Apr 2024 01:04:16 +0800</pubDate>
       <guid>https://shiun.me/tags/nat-gateway/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Network</title>
-      <link>https://shiun.me/tags/network/</link>
-      <pubDate>Sun, 21 Apr 2024 01:04:16 +0800</pubDate>
-      <guid>https://shiun.me/tags/network/</guid>
       <description></description>
     </item>
     <item>
