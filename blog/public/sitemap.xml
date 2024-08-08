@@ -2,6 +2,39 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://shiun.me/blog/</loc>
+    <lastmod>2024-08-08T21:27:44+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/</loc>
+    <lastmod>2024-08-08T21:27:44+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/dns/</loc>
+    <lastmod>2024-08-08T21:27:44+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/dns/</loc>
+    <lastmod>2024-08-08T21:27:44+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/email/</loc>
+    <lastmod>2024-08-08T21:27:44+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/network/</loc>
+    <lastmod>2024-08-08T21:27:44+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/network/</loc>
+    <lastmod>2024-08-08T21:27:44+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/</loc>
+    <lastmod>2024-08-08T21:27:44+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/smtp/</loc>
+    <lastmod>2024-08-08T21:27:44+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/</loc>
+    <lastmod>2024-08-08T21:27:44+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/blog/how-does-email-sending-work/</loc>
+    <lastmod>2024-08-08T21:27:44+08:00</lastmod>
+  </url><url>
     <loc>https://shiun.me/categories/aws/</loc>
     <lastmod>2024-08-06T02:25:14+08:00</lastmod>
   </url><url>
@@ -17,12 +50,6 @@
     <loc>https://shiun.me/tags/base64/</loc>
     <lastmod>2024-08-06T02:25:14+08:00</lastmod>
   </url><url>
-    <loc>https://shiun.me/blog/</loc>
-    <lastmod>2024-08-06T02:25:14+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/categories/</loc>
-    <lastmod>2024-08-06T02:25:14+08:00</lastmod>
-  </url><url>
     <loc>https://shiun.me/categories/email/</loc>
     <lastmod>2024-08-06T02:25:14+08:00</lastmod>
   </url><url>
@@ -33,15 +60,6 @@
     <lastmod>2024-08-06T02:25:14+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/categories/mime/</loc>
-    <lastmod>2024-08-06T02:25:14+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/categories/network/</loc>
-    <lastmod>2024-08-06T02:25:14+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/</loc>
-    <lastmod>2024-08-06T02:25:14+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/</loc>
     <lastmod>2024-08-06T02:25:14+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/blog/troubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids/</loc>
@@ -270,9 +288,6 @@
     <lastmod>2024-04-21T01:04:16+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/nat-gateway/</loc>
-    <lastmod>2024-04-21T01:04:16+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/network/</loc>
     <lastmod>2024-04-21T01:04:16+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/vpc/</loc>
