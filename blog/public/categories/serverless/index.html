@@ -32,29 +32,37 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 <link rel="alternate" hreflang="en" href="https://shiun.me/categories/serverless/" />
 
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script>
+
+
+<meta property="og:url" content="https://shiun.me/categories/serverless/">
+  <meta property="og:site_name" content="Shiun">
+  <meta property="og:title" content="Serverless">
+  <meta property="og:description" content="Shiun&#39;s Blog">
+  <meta property="og:locale" content="zh_tw">
+  <meta property="og:type" content="website">
+    <meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
 
 
 
-<meta property="og:title" content="Serverless" />
-<meta property="og:description" content="Shiun&#39;s Blog" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://shiun.me/categories/serverless/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
 
-
-
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="Serverless"/>
-<meta name="twitter:description" content="Shiun&#39;s Blog"/>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+  <meta name="twitter:title" content="Serverless">
+  <meta name="twitter:description" content="Shiun&#39;s Blog">
 
 
 <noscript>
@@ -92,17 +100,20 @@ if (!doNotTrack) {
     }
   </style>
 </noscript>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
-<meta property="og:title" content="Serverless" />
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script><meta property="og:title" content="Serverless" />
 <meta property="og:description" content="Shiun&#39;s Blog" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://shiun.me/categories/serverless/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="og:site_name" content="Shiun&#39;s Blog" />
@@ -218,7 +229,8 @@ if (!doNotTrack) {
     <p>在 AWS API Gateway 創建 method 時，我們可以指定他要把請求傳到哪個 AWS 服務或是其他 HTTP Endpoint…等等，而如果你選擇 Lambda，你會看到有一個選項是 Lambda Proxy Integration，那我把它勾選起來會怎樣呢？
 TL;DR 如果有打開 Lambda Proxy Integration，接著我們到那個 Resource 的 Method 頁面看一下，會看到下圖的提示 Proxy integration For proxy integrations, API Gateway automatically passes the backend output to the caller as the complete payload.
 但也許沒有很好理解，所以我們後面會實際打 Code 來示範，但我這邊先稍微解釋一下打開這個功能的影響:
-完整的 HTTP 請求資訊：啟用 Lambda Proxy Integration 後，API Gateway 會將整個 HTTP 請求打包成單一的 event object，並傳遞給 Lambda Function 簡化的處理流程：Lambda Function 接收到的是一個包含了所有請求資訊的 event object，因此不需要再通過模板或轉換就可以直接處理請求。這樣簡化了函數的輸入處理，因為 Lambda Function 已經包含了所有必要的請求資訊 控制 HTTP Response：Lambda Function 需要返回一個特定格式的物件，這個物件包括 Status Code、Response Headers 和 Response Body。由於 Response 是直接由 Lambda Function 生成的，所以開發者可以完全控制 Response 的格式和內容 效能和成本效益：由於請求處理的過程更加直接，減少了中間的處理和轉換步驟，可以提高處理效率，可能也會在某種程度上降低成本 總之，選擇 Lambda Proxy Integration 可以使得與 AWS Lambda 的整合更加緊密、直接和高效。這適合需要精細控制 HTTP 響應的場景，或者希望簡化 API 與 Lambda 之間交互的架構設計...</p>
+完整的 HTTP 請求資訊：啟用 Lambda Proxy Integration 後，API Gateway 會將整個 HTTP 請求打包成單一的 event object，並傳遞給 Lambda Function 簡化的處理流程：Lambda Function 接收到的是一個包含了所有請求資訊的 event object，因此不需要再通過模板或轉換就可以直接處理請求。這樣簡化了函數的輸入處理，因為 Lambda Function 已經包含了所有必要的請求資訊 控制 HTTP Response：Lambda Function 需要返回一個特定格式的物件，這個物件包括 Status Code、Response Headers 和 Response Body。由於 Response 是直接由 Lambda Function 生成的，所以開發者可以完全控制 Response 的格式和內容 效能和成本效益：由於請求處理的過程更加直接，減少了中間的處理和轉換步驟，可以提高處理效率，可能也會在某種程度上降低成本 總之，選擇 Lambda Proxy Integration 可以使得與 AWS Lambda 的整合更加緊密、直接和高效。這適合需要精細控制 HTTP 響應的場景，或者希望簡化 API 與 Lambda 之間交互的架構設計
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-06-14 23:41:33 +0800 CST'>June 14, 2024</span>&nbsp;·&nbsp;4 min</footer>
   <a class="entry-link" aria-label="post link to 深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能" href="https://shiun.me/blog/understanding-lambda-proxy-integration/"></a>
@@ -230,12 +242,13 @@ TL;DR 如果有打開 Lambda Proxy Integration，接著我們到那個 Resource 
     </h2>
   </header>
   <div class="entry-content">
-    <p>前幾天寫了一篇 Serverless Framework 101，今天就來寫寫 AWS SAM 的教學，這兩個都是用來部署及管理 Serverless 應用的框架，兩者可以說是競爭對手關係！待之後有空再來寫一篇這兩個產品的比較
+    <p> 前幾天寫了一篇 Serverless Framework 101，今天就來寫寫 AWS SAM 的教學，這兩個都是用來部署及管理 Serverless 應用的框架，兩者可以說是競爭對手關係！待之後有空再來寫一篇這兩個產品的比較
 Prerequisites 註冊 AWS 帳戶 建立 Admin IAM User 建立 access key ID and secret access key 安裝 AWS CLI 配置 AWS credentials 以上詳細內容請查看官方文檔: prerequisites
 安裝 AWS SAM CLI Mac 的用戶要注意一下，從 2023/9 開始，AWS 不會在維護 AWS SAM CLI 的 Homebrew Installer
 由於我現在是使用 Windows 作業系統的電腦，今天示範如何在 Windows 安裝 AWS SAM CLI
 Windows 安裝 Windows 安裝相當簡單，只要去官方文檔裡面下載 MSI File，接著無腦的 Next 按按按就裝好了 XD
-下載好之後，輸入指令 sam --version 檢查是否安裝成功...</p>
+下載好之後，輸入指令 sam --version 檢查是否安裝成功
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-04-29 23:47:09 +0800 CST'>April 29, 2024</span>&nbsp;·&nbsp;9 min</footer>
   <a class="entry-link" aria-label="post link to AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda" href="https://shiun.me/blog/aws-sam-101/"></a>
@@ -249,7 +262,8 @@ Windows 安裝 Windows 安裝相當簡單，只要去官方文檔裡面下載 MS
   <div class="entry-content">
     <p>Serverless Framework 簡介 Serverless Framework 是一個開源的無服務器應用框架，它允許開發者快速建立、部署和管理在 AWS Lambda、Google Cloud Functions、Azure Functions 等雲平台上運行的無服務器應用。這個框架使用一個簡潔的配置文件（通常是 serverless.yml），在其中定義了應用的所有資源和設定，讓開發者可以專注於編寫業務邏輯而非管理基礎設施。
 安裝 Serverless Framework Prerequisites:
-需要有 npm，若你的電腦沒有 npm，請去下載 NodeJS $ npm install -g serverless 創建一個 Service $ serverless ? What do you want to make? AWS - Node.js - Starter AWS - Node.js - HTTP API AWS - Node.js - Scheduled Task AWS - Node.js - SQS Worker AWS - Node.js - Express API AWS - Node.js - Express API with DynamoDB AWS - Python - Starter &gt; AWS - Python - HTTP API AWS - Python - Scheduled Task AWS - Python - SQS Worker AWS - Python - Flask API AWS - Python - Flask API with DynamoDB Other 輸入指令後透過方向鍵選取你要的 Template，本文將已 AWS - Python HTTP API 示範...</p>
+需要有 npm，若你的電腦沒有 npm，請去下載 NodeJS $ npm install -g serverless 創建一個 Service $ serverless ? What do you want to make? AWS - Node.js - Starter AWS - Node.js - HTTP API AWS - Node.js - Scheduled Task AWS - Node.js - SQS Worker AWS - Node.js - Express API AWS - Node.js - Express API with DynamoDB AWS - Python - Starter &gt; AWS - Python - HTTP API AWS - Python - Scheduled Task AWS - Python - SQS Worker AWS - Python - Flask API AWS - Python - Flask API with DynamoDB Other 輸入指令後透過方向鍵選取你要的 Template，本文將已 AWS - Python HTTP API 示範
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-04-28 04:27:23 +0800 CST'>April 28, 2024</span>&nbsp;·&nbsp;3 min</footer>
   <a class="entry-link" aria-label="post link to Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda" href="https://shiun.me/blog/serverless-framework-101/"></a>
@@ -266,7 +280,7 @@ Windows 安裝 Windows 安裝相當簡單，只要去官方文檔裡面下載 MS
 自動調整服務容量: 如 Amazon ECS 任務的數量或今天要介紹的 Aurora Serverless V2 ACU (今天要示範的) 自動化維護任務: 定時啟動或停止 EC2 Instance，以節省成本或進行系統維護。 SasS 訂閱即將到期通知: 蠻多 SaaS 系統可能會需要在用戶快到期時發送信件通知客戶續訂 架構說明 關於本文，我會預設讀者們對於 AWS 有基本的操作能力和認識，對於一些較瑣碎的動作會省略不講解
 本文要教學的是排程每天固定時間，會透過 EventBridge Scheduler 調用 Lambda Function 然後將 Aurora Serverless V2 的 ACU 降低。
 關於這個動作，我們其實要拆解成兩個部分:
-用 Lambda 去調整 Aurora Serverless v2 ACU 用 EventBridge 去 Trigger Lambda 下圖是從 AWS 官方 Blog 下載下來的架構圖，純示意圖大概讓各位認識 EventBridge 和 Lambda 的配合 整體的步驟大概會是...</p>
+用 Lambda 去調整 Aurora Serverless v2 ACU 用 EventBridge 去 Trigger Lambda 下圖是從 AWS 官方 Blog 下載下來的架構圖，純示意圖大概讓各位認識 EventBridge 和 Lambda 的配合 ...</p>
   </div>
   <footer class="entry-footer"><span title='2024-04-06 23:45:32 +0800 CST'>April 6, 2024</span>&nbsp;·&nbsp;2 min</footer>
   <a class="entry-link" aria-label="post link to 如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU" href="https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/"></a>

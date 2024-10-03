@@ -32,29 +32,37 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 <link rel="alternate" hreflang="en" href="https://shiun.me/blog/" />
 
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script>
+
+
+<meta property="og:url" content="https://shiun.me/blog/">
+  <meta property="og:site_name" content="Shiun">
+  <meta property="og:title" content="Blogs">
+  <meta property="og:description" content="Shiun&#39;s Blog">
+  <meta property="og:locale" content="zh_tw">
+  <meta property="og:type" content="website">
+    <meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
 
 
 
-<meta property="og:title" content="Blogs" />
-<meta property="og:description" content="Shiun&#39;s Blog" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://shiun.me/blog/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
 
-
-
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="Blogs"/>
-<meta name="twitter:description" content="Shiun&#39;s Blog"/>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+  <meta name="twitter:title" content="Blogs">
+  <meta name="twitter:description" content="Shiun&#39;s Blog">
 
 
 <noscript>
@@ -92,17 +100,20 @@ if (!doNotTrack) {
     }
   </style>
 </noscript>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
-<meta property="og:title" content="Blogs" />
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script><meta property="og:title" content="Blogs" />
 <meta property="og:description" content="Shiun&#39;s Blog" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://shiun.me/blog/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="og:site_name" content="Shiun&#39;s Blog" />
@@ -230,14 +241,15 @@ if (!doNotTrack) {
     </h2>
   </header>
   <div class="entry-content">
-    <p>因為我最近在開發一些寄信的系統，因此理解電子郵件寄送的流程和原理是很重要的，為了方便理解，所以我會用真實世界中我們去郵局寄信來比喻電子郵件的寄送流程，這麼做是為了幫助理解，所以比喻那部分很難做到 100% 完全和技術細節對齊
+    <p>因為我最近在開發寄信系統，因此理解電子郵件寄送的流程和原理是很重要的，為了方便理解，所以我會用真實世界中我們去郵局寄信來比喻電子郵件的寄送流程，這麼做是為了幫助理解，所以比喻那部分很難做到 100% 完全和技術細節對齊
 用真實世界在郵局寄信，理解電子郵件寄送的流程 圖片取自: 維基百科
 為了更好地理解電子郵件的寄送過程，我們可以把它比作郵局寄信的過程。假設 Alice 給 Bob 寫了一封感謝信，然後她將信件帶到郵局處理寄信手續。接下來，我們來看看具體過程:
 創建信件
 郵局寄信: Alice 寫好感謝信，裝進信封，寫上寄件人和收件人的地址，貼上郵票。 電子郵件: 你在郵件客戶端 (例如: Outlook、Gmail) 或透過 API 建立一封郵件，內容包含寄件人 (例如: alice@example.tw) 、收件人 (例如: bob@demodomain.tw) 、主題、內文及其他可能的附件。 信件寄送
 郵局寄信: Alice 把信帶到郵局，然後找郵局的櫃台人員。 電子郵件: 當你點擊「寄送」後，郵件客戶端會將這封郵件交給寄件人的郵件伺服器，稱為 SMTP 伺服器 (Simple Mail Transfer Protocol) 。 SMTP 伺服器處理
 郵局寄信: 郵局的櫃台人員會檢查地址是否正確，然後進行分類。 電子郵件: 寄件人的 SMTP 伺服器會驗證寄件人的身份，檢查信件格式是否正確，並根據收件人的域名 (例如: demodomain.tw) 查找相應的 MX 記錄 (Mail Exchange) 來確定收件人的郵件伺服器位置。 像如果對方沒有設定 MX Record，寄信過去就會出現以下 ERROR，找不到對應的 MX Record DNS 查詢
-郵局寄信: 郵局櫃台人員會根據地址查找對應郵遞區號。 電子郵件: 寄件人的 SMTP 伺服器會透過 DNS (Domain Name System) 查詢收件人域名的 MX 記錄，以獲取負責接收郵件的伺服器的 IP 位址。 信件傳輸...</p>
+郵局寄信: 郵局櫃台人員會根據地址查找對應郵遞區號。 電子郵件: 寄件人的 SMTP 伺服器會透過 DNS (Domain Name System) 查詢收件人域名的 MX 記錄，以獲取負責接收郵件的伺服器的 IP 位址。 信件傳輸
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-08-08 21:27:44 +0800 CST'>August 8, 2024</span>&nbsp;·&nbsp;1 min</footer>
   <a class="entry-link" aria-label="post link to 以真實世界寄信來比喻，理解電子郵件寄送流程" href="https://shiun.me/blog/how-does-email-sending-work/"></a>
@@ -257,7 +269,9 @@ if (!doNotTrack) {
 寫文章時，已經把原本轉寄過來的信件刪了，所以下圖信件主旨跟前一張圖片不一樣不要介意，下圖信件已經詮釋我想表達的現象了 XD
 我起初嘗試的解法 後來下面這篇 Stack Overflow，裡面有人提到 Gmail 還不支援顯示 base64 編碼的圖片 (有待確認，希望有人可以告訴我正確答案)
 As of January 2020, Gmail still does not support base64 encoded images.
-Source: Add embedded image in emails in AWS SES service...</p>
+Source: Add embedded image in emails in AWS SES service
+因此使用 Data URI: &lt;img src=&#34;data:image/png;base64,iVBORw0KGgoAA&#34; alt=&#34;Image&#34;&gt; 嵌入圖片的方式現在可以打消念頭了
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-08-06 02:25:14 +0800 CST'>August 6, 2024</span>&nbsp;·&nbsp;2 min</footer>
   <a class="entry-link" aria-label="post link to 從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐" href="https://shiun.me/blog/troubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids/"></a>
@@ -280,7 +294,8 @@ Source: Add embedded image in emails in AWS SES service...</p>
 &lt;link rel=&#34;preload&#34; href=&#34;path/to/your/file.mp3&#34; as=&#34;audio&#34;&gt; 這樣，瀏覽器會在頁面加載時預先下載 file.mp3，提高用戶播放音樂的速度。
 動態 Preload 的實現思路 每個用戶的歌單都不一樣，所以我們當然不希望把 preload 的 href 寫死成一個 URL。
 解決方案 我們可以通過以下幾個步驟來實現動態的 preload：
-API 獲取歌單： 伺服器端提供一個 API，根據用戶的請求返回該用戶的歌單。這個 API 返回一個 JSON 結構，其中包含了音樂檔案的 URL 列表。 JavaScript 動態生成 Preload 標籤： 使用 JavaScript 在頁面加載後動態地從 API 獲取歌單，並為每個音樂文件創建 preload 標籤，將其添加到頁面的 &lt;head&gt; 中。 具體實現 注意⚠️ 我的寫法並非添加 preload 到頁面的 &lt;head&gt;，而是直接用 React 和 JS 本身提供的內建物件來達到同樣效果，詳見本段說明。...</p>
+API 獲取歌單： 伺服器端提供一個 API，根據用戶的請求返回該用戶的歌單。這個 API 返回一個 JSON 結構，其中包含了音樂檔案的 URL 列表。 JavaScript 動態生成 Preload 標籤： 使用 JavaScript 在頁面加載後動態地從 API 獲取歌單，並為每個音樂文件創建 preload 標籤，將其添加到頁面的 &lt;head&gt; 中。 具體實現 注意⚠️ 我的寫法並非添加 preload 到頁面的 &lt;head&gt;，而是直接用 React 和 JS 本身提供的內建物件來達到同樣效果，詳見本段說明。
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-07-21 23:29:27 +0800 CST'>July 21, 2024</span>&nbsp;·&nbsp;4 min</footer>
   <a class="entry-link" aria-label="post link to 在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲" href="https://shiun.me/blog/dynamic-preload-for-performance-optimization/"></a>
@@ -295,7 +310,8 @@ API 獲取歌單： 伺服器端提供一個 API，根據用戶的請求返回�
     <p>大家好，我是 Shiun，今天想和大家分享我在 eCloudValley MSP 部門擔任雲端工程師實習生的經歷。這段實習讓我學到了很多實用的雲端技術，同時也在工作中遇到了許多有趣的挑戰。 實習工作內容 在 eCloudValley 的實習期間，我主要負責以下幾項工作：
 學習使用公有雲，包括 AWS 和 Azure。 開發公司內部的 GenAI 應用。 與同期且同部門實習生共同開發專案。 定期與 Mentor 開會。 參與最終展演。 撰寫系統文件。 實習期間大事紀 專案大改方向 在 eCloudValley 實習期間，我們的專案經歷了一次重大轉變。起初，我們的任務是開發一個 AI Bot 開單助理，目的是幫助客戶在雲端遇到問題時能夠迅速獲得支援。這個專案的初步構想是：
 客戶向 AI 助理求助，並向 AI 助理提供必要資訊，例如： EC2 SG Inbound Rule, 健康檢查狀態… 等等 如果客戶提供的資訊不夠明確，AI 助理要明確地告知客戶還需提供哪些資訊。 AI 助理彙總客戶問題，轉化為技術人員易於理解的語言。 將資訊轉化後，開 ticket 到開單系統。 然而，在實作過程中，我們發現這個 AI 助理的效果不如預期，且後續優化存在技術瓶頸。客戶問題過於多樣化、且問題幾乎都很具情境，不是那種有標準解答或是標準 SOP 就能解決的問題，所以 AI 助理難以處理，導致準確率低，最終還是需要人工介入，反而增加了工作量。
-因此，我們在 4 月底決定將專案轉變為一個「會議錄影機器人」。這個機器人會被邀請到 LINE 群組中，默默記錄每一條訊息以及圖片 (圖片透過 Claude 3 Sonnet 取得 Caption)。TAM 只需在群組中輸入特殊指令或貼圖即可控制錄影，最終在前端頁面查看記錄並由 LLM 總結，創建 Ticket 到 MSP 部門的 Ticket System。...</p>
+因此，我們在 4 月底決定將專案轉變為一個「會議錄影機器人」。這個機器人會被邀請到 LINE 群組中，默默記錄每一條訊息以及圖片 (圖片透過 Claude 3 Sonnet 取得 Caption)。TAM 只需在群組中輸入特殊指令或貼圖即可控制錄影，最終在前端頁面查看記錄並由 LLM 總結，創建 Ticket 到 MSP 部門的 Ticket System。
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-07-20 23:06:18 +0800 CST'>July 20, 2024</span>&nbsp;·&nbsp;1 min</footer>
   <a class="entry-link" aria-label="post link to 2024 伊雲谷實習計畫 - 雲端工程師實習心得" href="https://shiun.me/blog/2024-ecloudvalley-internship/"></a>
@@ -311,7 +327,9 @@ API 獲取歌單： 伺服器端提供一個 API，根據用戶的請求返回�
 當這個 user 嘗試首次登入時，他們會遇到這樣的情況:
 { &#34;message&#34;: &#34;New password required&#34;， &#34;challengeName&#34;: &#34;NEW_PASSWORD_REQUIRED&#34;， &#34;session&#34;: &#34;AYABeAsYJsR3yEr0iJssKPPUPEgAHQABAAdTZXJ2aWNlABBDb2duaXRvVXNlclBvb2xzAAEAB2F3cy1rbXMAS2Fybjphd3M6a21zOnVzLXdlc3QtMjowMTU3MzY3MjcxOTg6a2V5LzI5OTFhNGE5LTM5YTAtNDQ0Mi04MWU4LWRkYjY4NTllMTg2MQC4AQIBAHhPj7k9zU4nGXUQUvM0Ccwk42DS-fm3vKmH75ktTrktNQG1gnjl6HkUVUYN1J_HPow6AAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMulTha32s34j2CmQWAgEQgDtog8CDFh2e-4YyjM2kB_MXheMgmrdY_IF3aN9TImZXddMBj7djEAPPduLZnG3ddBLYQa8x3T3WPKUkvwIAAAAADAAAEAAAAAAAAAAAAAAAAADCbdmpLPo0E4QkWLlyH8ov_____wAAAAEAAAAAAAAAAAAAAAEAAAC1oMtgshmuUU4fk36WHKBzPgJEoE1MmL0PFyhR9lRcimImOIObhhxvC1fwiYylgbYx0Gu0i1cp5Le8AvrAnUGEJjZp54TMPP4N-JCT3qSrHeq_Kat_2CuECVSQqkc1qH4z9FVOTvAnos4FrDSn2W6KvFfLo8YQh2LJxM1h3GdIeyYqj7Ipfk6PZKGYmV5P741rRMNcuYBtvE8Hq9gVqMbEPG-c5MppY_q9JoG9TyQRN7rVGlZf62_WtTqST2F3-DZPoXTMTyY&#34;， &#34;challengeParameters&#34;: { &#34;USER_ID_FOR_SRP&#34;: &#34;shiun&#34;， &#34;requiredAttributes&#34;: &#34;[]&#34;， &#34;userAttributes&#34;: &#34;{\&#34;email\&#34;:\&#34;xxxxx@gmail.com\&#34;}&#34; } } Cognito 回傳了一個 NEW_PASSWORD_REQUIRED 的 challenge，同時給了我們一個 session token。這就是我們需要處理的 case。
 解決方案 要解決這個問題，我們需要提供一個 change-password 的 API endpoint，讓 user 可以順利更改密碼。整個 flow 大致如下:
-User 首次登入 Cognito 回傳 NEW_PASSWORD_REQUIRED challenge 和 session token 前端帶著 session token 呼叫我們的 change-password API 密碼更改成功，user 順利登入系統 以下是一個處理這種情況的 Lambda function 範例:...</p>
+User 首次登入 Cognito 回傳 NEW_PASSWORD_REQUIRED challenge 和 session token 前端帶著 session token 呼叫我們的 change-password API 密碼更改成功，user 順利登入系統 以下是一個處理這種情況的 Lambda function 範例:
+import json import logging import boto3 from botocore.exceptions import ClientError # Initialize logger logger = logging.getLogger() logger.setLevel(logging.INFO) # Initialize Cognito client client = boto3.client(&#34;cognito-idp&#34;) def lambda_handler(event, context): &#34;&#34;&#34; Handles the NEW_PASSWORD_REQUIRED challenge from Cognito &#34;&#34;&#34; try: # Parse the request body body = json.loads(event[&#34;body&#34;]) # Respond to the new password required challenge response = client.respond_to_auth_challenge( ClientId=&#34;YOUR_CLIENT_ID&#34;, ChallengeName=&#34;NEW_PASSWORD_REQUIRED&#34;, Session=body[&#34;session&#34;], ChallengeResponses={ &#34;USERNAME&#34;: body[&#34;username&#34;], &#34;NEW_PASSWORD&#34;: body[&#34;new_password&#34;], # Add any required attributes here if necessary }, ) logger.info(&#34;Cognito respond to challenge response: %s&#34;, response) # Extract access token from the response access_token = response[&#34;AuthenticationResult&#34;][&#34;AccessToken&#34;] # Return successful response with the access token set in cookies return { &#34;statusCode&#34;: 200, &#34;headers&#34;: { &#34;Set-Cookie&#34;: f&#34;accessToken={access_token}; Path=/; Secure; HttpOnly; SameSite=None; Domain=.aws-educate.tw&#34; }, &#34;body&#34;: json.dumps({&#34;message&#34;: &#34;Password changed successfully&#34;}), } except ClientError as e: # Handle Cognito client errors logger.error(&#34;Cognito client error: %s&#34;, e) return { &#34;statusCode&#34;: 400, &#34;body&#34;: json.dumps({&#34;message&#34;: e.response[&#34;Error&#34;][&#34;Message&#34;]}), } except json.JSONDecodeError as e: # Handle JSON decoding errors logger.error(&#34;JSON decode error: %s&#34;, e) return { &#34;statusCode&#34;: 400, &#34;body&#34;: json.dumps({&#34;message&#34;: &#34;Invalid JSON format in request body&#34;}), } 這個 Lambda function 做了以下幾件事:
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-07-19 23:04:08 +0800 CST'>July 19, 2024</span>&nbsp;·&nbsp;2 min</footer>
   <a class="entry-link" aria-label="post link to 如何使用 Lambda 處理 AWS Cognito User 首次登入被系統要求強制變更密碼" href="https://shiun.me/blog/aws-cognito-how-to-handle-force-change-password/"></a>

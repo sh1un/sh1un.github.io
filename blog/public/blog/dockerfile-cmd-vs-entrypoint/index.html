@@ -27,31 +27,41 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 <link rel="apple-touch-icon" href="https://shiun.me/apple-touch-icon.png"> <link rel="mask-icon" href="https://shiun.me/safari-pinned-tab.svg"> <meta name="theme-color" content="#2e2e33"> <meta name="msapplication-TileColor" content="#2e2e33"> <link rel="alternate" hreflang="en" href="https://shiun.me/blog/dockerfile-cmd-vs-entrypoint/" />
 
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script>
+
+
+<meta property="og:url" content="https://shiun.me/blog/dockerfile-cmd-vs-entrypoint/">
+  <meta property="og:site_name" content="Shiun">
+  <meta property="og:title" content="Docker 初學常見問題 - CMD vs ENTRYPOINT 兩者的差異與範例">
+  <meta property="og:description" content="很多人在初學 Docker 時，通常都會知道 CMD 和 ENTRYPOINT 基本上可以互換，但又覺得很疑惑既然兩個指令能互換為什麼要提供兩個指令給我們用? 但其實這兩者是有一些差異的，今天這篇文章就是來帶你了解 Dockerfile 中的 CMD 和 ENTRYPOINT">
+  <meta property="og:locale" content="zh_tw">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="blog">
+    <meta property="article:published_time" content="2024-02-07T20:43:51+08:00">
+    <meta property="article:modified_time" content="2024-02-07T20:43:51+08:00">
+    <meta property="article:tag" content="Docker">
+    <meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
 
 
 
-<meta property="og:title" content="Docker 初學常見問題 - CMD vs ENTRYPOINT 兩者的差異與範例" />
-<meta property="og:description" content="很多人在初學 Docker 時，通常都會知道 CMD 和 ENTRYPOINT 基本上可以互換，但又覺得很疑惑既然兩個指令能互換為什麼要提供兩個指令給我們用? 但其實這兩者是有一些差異的，今天這篇文章就是來帶你了解 Dockerfile 中的 CMD 和 ENTRYPOINT" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://shiun.me/blog/dockerfile-cmd-vs-entrypoint/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="article:section" content="blog" />
-<meta property="article:published_time" content="2024-02-07T20:43:51+08:00" />
-<meta property="article:modified_time" content="2024-02-07T20:43:51+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
 
-
-
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="Docker 初學常見問題 - CMD vs ENTRYPOINT 兩者的差異與範例"/>
-<meta name="twitter:description" content="很多人在初學 Docker 時，通常都會知道 CMD 和 ENTRYPOINT 基本上可以互換，但又覺得很疑惑既然兩個指令能互換為什麼要提供兩個指令給我們用? 但其實這兩者是有一些差異的，今天這篇文章就是來帶你了解 Dockerfile 中的 CMD 和 ENTRYPOINT"/>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+  <meta name="twitter:title" content="Docker 初學常見問題 - CMD vs ENTRYPOINT 兩者的差異與範例">
+  <meta name="twitter:description" content="很多人在初學 Docker 時，通常都會知道 CMD 和 ENTRYPOINT 基本上可以互換，但又覺得很疑惑既然兩個指令能互換為什麼要提供兩個指令給我們用? 但其實這兩者是有一些差異的，今天這篇文章就是來帶你了解 Dockerfile 中的 CMD 和 ENTRYPOINT">
 
 
 <noscript>
@@ -89,17 +99,20 @@ if (!doNotTrack) {
     }
   </style>
 </noscript>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
-<meta property="og:title" content="Docker 初學常見問題 - CMD vs ENTRYPOINT 兩者的差異與範例" />
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script><meta property="og:title" content="Docker 初學常見問題 - CMD vs ENTRYPOINT 兩者的差異與範例" />
 <meta property="og:description" content="很多人在初學 Docker 時，通常都會知道 CMD 和 ENTRYPOINT 基本上可以互換，但又覺得很疑惑既然兩個指令能互換為什麼要提供兩個指令給我們用? 但其實這兩者是有一些差異的，今天這篇文章就是來帶你了解 Dockerfile 中的 CMD 和 ENTRYPOINT" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://shiun.me/blog/dockerfile-cmd-vs-entrypoint/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="article:section" content="blog" />

@@ -2,7 +2,7 @@
 <html lang="en" dir="auto">
 
 <head>
-	<meta name="generator" content="Hugo 0.124.1"><meta charset="utf-8" />
+	<meta name="generator" content="Hugo 0.135.0"><meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta
   name="viewport"
@@ -37,29 +37,37 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 <link rel="alternate" hreflang="en" href="https://shiun.me/" />
 
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script>
+
+
+<meta property="og:url" content="https://shiun.me/">
+  <meta property="og:site_name" content="Shiun">
+  <meta property="og:title" content="Shiun">
+  <meta property="og:description" content="Shiun&#39;s Blog">
+  <meta property="og:locale" content="zh_tw">
+  <meta property="og:type" content="website">
+    <meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
 
 
 
-<meta property="og:title" content="Shiun" />
-<meta property="og:description" content="Shiun&#39;s Blog" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://shiun.me/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
 
-
-
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="Shiun"/>
-<meta name="twitter:description" content="Shiun&#39;s Blog"/>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+  <meta name="twitter:title" content="Shiun">
+  <meta name="twitter:description" content="Shiun&#39;s Blog">
 
 
 <noscript>
@@ -97,17 +105,20 @@ if (!doNotTrack) {
     }
   </style>
 </noscript>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
-<meta property="og:title" content="Shiun" />
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script><meta property="og:title" content="Shiun" />
 <meta property="og:description" content="Shiun&#39;s Blog" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://shiun.me/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="og:site_name" content="Shiun&#39;s Blog" />
@@ -124,7 +135,7 @@ if (!doNotTrack) {
   "@type": "Organization",
   "name": "Shiun",
   "url": "https://shiun.me/",
-  "description": "Shiun\u0026#39;s Blog",
+  "description": "Shiun's Blog",
   "thumbnailUrl": "https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047",
   "sameAs": [
       "https://github.com/sh1un", "https://www.linkedin.com/in/shiunchiu/"
@@ -231,8 +242,9 @@ if (!doNotTrack) {
     <p>最近在寫 E2E 測試遇到一個問題，因 E2E 專案中，除了專案本身的 Docker Image 需要 Build 之外，還有多個測試環境的 Image 也要 Build，這造成了我在這個專案上需要創建多個 Dockerfile
 發生了什麼問題? 我一開始的錯誤處理方式 菜鳥時期的我，以為 Dockerfile 就是一定得命名為&#34;Dockerfile&#34;，這導致了我沒辦法在專案根目錄下創建三個 Dockerfile，因為會導致命名衝突
 那我想出了什麼處理方式？相當簡單，很菜的我，一開始便自然地根據不同環境在專案下創建了不同的目錄，然後在目錄底下存放各自的 Dockerfile 就很類似這種感覺：
-E2Eproject/├── testenvironment1/│ └── Dockerfile├── testenvironment2/│ └── Dockerfile├── requirements.txt└── Dockerfile 接著便接著發生下一個問題 — 錯誤的建構上下文 以其中一個測試環境內的 Dockerfile 為範例，當時我的寫法如下，請特別注意 COPY ../../ /usr/src/app/ 這行
-# Use the official Python base image from the DockerHub. FROM python:3.12 # Set the working directory within the container. WORKDIR /usr/src/app # Set the PYTHONPATH environment variable....</p>
+E2Eproject/ ├── testenvironment1/ │ └── Dockerfile ├── testenvironment2/ │ └── Dockerfile ├── requirements.txt └── Dockerfile 接著便接著發生下一個問題 — 錯誤的建構上下文 以其中一個測試環境內的 Dockerfile 為範例，當時我的寫法如下，請特別注意 COPY ../../ /usr/src/app/ 這行
+# Use the official Python base image from the DockerHub. FROM python:3.12 # Set the working directory within the container. WORKDIR /usr/src/app # Set the PYTHONPATH environment variable. This is where Python looks for modules. # It&#39;s set to the work directory to allow local modules to be found. ENV PYTHONPATH /usr/src/app # Copy the contents of the current host directory into the container&#39;s work directory. COPY ../../ /usr/src/app/ # Install the project dependencies specified in the requirements.txt file. # The --no-cache-dir option is used to disable the cache and reduce the layer size. RUN pip install --no-cache-dir -r ../../requirements.txt # 略 ... RUN chmod &#43;x /usr/src/app/start-tests.sh # The command to run the application. CMD [&#34;sh&#34;, &#34;/usr/src/app/start-headless-tests.sh&#34;] 會注意到，我使用了 ../../，會這麼寫是因為專案根目錄(或是說打包所需的檔案)都在此 Dockerfile 所處目錄的上面幾層 接著就是很自然的輸入下方指令，然後就出現 ERROR 了：
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-01-20 18:54:37 +0800 CST'>January 20, 2024</span>&nbsp;·&nbsp;3 min</footer>
   <a class="entry-link" aria-label="post link to 一個專案需要多個 Dockerfile - 淺談建構上下文 (build context)" href="https://shiun.me/blog/a-project-with-multiple-dockerfiles---an-introduction-to-build-context/"></a>
@@ -251,7 +263,8 @@ E2Eproject/├── testenvironment1/│ └── Dockerfile├── teste
 關於我 Hi 我是 Shiun，家裡有兩隻貓(娜娜 &amp; 妮妮😺😺) 我目前就讀於某私立大學的資管系(2024 畢業)，同時也就職於：
 AWS Educate 5th Cloud Ambassador - Technical Support @AWS Backend Engineer Intern @eGroupAI 在 2024 年 3 月要接任：
 AWS Educate 6th Cloud Ambassador Team Lead (技術) @AWS Cloud Engineer Intern @eCloudValley 主要專精於後端與雲端及 DevOps 方面的技術：
-Spring boot Jenkins AWS Docker Selenium Pytest 除此之外，我也很擅長擔任領導者的角色，在求學職涯中，我幾乎都是擔任領導者的職位，像是在大學畢業專題中我也擔任了組長、PM、Product Owner、Backend Development，在畢業專題(作品連結)中上實踐了敏捷式開發(Scrum, Kanban)</p>
+Spring boot Jenkins AWS Docker Selenium Pytest 除此之外，我也很擅長擔任領導者的角色，在求學職涯中，我幾乎都是擔任領導者的職位，像是在大學畢業專題中我也擔任了組長、PM、Product Owner、Backend Development，在畢業專題(作品連結)中上實踐了敏捷式開發(Scrum, Kanban)
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-01-19 14:29:30 +0800 CST'>January 19, 2024</span>&nbsp;·&nbsp;1 min</footer>
   <a class="entry-link" aria-label="post link to 這個網站的第一篇文章 - 關於我 以及架站的動機" href="https://shiun.me/blog/my-first/"></a>

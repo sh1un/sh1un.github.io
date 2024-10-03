@@ -27,31 +27,46 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 <link rel="apple-touch-icon" href="https://shiun.me/apple-touch-icon.png"> <link rel="mask-icon" href="https://shiun.me/safari-pinned-tab.svg"> <meta name="theme-color" content="#2e2e33"> <meta name="msapplication-TileColor" content="#2e2e33"> <link rel="alternate" hreflang="en" href="https://shiun.me/blog/2024-aws-genai-hackathon/" />
 
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script>
+
+
+<meta property="og:url" content="https://shiun.me/blog/2024-aws-genai-hackathon/">
+  <meta property="og:site_name" content="Shiun">
+  <meta property="og:title" content="學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄">
+  <meta property="og:description" content="來記錄一下學生時期的最後一場比賽——GenAI Hackathon。透過這篇文章，想跟大家分享比賽的準備以及比賽過程中的點點滴滴。">
+  <meta property="og:locale" content="zh_tw">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="blog">
+    <meta property="article:published_time" content="2024-05-21T22:32:41+08:00">
+    <meta property="article:modified_time" content="2024-05-21T22:32:41+08:00">
+    <meta property="article:tag" content="AWS">
+    <meta property="article:tag" content="AWS Bedrock">
+    <meta property="article:tag" content="Competition Experience">
+    <meta property="article:tag" content="Hackathon">
+    <meta property="article:tag" content="GenAI">
+    <meta property="article:tag" content="LangChain">
+    <meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
 
 
 
-<meta property="og:title" content="學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄" />
-<meta property="og:description" content="來記錄一下學生時期的最後一場比賽——GenAI Hackathon。透過這篇文章，想跟大家分享比賽的準備以及比賽過程中的點點滴滴。" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://shiun.me/blog/2024-aws-genai-hackathon/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="article:section" content="blog" />
-<meta property="article:published_time" content="2024-05-21T22:32:41+08:00" />
-<meta property="article:modified_time" content="2024-05-21T22:32:41+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
 
-
-
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄"/>
-<meta name="twitter:description" content="來記錄一下學生時期的最後一場比賽——GenAI Hackathon。透過這篇文章，想跟大家分享比賽的準備以及比賽過程中的點點滴滴。"/>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+  <meta name="twitter:title" content="學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄">
+  <meta name="twitter:description" content="來記錄一下學生時期的最後一場比賽——GenAI Hackathon。透過這篇文章，想跟大家分享比賽的準備以及比賽過程中的點點滴滴。">
 
 
 <noscript>
@@ -89,17 +104,20 @@ if (!doNotTrack) {
     }
   </style>
 </noscript>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
-<meta property="og:title" content="學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄" />
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script><meta property="og:title" content="學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄" />
 <meta property="og:description" content="來記錄一下學生時期的最後一場比賽——GenAI Hackathon。透過這篇文章，想跟大家分享比賽的準備以及比賽過程中的點點滴滴。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://shiun.me/blog/2024-aws-genai-hackathon/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="article:section" content="blog" />

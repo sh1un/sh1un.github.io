@@ -27,31 +27,46 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 <link rel="apple-touch-icon" href="https://shiun.me/apple-touch-icon.png"> <link rel="mask-icon" href="https://shiun.me/safari-pinned-tab.svg"> <meta name="theme-color" content="#2e2e33"> <meta name="msapplication-TileColor" content="#2e2e33"> <link rel="alternate" hreflang="en" href="https://shiun.me/blog/understanding-lambda-proxy-integration/" />
 
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script>
+
+
+<meta property="og:url" content="https://shiun.me/blog/understanding-lambda-proxy-integration/">
+  <meta property="og:site_name" content="Shiun">
+  <meta property="og:title" content="深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能">
+  <meta property="og:description" content="API Gateway 背後接 Lambda 是一個相當常見的組合，然而很多人對 API Gateway 上面的 Lambda Proxy Integration 在做什麼其實不是很了解，事實上，啟用或不啟用這個功能，行為會差非常多，這篇文章用實際的例子帶你認識 Lambda Proxy Integration">
+  <meta property="og:locale" content="zh_tw">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="blog">
+    <meta property="article:published_time" content="2024-06-14T23:41:33+08:00">
+    <meta property="article:modified_time" content="2024-06-14T23:41:33+08:00">
+    <meta property="article:tag" content="AWS">
+    <meta property="article:tag" content="AWS API Gateway">
+    <meta property="article:tag" content="AWS Lambda">
+    <meta property="article:tag" content="Lambda Proxy Integration">
+    <meta property="article:tag" content="Cloud Computing">
+    <meta property="article:tag" content="Serverless">
+    <meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
 
 
 
-<meta property="og:title" content="深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能" />
-<meta property="og:description" content="API Gateway 背後接 Lambda 是一個相當常見的組合，然而很多人對 API Gateway 上面的 Lambda Proxy Integration 在做什麼其實不是很了解，事實上，啟用或不啟用這個功能，行為會差非常多，這篇文章用實際的例子帶你認識 Lambda Proxy Integration" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://shiun.me/blog/understanding-lambda-proxy-integration/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="article:section" content="blog" />
-<meta property="article:published_time" content="2024-06-14T23:41:33+08:00" />
-<meta property="article:modified_time" content="2024-06-14T23:41:33+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
 
-
-
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能"/>
-<meta name="twitter:description" content="API Gateway 背後接 Lambda 是一個相當常見的組合，然而很多人對 API Gateway 上面的 Lambda Proxy Integration 在做什麼其實不是很了解，事實上，啟用或不啟用這個功能，行為會差非常多，這篇文章用實際的例子帶你認識 Lambda Proxy Integration"/>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+  <meta name="twitter:title" content="深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能">
+  <meta name="twitter:description" content="API Gateway 背後接 Lambda 是一個相當常見的組合，然而很多人對 API Gateway 上面的 Lambda Proxy Integration 在做什麼其實不是很了解，事實上，啟用或不啟用這個功能，行為會差非常多，這篇文章用實際的例子帶你認識 Lambda Proxy Integration">
 
 
 <noscript>
@@ -89,17 +104,20 @@ if (!doNotTrack) {
     }
   </style>
 </noscript>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
-<meta property="og:title" content="深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能" />
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script><meta property="og:title" content="深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能" />
 <meta property="og:description" content="API Gateway 背後接 Lambda 是一個相當常見的組合，然而很多人對 API Gateway 上面的 Lambda Proxy Integration 在做什麼其實不是很了解，事實上，啟用或不啟用這個功能，行為會差非常多，這篇文章用實際的例子帶你認識 Lambda Proxy Integration" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://shiun.me/blog/understanding-lambda-proxy-integration/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="article:section" content="blog" />

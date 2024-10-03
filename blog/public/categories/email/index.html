@@ -32,29 +32,37 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 <link rel="alternate" hreflang="en" href="https://shiun.me/categories/email/" />
 
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script>
+
+
+<meta property="og:url" content="https://shiun.me/categories/email/">
+  <meta property="og:site_name" content="Shiun">
+  <meta property="og:title" content="Email">
+  <meta property="og:description" content="Shiun&#39;s Blog">
+  <meta property="og:locale" content="zh_tw">
+  <meta property="og:type" content="website">
+    <meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
 
 
 
-<meta property="og:title" content="Email" />
-<meta property="og:description" content="Shiun&#39;s Blog" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://shiun.me/categories/email/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
 
-
-
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="Email"/>
-<meta name="twitter:description" content="Shiun&#39;s Blog"/>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+  <meta name="twitter:title" content="Email">
+  <meta name="twitter:description" content="Shiun&#39;s Blog">
 
 
 <noscript>
@@ -92,17 +100,20 @@ if (!doNotTrack) {
     }
   </style>
 </noscript>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
-<meta property="og:title" content="Email" />
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script><meta property="og:title" content="Email" />
 <meta property="og:description" content="Shiun&#39;s Blog" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://shiun.me/categories/email/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="og:site_name" content="Shiun&#39;s Blog" />
@@ -223,7 +234,9 @@ if (!doNotTrack) {
 寫文章時，已經把原本轉寄過來的信件刪了，所以下圖信件主旨跟前一張圖片不一樣不要介意，下圖信件已經詮釋我想表達的現象了 XD
 我起初嘗試的解法 後來下面這篇 Stack Overflow，裡面有人提到 Gmail 還不支援顯示 base64 編碼的圖片 (有待確認，希望有人可以告訴我正確答案)
 As of January 2020, Gmail still does not support base64 encoded images.
-Source: Add embedded image in emails in AWS SES service...</p>
+Source: Add embedded image in emails in AWS SES service
+因此使用 Data URI: &lt;img src=&#34;data:image/png;base64,iVBORw0KGgoAA&#34; alt=&#34;Image&#34;&gt; 嵌入圖片的方式現在可以打消念頭了
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-08-06 02:25:14 +0800 CST'>August 6, 2024</span>&nbsp;·&nbsp;2 min</footer>
   <a class="entry-link" aria-label="post link to 從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐" href="https://shiun.me/blog/troubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids/"></a>

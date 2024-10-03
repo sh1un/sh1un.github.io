@@ -27,31 +27,45 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 <link rel="apple-touch-icon" href="https://shiun.me/apple-touch-icon.png"> <link rel="mask-icon" href="https://shiun.me/safari-pinned-tab.svg"> <meta name="theme-color" content="#2e2e33"> <meta name="msapplication-TileColor" content="#2e2e33"> <link rel="alternate" hreflang="en" href="https://shiun.me/blog/internet-gateway-vs-nat-gateway/" />
 
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script>
+
+
+<meta property="og:url" content="https://shiun.me/blog/internet-gateway-vs-nat-gateway/">
+  <meta property="og:site_name" content="Shiun">
+  <meta property="og:title" content="AWS Internet Gateway vs NAT Gateway 及使用心得分享">
+  <meta property="og:description" content="在準備 SAA 的過程中，我覺得最難的部分就是網路，這篇文章主要先介紹一下 IGW 和 NAT Gateway 的差異，接著介紹一些使用心得。">
+  <meta property="og:locale" content="zh_tw">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="blog">
+    <meta property="article:published_time" content="2024-04-21T01:04:16+08:00">
+    <meta property="article:modified_time" content="2024-04-21T01:04:16+08:00">
+    <meta property="article:tag" content="Network">
+    <meta property="article:tag" content="NAT Gateway">
+    <meta property="article:tag" content="Internet Gateway">
+    <meta property="article:tag" content="AWS">
+    <meta property="article:tag" content="VPC">
+    <meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
 
 
 
-<meta property="og:title" content="AWS Internet Gateway vs NAT Gateway 及使用心得分享" />
-<meta property="og:description" content="在準備 SAA 的過程中，我覺得最難的部分就是網路，這篇文章主要先介紹一下 IGW 和 NAT Gateway 的差異，接著介紹一些使用心得。" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://shiun.me/blog/internet-gateway-vs-nat-gateway/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="article:section" content="blog" />
-<meta property="article:published_time" content="2024-04-21T01:04:16+08:00" />
-<meta property="article:modified_time" content="2024-04-21T01:04:16+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
 
-
-
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="AWS Internet Gateway vs NAT Gateway 及使用心得分享"/>
-<meta name="twitter:description" content="在準備 SAA 的過程中，我覺得最難的部分就是網路，這篇文章主要先介紹一下 IGW 和 NAT Gateway 的差異，接著介紹一些使用心得。"/>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+  <meta name="twitter:title" content="AWS Internet Gateway vs NAT Gateway 及使用心得分享">
+  <meta name="twitter:description" content="在準備 SAA 的過程中，我覺得最難的部分就是網路，這篇文章主要先介紹一下 IGW 和 NAT Gateway 的差異，接著介紹一些使用心得。">
 
 
 <noscript>
@@ -89,17 +103,20 @@ if (!doNotTrack) {
     }
   </style>
 </noscript>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
-<meta property="og:title" content="AWS Internet Gateway vs NAT Gateway 及使用心得分享" />
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script><meta property="og:title" content="AWS Internet Gateway vs NAT Gateway 及使用心得分享" />
 <meta property="og:description" content="在準備 SAA 的過程中，我覺得最難的部分就是網路，這篇文章主要先介紹一下 IGW 和 NAT Gateway 的差異，接著介紹一些使用心得。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://shiun.me/blog/internet-gateway-vs-nat-gateway/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="article:section" content="blog" />

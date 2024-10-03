@@ -32,29 +32,37 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 <link rel="alternate" hreflang="en" href="https://shiun.me/tags/aws-sam-cli/" />
 
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script>
+
+
+<meta property="og:url" content="https://shiun.me/tags/aws-sam-cli/">
+  <meta property="og:site_name" content="Shiun">
+  <meta property="og:title" content="AWS SAM CLI">
+  <meta property="og:description" content="Shiun&#39;s Blog">
+  <meta property="og:locale" content="zh_tw">
+  <meta property="og:type" content="website">
+    <meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
 
 
 
-<meta property="og:title" content="AWS SAM CLI" />
-<meta property="og:description" content="Shiun&#39;s Blog" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://shiun.me/tags/aws-sam-cli/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
 
-
-
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="AWS SAM CLI"/>
-<meta name="twitter:description" content="Shiun&#39;s Blog"/>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+  <meta name="twitter:title" content="AWS SAM CLI">
+  <meta name="twitter:description" content="Shiun&#39;s Blog">
 
 
 <noscript>
@@ -92,17 +100,20 @@ if (!doNotTrack) {
     }
   </style>
 </noscript>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
-<meta property="og:title" content="AWS SAM CLI" />
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script><meta property="og:title" content="AWS SAM CLI" />
 <meta property="og:description" content="Shiun&#39;s Blog" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://shiun.me/tags/aws-sam-cli/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="og:site_name" content="Shiun&#39;s Blog" />
@@ -215,12 +226,13 @@ if (!doNotTrack) {
     </h2>
   </header>
   <div class="entry-content">
-    <p>前幾天寫了一篇 Serverless Framework 101，今天就來寫寫 AWS SAM 的教學，這兩個都是用來部署及管理 Serverless 應用的框架，兩者可以說是競爭對手關係！待之後有空再來寫一篇這兩個產品的比較
+    <p> 前幾天寫了一篇 Serverless Framework 101，今天就來寫寫 AWS SAM 的教學，這兩個都是用來部署及管理 Serverless 應用的框架，兩者可以說是競爭對手關係！待之後有空再來寫一篇這兩個產品的比較
 Prerequisites 註冊 AWS 帳戶 建立 Admin IAM User 建立 access key ID and secret access key 安裝 AWS CLI 配置 AWS credentials 以上詳細內容請查看官方文檔: prerequisites
 安裝 AWS SAM CLI Mac 的用戶要注意一下，從 2023/9 開始，AWS 不會在維護 AWS SAM CLI 的 Homebrew Installer
 由於我現在是使用 Windows 作業系統的電腦，今天示範如何在 Windows 安裝 AWS SAM CLI
 Windows 安裝 Windows 安裝相當簡單，只要去官方文檔裡面下載 MSI File，接著無腦的 Next 按按按就裝好了 XD
-下載好之後，輸入指令 sam --version 檢查是否安裝成功...</p>
+下載好之後，輸入指令 sam --version 檢查是否安裝成功
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-04-29 23:47:09 +0800 CST'>April 29, 2024</span>&nbsp;·&nbsp;9 min</footer>
   <a class="entry-link" aria-label="post link to AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda" href="https://shiun.me/blog/aws-sam-101/"></a>

@@ -32,29 +32,37 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 <link rel="alternate" hreflang="en" href="https://shiun.me/categories/frontend-development/" />
 
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script>
+
+
+<meta property="og:url" content="https://shiun.me/categories/frontend-development/">
+  <meta property="og:site_name" content="Shiun">
+  <meta property="og:title" content="Frontend Development">
+  <meta property="og:description" content="Shiun&#39;s Blog">
+  <meta property="og:locale" content="zh_tw">
+  <meta property="og:type" content="website">
+    <meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
 
 
 
-<meta property="og:title" content="Frontend Development" />
-<meta property="og:description" content="Shiun&#39;s Blog" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://shiun.me/categories/frontend-development/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
 
-
-
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="Frontend Development"/>
-<meta name="twitter:description" content="Shiun&#39;s Blog"/>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+  <meta name="twitter:title" content="Frontend Development">
+  <meta name="twitter:description" content="Shiun&#39;s Blog">
 
 
 <noscript>
@@ -92,17 +100,20 @@ if (!doNotTrack) {
     }
   </style>
 </noscript>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
-<meta property="og:title" content="Frontend Development" />
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script><meta property="og:title" content="Frontend Development" />
 <meta property="og:description" content="Shiun&#39;s Blog" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://shiun.me/categories/frontend-development/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="og:site_name" content="Shiun&#39;s Blog" />
@@ -226,7 +237,8 @@ if (!doNotTrack) {
 &lt;link rel=&#34;preload&#34; href=&#34;path/to/your/file.mp3&#34; as=&#34;audio&#34;&gt; 這樣，瀏覽器會在頁面加載時預先下載 file.mp3，提高用戶播放音樂的速度。
 動態 Preload 的實現思路 每個用戶的歌單都不一樣，所以我們當然不希望把 preload 的 href 寫死成一個 URL。
 解決方案 我們可以通過以下幾個步驟來實現動態的 preload：
-API 獲取歌單： 伺服器端提供一個 API，根據用戶的請求返回該用戶的歌單。這個 API 返回一個 JSON 結構，其中包含了音樂檔案的 URL 列表。 JavaScript 動態生成 Preload 標籤： 使用 JavaScript 在頁面加載後動態地從 API 獲取歌單，並為每個音樂文件創建 preload 標籤，將其添加到頁面的 &lt;head&gt; 中。 具體實現 注意⚠️ 我的寫法並非添加 preload 到頁面的 &lt;head&gt;，而是直接用 React 和 JS 本身提供的內建物件來達到同樣效果，詳見本段說明。...</p>
+API 獲取歌單： 伺服器端提供一個 API，根據用戶的請求返回該用戶的歌單。這個 API 返回一個 JSON 結構，其中包含了音樂檔案的 URL 列表。 JavaScript 動態生成 Preload 標籤： 使用 JavaScript 在頁面加載後動態地從 API 獲取歌單，並為每個音樂文件創建 preload 標籤，將其添加到頁面的 &lt;head&gt; 中。 具體實現 注意⚠️ 我的寫法並非添加 preload 到頁面的 &lt;head&gt;，而是直接用 React 和 JS 本身提供的內建物件來達到同樣效果，詳見本段說明。
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-07-21 23:29:27 +0800 CST'>July 21, 2024</span>&nbsp;·&nbsp;4 min</footer>
   <a class="entry-link" aria-label="post link to 在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲" href="https://shiun.me/blog/dynamic-preload-for-performance-optimization/"></a>

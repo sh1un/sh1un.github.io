@@ -32,29 +32,37 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 <link rel="alternate" hreflang="en" href="https://shiun.me/tags/aws-api-gateway/" />
 
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script>
+
+
+<meta property="og:url" content="https://shiun.me/tags/aws-api-gateway/">
+  <meta property="og:site_name" content="Shiun">
+  <meta property="og:title" content="AWS API Gateway">
+  <meta property="og:description" content="Shiun&#39;s Blog">
+  <meta property="og:locale" content="zh_tw">
+  <meta property="og:type" content="website">
+    <meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
 
 
 
-<meta property="og:title" content="AWS API Gateway" />
-<meta property="og:description" content="Shiun&#39;s Blog" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://shiun.me/tags/aws-api-gateway/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
 
-
-
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="AWS API Gateway"/>
-<meta name="twitter:description" content="Shiun&#39;s Blog"/>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+  <meta name="twitter:title" content="AWS API Gateway">
+  <meta name="twitter:description" content="Shiun&#39;s Blog">
 
 
 <noscript>
@@ -92,17 +100,20 @@ if (!doNotTrack) {
     }
   </style>
 </noscript>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
-<meta property="og:title" content="AWS API Gateway" />
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script><meta property="og:title" content="AWS API Gateway" />
 <meta property="og:description" content="Shiun&#39;s Blog" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://shiun.me/tags/aws-api-gateway/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="og:site_name" content="Shiun&#39;s Blog" />
@@ -218,7 +229,8 @@ if (!doNotTrack) {
     <p>在 AWS API Gateway 創建 method 時，我們可以指定他要把請求傳到哪個 AWS 服務或是其他 HTTP Endpoint…等等，而如果你選擇 Lambda，你會看到有一個選項是 Lambda Proxy Integration，那我把它勾選起來會怎樣呢？
 TL;DR 如果有打開 Lambda Proxy Integration，接著我們到那個 Resource 的 Method 頁面看一下，會看到下圖的提示 Proxy integration For proxy integrations, API Gateway automatically passes the backend output to the caller as the complete payload.
 但也許沒有很好理解，所以我們後面會實際打 Code 來示範，但我這邊先稍微解釋一下打開這個功能的影響:
-完整的 HTTP 請求資訊：啟用 Lambda Proxy Integration 後，API Gateway 會將整個 HTTP 請求打包成單一的 event object，並傳遞給 Lambda Function 簡化的處理流程：Lambda Function 接收到的是一個包含了所有請求資訊的 event object，因此不需要再通過模板或轉換就可以直接處理請求。這樣簡化了函數的輸入處理，因為 Lambda Function 已經包含了所有必要的請求資訊 控制 HTTP Response：Lambda Function 需要返回一個特定格式的物件，這個物件包括 Status Code、Response Headers 和 Response Body。由於 Response 是直接由 Lambda Function 生成的，所以開發者可以完全控制 Response 的格式和內容 效能和成本效益：由於請求處理的過程更加直接，減少了中間的處理和轉換步驟，可以提高處理效率，可能也會在某種程度上降低成本 總之，選擇 Lambda Proxy Integration 可以使得與 AWS Lambda 的整合更加緊密、直接和高效。這適合需要精細控制 HTTP 響應的場景，或者希望簡化 API 與 Lambda 之間交互的架構設計...</p>
+完整的 HTTP 請求資訊：啟用 Lambda Proxy Integration 後，API Gateway 會將整個 HTTP 請求打包成單一的 event object，並傳遞給 Lambda Function 簡化的處理流程：Lambda Function 接收到的是一個包含了所有請求資訊的 event object，因此不需要再通過模板或轉換就可以直接處理請求。這樣簡化了函數的輸入處理，因為 Lambda Function 已經包含了所有必要的請求資訊 控制 HTTP Response：Lambda Function 需要返回一個特定格式的物件，這個物件包括 Status Code、Response Headers 和 Response Body。由於 Response 是直接由 Lambda Function 生成的，所以開發者可以完全控制 Response 的格式和內容 效能和成本效益：由於請求處理的過程更加直接，減少了中間的處理和轉換步驟，可以提高處理效率，可能也會在某種程度上降低成本 總之，選擇 Lambda Proxy Integration 可以使得與 AWS Lambda 的整合更加緊密、直接和高效。這適合需要精細控制 HTTP 響應的場景，或者希望簡化 API 與 Lambda 之間交互的架構設計
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-06-14 23:41:33 +0800 CST'>June 14, 2024</span>&nbsp;·&nbsp;4 min</footer>
   <a class="entry-link" aria-label="post link to 深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能" href="https://shiun.me/blog/understanding-lambda-proxy-integration/"></a>

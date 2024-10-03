@@ -32,29 +32,37 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 <link rel="alternate" hreflang="en" href="https://shiun.me/tags/network/" />
 
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script>
+
+
+<meta property="og:url" content="https://shiun.me/tags/network/">
+  <meta property="og:site_name" content="Shiun">
+  <meta property="og:title" content="Network">
+  <meta property="og:description" content="Shiun&#39;s Blog">
+  <meta property="og:locale" content="zh_tw">
+  <meta property="og:type" content="website">
+    <meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
 
 
 
-<meta property="og:title" content="Network" />
-<meta property="og:description" content="Shiun&#39;s Blog" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://shiun.me/tags/network/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
 
-
-
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea" /><meta name="twitter:title" content="Network"/>
-<meta name="twitter:description" content="Shiun&#39;s Blog"/>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+  <meta name="twitter:title" content="Network">
+  <meta name="twitter:description" content="Shiun&#39;s Blog">
 
 
 <noscript>
@@ -92,17 +100,20 @@ if (!doNotTrack) {
     }
   </style>
 </noscript>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-RZR8D4ERKG', { 'anonymize_ip': false });
-}
-</script>
-<meta property="og:title" content="Network" />
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script><meta property="og:title" content="Network" />
 <meta property="og:description" content="Shiun&#39;s Blog" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://shiun.me/tags/network/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="og:site_name" content="Shiun&#39;s Blog" />
@@ -215,14 +226,15 @@ if (!doNotTrack) {
     </h2>
   </header>
   <div class="entry-content">
-    <p>因為我最近在開發一些寄信的系統，因此理解電子郵件寄送的流程和原理是很重要的，為了方便理解，所以我會用真實世界中我們去郵局寄信來比喻電子郵件的寄送流程，這麼做是為了幫助理解，所以比喻那部分很難做到 100% 完全和技術細節對齊
+    <p>因為我最近在開發寄信系統，因此理解電子郵件寄送的流程和原理是很重要的，為了方便理解，所以我會用真實世界中我們去郵局寄信來比喻電子郵件的寄送流程，這麼做是為了幫助理解，所以比喻那部分很難做到 100% 完全和技術細節對齊
 用真實世界在郵局寄信，理解電子郵件寄送的流程 圖片取自: 維基百科
 為了更好地理解電子郵件的寄送過程，我們可以把它比作郵局寄信的過程。假設 Alice 給 Bob 寫了一封感謝信，然後她將信件帶到郵局處理寄信手續。接下來，我們來看看具體過程:
 創建信件
 郵局寄信: Alice 寫好感謝信，裝進信封，寫上寄件人和收件人的地址，貼上郵票。 電子郵件: 你在郵件客戶端 (例如: Outlook、Gmail) 或透過 API 建立一封郵件，內容包含寄件人 (例如: alice@example.tw) 、收件人 (例如: bob@demodomain.tw) 、主題、內文及其他可能的附件。 信件寄送
 郵局寄信: Alice 把信帶到郵局，然後找郵局的櫃台人員。 電子郵件: 當你點擊「寄送」後，郵件客戶端會將這封郵件交給寄件人的郵件伺服器，稱為 SMTP 伺服器 (Simple Mail Transfer Protocol) 。 SMTP 伺服器處理
 郵局寄信: 郵局的櫃台人員會檢查地址是否正確，然後進行分類。 電子郵件: 寄件人的 SMTP 伺服器會驗證寄件人的身份，檢查信件格式是否正確，並根據收件人的域名 (例如: demodomain.tw) 查找相應的 MX 記錄 (Mail Exchange) 來確定收件人的郵件伺服器位置。 像如果對方沒有設定 MX Record，寄信過去就會出現以下 ERROR，找不到對應的 MX Record DNS 查詢
-郵局寄信: 郵局櫃台人員會根據地址查找對應郵遞區號。 電子郵件: 寄件人的 SMTP 伺服器會透過 DNS (Domain Name System) 查詢收件人域名的 MX 記錄，以獲取負責接收郵件的伺服器的 IP 位址。 信件傳輸...</p>
+郵局寄信: 郵局櫃台人員會根據地址查找對應郵遞區號。 電子郵件: 寄件人的 SMTP 伺服器會透過 DNS (Domain Name System) 查詢收件人域名的 MX 記錄，以獲取負責接收郵件的伺服器的 IP 位址。 信件傳輸
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-08-08 21:27:44 +0800 CST'>August 8, 2024</span>&nbsp;·&nbsp;1 min</footer>
   <a class="entry-link" aria-label="post link to 以真實世界寄信來比喻，理解電子郵件寄送流程" href="https://shiun.me/blog/how-does-email-sending-work/"></a>
@@ -240,7 +252,8 @@ Internet Gateway (IGW) IGW 是一種允許 VPC 與 Internet 之間通訊的 VPC 
 主要功能包括：
 雙向通訊支持：允許配有 Public IP 的 Instance 訪問 Internet，同時也能接收來自 Internet 的數據。 高度的可靠性和擴展性：確保無需用戶干預即可維持服務的持續可用。 NAT Gateway NAT Gateway 是一種網路地址轉換服務，允許 Private Subnet 中的 Instance 連接到 VPC 外部的服務，同時阻止外部服務主動連接這些實例。這種設計特別適合需要訪問 Internet 但不需要從 Internet 接受直接訪問的敏感或保密環境。
 NAT Gateway 價錢:
-NAT Gateway 收費 = NAT Gateway 開啟時間 USD 0....</p>
+NAT Gateway 收費 = NAT Gateway 開啟時間 USD 0.062 per Hour &#43; 經過 NAT 資料處理費用 USD 0.062 per GB &#43; (Optional) 跨 AZ 傳輸費用 0.02 per GB (發送&#43;接收) 總而言之很貴，最新價錢請參考 AWS 官方
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-04-21 01:04:16 +0800 CST'>April 21, 2024</span>&nbsp;·&nbsp;1 min</footer>
   <a class="entry-link" aria-label="post link to AWS Internet Gateway vs NAT Gateway 及使用心得分享" href="https://shiun.me/blog/internet-gateway-vs-nat-gateway/"></a>
