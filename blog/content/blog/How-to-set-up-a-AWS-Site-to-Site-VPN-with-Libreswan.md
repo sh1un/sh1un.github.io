@@ -31,24 +31,23 @@ keywords:
 
 首先我們先創建架構圖右邊 AWS 的 VPC，因此我切換到 Oregon Region，並且依照下圖配置 VPC 以及 Subnet
 
-<img width="507" alt="1-1 CreateVPC" src="https://github.com/user-attachments/assets/7c07b7b3-b95e-4bcb-b404-48cadafc32c5">
+![1-1 CreateVPC](https://github.com/user-attachments/assets/7c07b7b3-b95e-4bcb-b404-48cadafc32c5)
 
-<img width="498" alt="1-2 Create VPC" src="https://github.com/user-attachments/assets/eda0b350-04a2-478e-9bfb-c5487c104ebe">
+![1-2 Create VPC](https://github.com/user-attachments/assets/eda0b350-04a2-478e-9bfb-c5487c104ebe)
 
 ## 二、配置 Route Table (Oregon Region)
 
 然後創建 Route Table，並和剛才創建的 Subnet 建立 Association
 
-<img width="833" alt="2-1 CreatePrivateSubnetRT" src="https://github.com/user-attachments/assets/1dff8965-86cd-4654-af32-e141e174fd30">
-
+![2-1 CreatePrivateSubnetRT](https://github.com/user-attachments/assets/1dff8965-86cd-4654-af32-e141e174fd30)
 
 我們要修改 Subnet 的 Association，確保該子網與我們剛才創建的路由表關聯在一起
 
-<img width="1883" alt="2-2 UpdateRTAssociation" src="https://github.com/user-attachments/assets/4a47f3e1-25d6-430b-8f29-4b38ec565c39">
+![2-2 UpdateRTAssociation](https://github.com/user-attachments/assets/4a47f3e1-25d6-430b-8f29-4b38ec565c39)
 
 如下圖配置 Route Table association
 
-<img width="829" alt="2-3 UpdateRTAssociation" src="https://github.com/user-attachments/assets/9a5bb41b-384e-4d23-8c07-89f58e105021">
+![2-3 UpdateRTAssociation](https://github.com/user-attachments/assets/9a5bb41b-384e-4d23-8c07-89f58e105021)
 
 ## 三、創建 EC2 Instance (Oregon Region)
 
@@ -57,8 +56,7 @@ keywords:
 - 名稱: `EC2-at-AWS`
 - AMI 選擇 `Amazon Linux 2023 AMI`
 - 然後在 Network settings 處依照下圖配置
-  <img width="635" alt="3-1 CreateEC2" src="https://github.com/user-attachments/assets/4f29eca1-5b70-4f9d-b907-698e2e274d9f">
-
+  ![3-1 CreateEC2](https://github.com/user-attachments/assets/4f29eca1-5b70-4f9d-b907-698e2e274d9f)
 
 ## 四、創建 Data Center ( 這裡以 N. Virginia 的 VPC 來模擬 Data Center )
 
@@ -66,9 +64,9 @@ keywords:
 
 這裡需要特別注意的是我們要創建 Public Subnet，因為後續在這裡的 EC2 Instance 需要一個 Public IPv4 地址作為我們 Customer Gateway (CGW) 使用
 
-<img width="501" alt="4-1 CreateVPC" src="https://github.com/user-attachments/assets/85c7033e-21c9-44ad-a127-4b8c28f619aa">
+![4-1 CreateVPC](https://github.com/user-attachments/assets/85c7033e-21c9-44ad-a127-4b8c28f619aa)
 
-<img width="505" alt="4-2 CreateVPC" src="https://github.com/user-attachments/assets/9b37c1ac-1e4a-4b9f-b7d0-8afad24cf6a2">
+![4-2 CreateVPC](https://github.com/user-attachments/assets/9b37c1ac-1e4a-4b9f-b7d0-8afad24cf6a2)
 
 ## 五、創建 EC2 Instance (N. Virginia Region)
 
@@ -80,46 +78,45 @@ keywords:
 - AMI 選擇 `Amazon Linux 2023 AMI`
 - 創建一個 Key pair 並保存好私鑰，一會我們需要連線至 Instance
 - 然後在 Network settings 處依照下圖配置，**一定要記得 Assign Public IP**
-  <img width="584" alt="5-1 CreateEC2" src="https://github.com/user-attachments/assets/f952ea9f-a716-4b73-a987-8f6dbc6cbfd8">
+  ![5-1 CreateEC2](https://github.com/user-attachments/assets/f952ea9f-a716-4b73-a987-8f6dbc6cbfd8)
 
 ## 六、創建 VGW (Oregon Region)
 
 現在回到 VPC Console (Oregon Region) 我們要來配置 VGW
 
-<img width="1879" alt="6-1 CreateVGW" src="https://github.com/user-attachments/assets/97a5d61d-1d7f-49e6-9749-a6d3c6c0d77c">
+![6-1 CreateVGW](https://github.com/user-attachments/assets/97a5d61d-1d7f-49e6-9749-a6d3c6c0d77c)
 
 創建這個很簡單，如下圖:
 
-<img width="823" alt="6-2 CreateVGW" src="https://github.com/user-attachments/assets/b0e66fc3-e93d-42c6-b54a-049325431986">
+![6-2 CreateVGW](https://github.com/user-attachments/assets/b0e66fc3-e93d-42c6-b54a-049325431986)
 
 創建好之後要將其 Attach 到 VPC
 
-<img width="1632" alt="6-3 AttachVGWToVPC" src="https://github.com/user-attachments/assets/b4e9c7e0-ee99-4f79-bfd7-5ef89b342d3e">
+![6-3 AttachVGWToVPC](https://github.com/user-attachments/assets/b4e9c7e0-ee99-4f79-bfd7-5ef89b342d3e)
 
-<img width="825" alt="6-4 AttachVGWToVPC" src="https://github.com/user-attachments/assets/cffd311d-9c56-4cb0-8df1-4e5afc6a38d8">
+![6-4 AttachVGWToVPC](https://github.com/user-attachments/assets/cffd311d-9c56-4cb0-8df1-4e5afc6a38d8)
 
-<img width="1639" alt="6-5 AttachVGWToVPCCompleted" src="https://github.com/user-attachments/assets/97fd0aca-9e3d-4d78-b431-6b77a27075af">
+![6-5 AttachVGWToVPCCompleted](https://github.com/user-attachments/assets/97fd0aca-9e3d-4d78-b431-6b77a27075af)
 
 ## 七、創建 CGW (Oregon Region)
 
 現在我們要創建 CGW，一樣是在 Oregon Region，創建 CGW 最重要的就是 Public IP! 這裡我們是使用別的 Region 的 VPC 來模擬了 Data Center，所以我們要去 N. Virginia Region 複製 EC2 Instance 的 Public IPv4 位址
 
-<img width="812" alt="7-1 CreateCGW" src="https://github.com/user-attachments/assets/1c3a6703-097a-4b5e-b6c4-0a56f7587755">
+![7-1 CreateCGW](https://github.com/user-attachments/assets/1c3a6703-097a-4b5e-b6c4-0a56f7587755)
 
 創建好 CGW 如下圖:
 
-<img width="1633" alt="7-2 CreateCGWCompleted" src="https://github.com/user-attachments/assets/af4b83c6-c772-4c60-9685-d3cd439970f4">
-
+![7-2 CreateCGWCompleted](https://github.com/user-attachments/assets/af4b83c6-c772-4c60-9685-d3cd439970f4)
 
 ## 八、創建 Site-to-Site VPN connection (Oregon Region)
 
 現在已經創建好 VGW 和 CGW，我們就要來把這兩個 Gateway 連接起來，因此就需要創建 Site-to-Site VPN connection
 
-<img width="1887" alt="8-1 CreateS2SVPNConnection" src="https://github.com/user-attachments/assets/df02ec7a-cdba-4ccc-adbc-c79aa0894b34">
+![8-1 CreateS2SVPNConnection](https://github.com/user-attachments/assets/df02ec7a-cdba-4ccc-adbc-c79aa0894b34)
 
 如下圖配置
 
-<img width="660" alt="8-2 CreateS2SVPNConnection" src="https://github.com/user-attachments/assets/d292fb30-6500-4313-9f71-4a0c1d523e27">
+![8-2 CreateS2SVPNConnection](https://github.com/user-attachments/assets/d292fb30-6500-4313-9f71-4a0c1d523e27)
 
 創建後需要等待約 3~5 分鐘
 
@@ -127,17 +124,15 @@ keywords:
 
 為了確保 AWS VPC 中的流量知道什麼狀況下要將流量引導至 VGW，所以必須修改 Route Table，如下圖:
 
-<img width="1866" alt="9-1 UpdateRT" src="https://github.com/user-attachments/assets/0e71d828-be02-423d-aadb-47504ca756f6">
-
+![9-1 UpdateRT](https://github.com/user-attachments/assets/0e71d828-be02-423d-aadb-47504ca756f6)
 
 ## 十、下載配置檔案
 
 我們準備要連線至 EC2 Instance (N. Virginia) 配置 VPN 軟體了，在這之前，需要先去 Site-to-Site VPN Connection 頁面中 (Oregon) 下載 Configuration file
 
-<img width="1883" alt="10-1 DownloadConfigFile" src="https://github.com/user-attachments/assets/3aa990e3-6d27-45ca-bed4-b1e92aff49a6">
+![10-1 DownloadConfigFile](https://github.com/user-attachments/assets/3aa990e3-6d27-45ca-bed4-b1e92aff49a6)
 
-<img width="544" alt="10-2 DownloadConfigFile" src="https://github.com/user-attachments/assets/9f0b79fd-8a23-417f-9780-a1491f912019">
-
+![10-2 DownloadConfigFile](https://github.com/user-attachments/assets/9f0b79fd-8a23-417f-9780-a1491f912019)
 
 ## 十一、配置 VPN Server
 
@@ -242,23 +237,23 @@ sudo vi /etc/ipsec.d/aws.conf
 
 ```bash
 conn Tunnel1
-	authby=secret
-	auto=start
-	left=%defaultroute
-	leftid=54.227.52.173
-	right=35.81.211.175
-	type=tunnel
-	ikelifetime=8h
-	keylife=1h
-	phase2alg=aes_gcm
-	ike=aes256-sha1
-	keyingtries=%forever
-	keyexchange=ike
-	leftsubnet=192.168.0.0/16
-	rightsubnet=10.0.0.0/16
-	dpddelay=10
-	dpdtimeout=30
-	dpdaction=restart_by_peer
+    authby=secret
+    auto=start
+    left=%defaultroute
+    leftid=54.227.52.173
+    right=35.81.211.175
+    type=tunnel
+    ikelifetime=8h
+    keylife=1h
+    phase2alg=aes_gcm
+    ike=aes256-sha1
+    keyingtries=%forever
+    keyexchange=ike
+    leftsubnet=192.168.0.0/16
+    rightsubnet=10.0.0.0/16
+    dpddelay=10
+    dpdtimeout=30
+    dpdaction=restart_by_peer
 ```
 
 創建一個新檔案 `/etc/ipsec.d/aws.secrets` :
@@ -323,7 +318,7 @@ lines 1-28/28 (END)
 
 我們已經建立好 Site-to-Site VPN，若配置正常，Data Center 和 AWS 是可以彼此互相通信的
 
-<img width="1880" alt="12-1 CheckTunnel" src="https://github.com/user-attachments/assets/f0059180-ddef-4194-b665-50f367a1ba6f">
+![12-1 CheckTunnel](https://github.com/user-attachments/assets/f0059180-ddef-4194-b665-50f367a1ba6f)
 
 在這裡我們會使用 N. Virginia Region 中的這台 EC2 去 Ping 看看 Oregon Region 上的 Private EC2 Instance，所以請去 Oregon Region 複製其 Private IPv4 address:
 
@@ -331,7 +326,7 @@ lines 1-28/28 (END)
 ping 10.0.0.131
 ```
 
-<img width="521" alt="12-2 PingPrivateEC2" src="https://github.com/user-attachments/assets/3ff555cc-43dd-4874-b3e2-17cad1319f51">
+![12-2 PingPrivateEC2](https://github.com/user-attachments/assets/3ff555cc-43dd-4874-b3e2-17cad1319f51)
 
 可以看到我們成功 Ping 到 Oregon 上的 EC2 Instance 了！
 
