@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
+<meta name="robots" content="index, follow" />
+<title>
+  AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step) | Shiun
+</title>
+<meta
+  name="keywords"
+  content="AWS, VPN, Site-to-Site, Libreswan, AWS VPC, Networking, AWS VPN, AWS Site-to-Site VPN, AWS VPN Connection, CGW, VGW, VPN Server, VPN Tunnel, VPN Connection"
+/> <meta name="description" content="這篇文章將一步一步教你如何在 AWS 上建立 Site-to-Site VPN"> <meta name="author" content=""> <link rel="canonical" href="https://shiun.me/blog/how-to-set-up-a-aws-site-to-site-vpn-with-libreswan/">
+<link
+  crossorigin="anonymous"
+  href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css"
+  integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A="
+  rel="preload stylesheet"
+  as="style"
+/> <link rel="icon" href="https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"> <link
+rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://shiun.me/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://shiun.me/apple-touch-icon.png"> <link rel="mask-icon" href="https://shiun.me/safari-pinned-tab.svg"> <meta name="theme-color" content="#2e2e33"> <meta name="msapplication-TileColor" content="#2e2e33"> <link rel="alternate" hreflang="en" href="https://shiun.me/blog/how-to-set-up-a-aws-site-to-site-vpn-with-libreswan/" />
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script>
+
+
+<meta property="og:url" content="https://shiun.me/blog/how-to-set-up-a-aws-site-to-site-vpn-with-libreswan/">
+  <meta property="og:site_name" content="Shiun">
+  <meta property="og:title" content="AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step)">
+  <meta property="og:description" content="這篇文章將一步一步教你如何在 AWS 上建立 Site-to-Site VPN">
+  <meta property="og:locale" content="zh_tw">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="blog">
+    <meta property="article:published_time" content="2024-10-22T00:00:14+08:00">
+    <meta property="article:modified_time" content="2024-10-22T00:00:14+08:00">
+    <meta property="article:tag" content="AWS">
+    <meta property="article:tag" content="Networking">
+    <meta property="article:tag" content="VPN">
+    <meta property="article:tag" content="AWS VPC">
+    <meta property="article:tag" content="Libreswan">
+    <meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+  <meta name="twitter:title" content="AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step)">
+  <meta name="twitter:description" content="這篇文章將一步一步教你如何在 AWS 上建立 Site-to-Site VPN">
+
+
+<noscript>
+  <style>
+    #theme-toggle,
+    .top-link {
+      display: none;
+    }
+  </style>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --theme: rgb(29, 30, 32);
+        --entry: rgb(46, 46, 51);
+        --primary: rgb(218, 218, 219);
+        --secondary: rgb(155, 156, 157);
+        --tertiary: rgb(65, 66, 68);
+        --content: rgb(196, 196, 197);
+        --code-block-bg: rgb(46, 46, 51);
+        --code-bg: rgb(55, 56, 62);
+        --border: rgb(51, 51, 51);
+      }
+
+      .list {
+        background: var(--theme);
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-track {
+        background: 0 0;
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-thumb {
+        border-color: var(--theme);
+      }
+    }
+  </style>
+</noscript>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script><meta property="og:title" content="AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step)" />
+<meta property="og:description" content="這篇文章將一步一步教你如何在 AWS 上建立 Site-to-Site VPN" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/how-to-set-up-a-aws-site-to-site-vpn-with-libreswan/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-10-22T00:00:14+08:00" />
+<meta property="article:modified_time" content="2024-10-22T00:00:14+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/>
+
+<meta name="twitter:title" content="AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step)"/>
+<meta name="twitter:description" content="這篇文章將一步一步教你如何在 AWS 上建立 Site-to-Site VPN"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Blogs",
+      "item": "https://shiun.me/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step)",
+      "item": "https://shiun.me/blog/how-to-set-up-a-aws-site-to-site-vpn-with-libreswan/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step)",
+  "name": "AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step)",
+  "description": "這篇文章將一步一步教你如何在 AWS 上建立 Site-to-Site VPN",
+  "keywords": [
+    "AWS", "VPN", "Site-to-Site", "Libreswan", "AWS VPC", "Networking", "AWS VPN", "AWS Site-to-Site VPN", "AWS VPN Connection", "CGW", "VGW", "VPN Server", "VPN Tunnel", "VPN Connection"
+  ],
+  "articleBody": "最近正在準備 AWS ANS 證照剛好學到 AWS Site-to-Site VPN，也因此實作練習對我來說很重要所以打算寫這篇文章，一方面記錄實作過程一方面留著可以作為教學文章供他人參考\n這篇文章將教學如何在 AWS 上建立 Site-to-Site VPN，我們會使用 Libreswan 來配置 VPN Server，這樣就可以在 AWS VPC 和 Data Center (本文示範會在 N. Virginia Region 中建立 VPC 來模擬 Data Center) 之間建立一個安全的 VPN Tunnel，讓兩者可以互相通信\n一、創建 VPC (Oregon Region) 首先我們先創建架構圖右邊 AWS 的 VPC，因此我切換到 Oregon Region，並且依照下圖配置 VPC 以及 Subnet\n二、配置 Route Table (Oregon Region) 然後創建 Route Table，並和剛才創建的 Subnet 建立 Association\n我們要修改 Subnet 的 Association，確保該子網與我們剛才創建的路由表關聯在一起\n如下圖配置 Route Table association\n三、創建 EC2 Instance (Oregon Region) 接著進入 EC2 Console 頁面，現在要在剛才的 Subnet 啟動一台 EC2 Instance，若沒提到的地方可以保持預設\n名稱: EC2-at-AWS AMI 選擇 Amazon Linux 2023 AMI 然後在 Network settings 處依照下圖配置 四、創建 Data Center ( 這裡以 N. Virginia 的 VPC 來模擬 Data Center ) 因為我們沒有實際的資料中心，所以我們就以 N. Virginia Region 中的 VPC 來模擬我們的 Data Center\n這裡需要特別注意的是我們要創建 Public Subnet，因為後續在這裡的 EC2 Instance 需要一個 Public IPv4 地址作為我們 Customer Gateway (CGW) 使用\n五、創建 EC2 Instance (N. Virginia Region) 現在需要創建一個 EC2 Instance 作為 VPN Server，這台 Instance 會安裝 VPN 軟體 (Libreswan) 作為 CGW 然後與 AWS VGW 對接形成一個 VPN Tunnel\n進入 EC2 Console 頁面，依照下方配置，其他可以保持預設\n名稱: VPN-EC2-at-DC AMI 選擇 Amazon Linux 2023 AMI 創建一個 Key pair 並保存好私鑰，一會我們需要連線至 Instance 然後在 Network settings 處依照下圖配置，一定要記得 Assign Public IP 六、創建 VGW (Oregon Region) 現在回到 VPC Console (Oregon Region) 我們要來配置 VGW\n創建這個很簡單，如下圖:\n創建好之後要將其 Attach 到 VPC\n七、創建 CGW (Oregon Region) 現在我們要創建 CGW，一樣是在 Oregon Region，創建 CGW 最重要的就是 Public IP! 這裡我們是使用別的 Region 的 VPC 來模擬了 Data Center，所以我們要去 N. Virginia Region 複製 EC2 Instance 的 Public IPv4 位址\n創建好 CGW 如下圖:\n八、創建 Site-to-Site VPN connection (Oregon Region) 現在已經創建好 VGW 和 CGW，我們就要來把這兩個 Gateway 連接起來，因此就需要創建 Site-to-Site VPN connection\n如下圖配置\n創建後需要等待約 3~5 分鐘\n九、修改 Route Table (Oregon Region) 為了確保 AWS VPC 中的流量知道什麼狀況下要將流量引導至 VGW，所以必須修改 Route Table，如下圖:\n十、下載配置檔案 我們準備要連線至 EC2 Instance (N. Virginia) 配置 VPN 軟體了，在這之前，需要先去 Site-to-Site VPN Connection 頁面中 (Oregon) 下載 Configuration file\n十一、配置 VPN Server 準備好你的 .pem 檔案，連線至 EC2\n$ chmod 400 /path/to/your-key.pem $ ssh -i /path/to/your-key.pem ec2-user@54.32.10.1 , #_ ~\\_ ####_ Amazon Linux 2023 ~~ \\_#####\\ ~~ \\###| ~~ \\#/ ___ https://aws.amazon.com/linux/amazon-linux-2023 ~~ V~' '-\u003e ~~~ / ~~._. _/ _/ _/ _/m/' 連線進去後，要來安裝 Libreswan，首先要修改軟體源配置文件，確保我們下載得到 Librwswan\nsudo vi /etc/yum.repos.d/fedora.repo 指令解釋: 這條指令的功能是用來編輯 Linux 系統中的 /etc/yum.repos.d/fedora.repo 文件。這是一個典型的場景，適合於 Fedora 或使用 yum 軟體包管理器的其他 Linux 發行版。 關於 vi 的操作方式如下，後面不會再重複說明此操作方式:\n按下 i 進入 INSERT 模式 貼上下方內容 按下 Esc 輸入 :wq [fedora] name=Fedora 36 - $basearch #baseurl=http://download.example/pub/fedora/linux/releases/36/Everything/$basearch/os/ metalink=https://mirrors.fedoraproject.org/metalink?repo=fedora-36\u0026arch=$basearch enabled=0 countme=1 metadata_expire=7d repo_gpgcheck=0 type=rpm gpgcheck=1 gpgkey=https://getfedora.org/static/fedora.gpg skip_if_unavailable=False 執行以下指令來安裝 Libreswan:\nsudo dnf --enablerepo=fedora install libreswan -y 指令解釋: 這條指令 sudo dnf --enablerepo=fedora install libreswan -y 用於在基於 Fedora 的 Linux 發行版上安裝 Libreswan 軟體包。 打開 /etc/sysctl.conf 然後加上以下內容:\nsudo vi /etc/sysctl.conf 然後執行指令 sysctl -p ，如下:\n$ sudo sysctl -p net.ipv4.ip_forward = 1 net.ipv4.conf.default.rp_filter = 0 net.ipv4.conf.default.accept_source_route = 0 指令解釋: 指令 sysctl -p 用於加載並應用系統內核參數的配置文件。修改了 /etc/sysctl.conf 後，運行 sysctl -p 可以立即應用這些內核參數，無需重啟系統。 檢查 /etc/ipsec.conf 檔案最後面的 include /etc/ipsec.d/*.conf 前面的 # 已被移除，若沒有移除，請使用 vi 開啟該檔案後將 # 移除，你可以輸入以下指令來查看 /etc/ipsec.conf :\nsudo cat /etc/ipsec.conf 創建一個新檔案 /etc/ipsec.d/aws.conf :\nsudo vi /etc/ipsec.d/aws.conf 接著你務必要參照你在前面下載的 Configuration File 去配置 /etc/ipsec.d/aws.conf ，除此之外由於 Libreswan 有一些配置不支援，因此還有一些內容需要小修改，包括:\n移除 auth=esp phase2alg=aes128-sha1;modp1024 修改為 phase2alg=aes_gcm ike=aes128-sha1;modp1024 修改為 ike=aes256-sha1 leftsubnet= 的 修改為 Data Center 的 CIDR (我的例子是 N. Virginia Region 上的 VPC 來模擬，也就是 192.168.0.0/16 ) rightsubnet= 的 修改為 AWS VPC 的 CIDR (我的例子是 Oregon Region 上的 VPC，也就是 10.0.0.0/16 ) 綜合以上，我會在 /etc/ipsec.d/aws.conf 中加入以下內容:\nconn Tunnel1 authby=secret auto=start left=%defaultroute leftid=54.227.52.173 right=35.81.211.175 type=tunnel ikelifetime=8h keylife=1h phase2alg=aes_gcm ike=aes256-sha1 keyingtries=%forever keyexchange=ike leftsubnet=192.168.0.0/16 rightsubnet=10.0.0.0/16 dpddelay=10 dpdtimeout=30 dpdaction=restart_by_peer 創建一個新檔案 /etc/ipsec.d/aws.secrets :\nsudo vi /etc/ipsec.d/aws.secrets 務必要參照你在前面下載的 Configuration File 去配置 /etc/ipsec.d/aws.secrets\n以我的為例，我會在 /etc/ipsec.d/aws.secrets 加入以下內容:\n54.227.52.173 35.81.211.175: PSK \"TFIcmolpZYe4_y0zhjJiSaetWD8F4VZr\" 終於我們配置好了，可以啟動 Service 囉:\nsudo systemctl start ipsec.service 啟動 IPSec Service 後，輸入以下指令檢查狀態:\n$ sudo systemctl status ipsec.service ● ipsec.service - Internet Key Exchange (IKE) Protocol Daemon for IPsec Loaded: loaded (/usr/lib/systemd/system/ipsec.service; disabled; preset: disabled) Active: active (running) since Mon 2024-10-21 14:15:03 UTC; 27s ago Docs: man:ipsec(8) man:pluto(8) man:ipsec.conf(5) Process: 28237 ExecStartPre=/usr/libexec/ipsec/addconn --config /etc/ipsec.conf --checkconfig (code=exited, status=0/SUCCESS) Process: 28239 ExecStartPre=/usr/libexec/ipsec/_stackmanager start (code=exited, status=0/SUCCESS) Process: 28677 ExecStartPre=/usr/sbin/ipsec --checknss (code=exited, status=0/SUCCESS) Process: 28682 ExecStartPre=/usr/sbin/ipsec --checknflog (code=exited, status=0/SUCCESS) Main PID: 28693 (pluto) Status: \"Startup completed.\" Tasks: 2 (limit: 1112) Memory: 8.7M CPU: 523ms CGroup: /system.slice/ipsec.service └─28693 /usr/libexec/ipsec/pluto --leak-detective --config /etc/ipsec.conf --nofork Oct 21 14:15:03 ip-192-168-2-57.ec2.internal pluto[28693]: adding UDP interface lo 127.0.0.1:4500 Oct 21 14:15:03 ip-192-168-2-57.ec2.internal pluto[28693]: adding UDP interface lo [::1]:500 Oct 21 14:15:03 ip-192-168-2-57.ec2.internal pluto[28693]: adding UDP interface lo [::1]:4500 Oct 21 14:15:03 ip-192-168-2-57.ec2.internal pluto[28693]: loading secrets from \"/etc/ipsec.secrets\" Oct 21 14:15:03 ip-192-168-2-57.ec2.internal pluto[28693]: loading secrets from \"/etc/ipsec.d/aws.secrets\" Oct 21 14:15:03 ip-192-168-2-57.ec2.internal pluto[28693]: \"Tunnel1\" #1: initiating IKEv2 connection Oct 21 14:15:03 ip-192-168-2-57.ec2.internal pluto[28693]: \"Tunnel1\" #1: sent IKE_SA_INIT request to 35.81.211.175:500 Oct 21 14:15:03 ip-192-168-2-57.ec2.internal pluto[28693]: \"Tunnel1\" #1: sent IKE_AUTH request {cipher=AES_CBC_256 integ=HMAC_SHA1_96 prf=HMAC_SHA1 group=MODP2048} Oct 21 14:15:03 ip-192-168-2-57.ec2.internal pluto[28693]: \"Tunnel1\" #1: initiator established IKE SA; authenticated peer using authby=secret and ID_IPV4_ADDR '35.81.211.175' Oct 21 14:15:03 ip-192-168-2-57.ec2.internal pluto[28693]: \"Tunnel1\" #2: initiator established Child SA using #1; IPsec tunnel [192.168.0.0-192.168.255.255:0-65535 0] -\u003e [10.0.0.0-10.0.255.255:0-65535 0] {ESPinUDP=\u003e0xca93ac2d \u003c0x2f788c\u003e lines 1-28/28 (END) 按下 q 即可跳出\n十二、測試是否可以 Ping 到 Oregon Region 上的 Private EC2 Instance 我們已經建立好 Site-to-Site VPN，若配置正常，Data Center 和 AWS 是可以彼此互相通信的\n在這裡我們會使用 N. Virginia Region 中的這台 EC2 去 Ping 看看 Oregon Region 上的 Private EC2 Instance，所以請去 Oregon Region 複製其 Private IPv4 address:\nping 10.0.0.131 可以看到我們成功 Ping 到 Oregon 上的 EC2 Instance 了！\n十三、Pricing 透過這篇文章，我們學會如何在 AWS 建立 Site-to-Site VPN，最後練習完也別忘記要清理資源避免衍生出不必要的花費。而最後這裡我想稍微介紹一下 Site-to-Site VPN 收費，但最新資訊仍以官方為主 (連結)\nAWS Site-to-Site VPN 的收費方式如下：\n連線費用：當你建立一個 Site-to-Site VPN 連接時，AWS 會按 每小時計費，只要連線處於啟用狀態，無論有沒有數據傳輸都會計算費用。例如，在 Ohio Region，這個連線的費用是 每小時 $0.05，一個月持續啟用下來，大約是 $36 美元​​。 數據傳輸費用：數據傳輸會有額外的費用。前 100 GB 的傳輸是免費的，但超過 100 GB 後，傳輸費用是 每 GB $0.09。例如，如果你一個月傳輸了 1,000 GB，則你需要支付超出免費流量的 400 GB 傳輸費用（$36）​。 加速 VPN（選擇性）：如果你啟用了 加速 Site-to-Site VPN（利用 AWS Global Accelerator），則會有額外的費用。除了 VPN 連線費用，還包括每個 Global Accelerator 的費用（每小時 $0.025），以及 Data Transfer Premium（依照地區與傳輸方向計算）​​。 綜合來看，一個基本的 AWS Site-to-Site VPN 連線每月費用可能為 $72，而加速 VPN 的費用更高，可能達到 $123 一個月，視數據量和是否啟用加速功能而定​。\n相關連結 AWS VPN Pricing libreswan ",
+  "wordCount" : "874",
+  "inLanguage": "en",
+  "datePublished": "2024-10-22T00:00:14+08:00",
+  "dateModified": "2024-10-22T00:00:14+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://shiun.me/blog/how-to-set-up-a-aws-site-to-site-vpn-with-libreswan/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Shiun",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://shiun.me/" accesskey="h" title="Shiun (Alt + H)">Shiun</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://shiun.me/blog/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.notion.site/Shiun-s-Learning-Journal-ded4cd4a3efd47b2805f2f99dee8f9a1?pvs=4" title="Notion">
+                    <span>Notion</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.linkedin.com/in/shiunchiu" title="About me">
+                    <span>About me</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://shiun.me/">Home</a>&nbsp;»&nbsp;<a href="https://shiun.me/blog/">Blogs</a></div>
+    <h1 class="post-title entry-hint-parent">
+      AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step)
+    </h1>
+    <div class="post-description">
+      這篇文章將一步一步教你如何在 AWS 上建立 Site-to-Site VPN
+    </div>
+    <div class="post-meta"><span title='2024-10-22 00:00:14 +0800 CST'>October 22, 2024</span>&nbsp;·&nbsp;5 min
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e4%b8%80%e5%89%b5%e5%bb%ba-vpc-oregon-region" aria-label="一、創建 VPC (Oregon Region)">一、創建 VPC (Oregon Region)</a></li>
+                <li>
+                    <a href="#%e4%ba%8c%e9%85%8d%e7%bd%ae-route-table-oregon-region" aria-label="二、配置 Route Table (Oregon Region)">二、配置 Route Table (Oregon Region)</a></li>
+                <li>
+                    <a href="#%e4%b8%89%e5%89%b5%e5%bb%ba-ec2-instance-oregon-region" aria-label="三、創建 EC2 Instance (Oregon Region)">三、創建 EC2 Instance (Oregon Region)</a></li>
+                <li>
+                    <a href="#%e5%9b%9b%e5%89%b5%e5%bb%ba-data-center--%e9%80%99%e8%a3%a1%e4%bb%a5-n-virginia-%e7%9a%84-vpc-%e4%be%86%e6%a8%a1%e6%93%ac-data-center-" aria-label="四、創建 Data Center ( 這裡以 N. Virginia 的 VPC 來模擬 Data Center )">四、創建 Data Center ( 這裡以 N. Virginia 的 VPC 來模擬 Data Center )</a></li>
+                <li>
+                    <a href="#%e4%ba%94%e5%89%b5%e5%bb%ba-ec2-instance-n-virginia-region" aria-label="五、創建 EC2 Instance (N. Virginia Region)">五、創建 EC2 Instance (N. Virginia Region)</a></li>
+                <li>
+                    <a href="#%e5%85%ad%e5%89%b5%e5%bb%ba-vgw-oregon-region" aria-label="六、創建 VGW (Oregon Region)">六、創建 VGW (Oregon Region)</a></li>
+                <li>
+                    <a href="#%e4%b8%83%e5%89%b5%e5%bb%ba-cgw-oregon-region" aria-label="七、創建 CGW (Oregon Region)">七、創建 CGW (Oregon Region)</a></li>
+                <li>
+                    <a href="#%e5%85%ab%e5%89%b5%e5%bb%ba-site-to-site-vpn-connection-oregon-region" aria-label="八、創建 Site-to-Site VPN connection (Oregon Region)">八、創建 Site-to-Site VPN connection (Oregon Region)</a></li>
+                <li>
+                    <a href="#%e4%b9%9d%e4%bf%ae%e6%94%b9-route-table-oregon-region" aria-label="九、修改 Route Table (Oregon Region)">九、修改 Route Table (Oregon Region)</a></li>
+                <li>
+                    <a href="#%e5%8d%81%e4%b8%8b%e8%bc%89%e9%85%8d%e7%bd%ae%e6%aa%94%e6%a1%88" aria-label="十、下載配置檔案">十、下載配置檔案</a></li>
+                <li>
+                    <a href="#%e5%8d%81%e4%b8%80%e9%85%8d%e7%bd%ae-vpn-server" aria-label="十一、配置 VPN Server">十一、配置 VPN Server</a></li>
+                <li>
+                    <a href="#%e5%8d%81%e4%ba%8c%e6%b8%ac%e8%a9%a6%e6%98%af%e5%90%a6%e5%8f%af%e4%bb%a5-ping-%e5%88%b0-oregon-region-%e4%b8%8a%e7%9a%84-private-ec2-instance" aria-label="十二、測試是否可以 Ping 到 Oregon Region 上的 Private EC2 Instance">十二、測試是否可以 Ping 到 Oregon Region 上的 Private EC2 Instance</a></li>
+                <li>
+                    <a href="#%e5%8d%81%e4%b8%89pricing" aria-label="十三、Pricing">十三、Pricing</a></li>
+                <li>
+                    <a href="#%e7%9b%b8%e9%97%9c%e9%80%a3%e7%b5%90" aria-label="相關連結">相關連結</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>最近正在<a href="https://shiun.notion.site/AWS-ANS-AWS-Site-to-Site-VPN-126ea7e0d9d0807aad53c41ca301137c">準備 AWS ANS 證照</a>剛好學到 AWS Site-to-Site VPN，也因此實作練習對我來說很重要所以打算寫這篇文章，一方面記錄實作過程一方面留著可以作為教學文章供他人參考</p>
+<p>這篇文章將教學如何在 AWS 上建立 Site-to-Site VPN，我們會使用 Libreswan 來配置 VPN Server，這樣就可以在 AWS VPC 和 Data Center (<em>本文示範會在 N. Virginia Region 中建立 VPC 來模擬 Data Center)</em> 之間建立一個安全的 VPN Tunnel，讓兩者可以互相通信</p>
+<p><img loading="lazy" src="https://github.com/user-attachments/assets/de2d5d9d-97bc-419c-9b5f-5430547d9f3c" alt="01-AWS Site-to-SIte VPN"  />
+</p>
+<h2 id="一創建-vpc-oregon-region">一、創建 VPC (Oregon Region)<a hidden class="anchor" aria-hidden="true" href="#一創建-vpc-oregon-region">#</a></h2>
+<p>首先我們先創建架構圖右邊 AWS 的 VPC，因此我切換到 Oregon Region，並且依照下圖配置 VPC 以及 Subnet</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h2 id="二配置-route-table-oregon-region">二、配置 Route Table (Oregon Region)<a hidden class="anchor" aria-hidden="true" href="#二配置-route-table-oregon-region">#</a></h2>
+<p>然後創建 Route Table，並和剛才創建的 Subnet 建立 Association</p>
+<!-- raw HTML omitted -->
+<p>我們要修改 Subnet 的 Association，確保該子網與我們剛才創建的路由表關聯在一起</p>
+<!-- raw HTML omitted -->
+<p>如下圖配置 Route Table association</p>
+<!-- raw HTML omitted -->
+<h2 id="三創建-ec2-instance-oregon-region">三、創建 EC2 Instance (Oregon Region)<a hidden class="anchor" aria-hidden="true" href="#三創建-ec2-instance-oregon-region">#</a></h2>
+<p>接著進入 EC2 Console 頁面，現在要在剛才的 Subnet 啟動一台 EC2 Instance，若沒提到的地方可以保持預設</p>
+<ul>
+<li>名稱: <code>EC2-at-AWS</code></li>
+<li>AMI 選擇 <code>Amazon Linux 2023 AMI</code></li>
+<li>然後在 Network settings 處依照下圖配置
+<!-- raw HTML omitted --></li>
+</ul>
+<h2 id="四創建-data-center--這裡以-n-virginia-的-vpc-來模擬-data-center-">四、創建 Data Center ( 這裡以 N. Virginia 的 VPC 來模擬 Data Center )<a hidden class="anchor" aria-hidden="true" href="#四創建-data-center--這裡以-n-virginia-的-vpc-來模擬-data-center-">#</a></h2>
+<p>因為我們沒有實際的資料中心，所以我們就以 N. Virginia Region 中的 VPC 來模擬我們的 Data Center</p>
+<p>這裡需要特別注意的是我們要創建 Public Subnet，因為後續在這裡的 EC2 Instance 需要一個 Public IPv4 地址作為我們 Customer Gateway (CGW) 使用</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h2 id="五創建-ec2-instance-n-virginia-region">五、創建 EC2 Instance (N. Virginia Region)<a hidden class="anchor" aria-hidden="true" href="#五創建-ec2-instance-n-virginia-region">#</a></h2>
+<p>現在需要創建一個 EC2 Instance 作為 VPN Server，這台 Instance 會安裝 VPN 軟體 (Libreswan) 作為 CGW 然後與 AWS VGW 對接形成一個 VPN Tunnel</p>
+<p>進入 EC2 Console 頁面，依照下方配置，其他可以保持預設</p>
+<ul>
+<li>名稱: <code>VPN-EC2-at-DC</code></li>
+<li>AMI 選擇 <code>Amazon Linux 2023 AMI</code></li>
+<li>創建一個 Key pair 並保存好私鑰，一會我們需要連線至 Instance</li>
+<li>然後在 Network settings 處依照下圖配置，<strong>一定要記得 Assign Public IP</strong>
+<!-- raw HTML omitted --></li>
+</ul>
+<h2 id="六創建-vgw-oregon-region">六、創建 VGW (Oregon Region)<a hidden class="anchor" aria-hidden="true" href="#六創建-vgw-oregon-region">#</a></h2>
+<p>現在回到 VPC Console (Oregon Region) 我們要來配置 VGW</p>
+<!-- raw HTML omitted -->
+<p>創建這個很簡單，如下圖:</p>
+<!-- raw HTML omitted -->
+<p>創建好之後要將其 Attach 到 VPC</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h2 id="七創建-cgw-oregon-region">七、創建 CGW (Oregon Region)<a hidden class="anchor" aria-hidden="true" href="#七創建-cgw-oregon-region">#</a></h2>
+<p>現在我們要創建 CGW，一樣是在 Oregon Region，創建 CGW 最重要的就是 Public IP! 這裡我們是使用別的 Region 的 VPC 來模擬了 Data Center，所以我們要去 N. Virginia Region 複製 EC2 Instance 的 Public IPv4 位址</p>
+<!-- raw HTML omitted -->
+<p>創建好 CGW 如下圖:</p>
+<!-- raw HTML omitted -->
+<h2 id="八創建-site-to-site-vpn-connection-oregon-region">八、創建 Site-to-Site VPN connection (Oregon Region)<a hidden class="anchor" aria-hidden="true" href="#八創建-site-to-site-vpn-connection-oregon-region">#</a></h2>
+<p>現在已經創建好 VGW 和 CGW，我們就要來把這兩個 Gateway 連接起來，因此就需要創建 Site-to-Site VPN connection</p>
+<!-- raw HTML omitted -->
+<p>如下圖配置</p>
+<!-- raw HTML omitted -->
+<p>創建後需要等待約 3~5 分鐘</p>
+<h2 id="九修改-route-table-oregon-region">九、修改 Route Table (Oregon Region)<a hidden class="anchor" aria-hidden="true" href="#九修改-route-table-oregon-region">#</a></h2>
+<p>為了確保 AWS VPC 中的流量知道什麼狀況下要將流量引導至 VGW，所以必須修改 Route Table，如下圖:</p>
+<!-- raw HTML omitted -->
+<h2 id="十下載配置檔案">十、下載配置檔案<a hidden class="anchor" aria-hidden="true" href="#十下載配置檔案">#</a></h2>
+<p>我們準備要連線至 EC2 Instance (N. Virginia) 配置 VPN 軟體了，在這之前，需要先去 Site-to-Site VPN Connection 頁面中 (Oregon) 下載 Configuration file</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<h2 id="十一配置-vpn-server">十一、配置 VPN Server<a hidden class="anchor" aria-hidden="true" href="#十一配置-vpn-server">#</a></h2>
+<p>準備好你的 .pem 檔案，連線至 EC2</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ chmod <span style="color:#ae81ff">400</span> /path/to/your-key.pem
+</span></span><span style="display:flex;"><span>$ ssh -i /path/to/your-key.pem ec2-user@54.32.10.1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   ,     <span style="color:#75715e">#_</span>
+</span></span><span style="display:flex;"><span>   ~<span style="color:#ae81ff">\_</span>  <span style="color:#75715e">####_        Amazon Linux 2023</span>
+</span></span><span style="display:flex;"><span>  ~~  <span style="color:#ae81ff">\_</span><span style="color:#75715e">#####\</span>
+</span></span><span style="display:flex;"><span>  ~~     <span style="color:#ae81ff">\#</span><span style="color:#75715e">##|</span>
+</span></span><span style="display:flex;"><span>  ~~       <span style="color:#ae81ff">\#</span>/ ___   https://aws.amazon.com/linux/amazon-linux-2023
+</span></span><span style="display:flex;"><span>   ~~       V~<span style="color:#e6db74">&#39; &#39;</span>-&gt;
+</span></span><span style="display:flex;"><span>    ~~~         /
+</span></span><span style="display:flex;"><span>      ~~._.   _/
+</span></span><span style="display:flex;"><span>         _/ _/
+</span></span><span style="display:flex;"><span>       _/m/<span style="color:#960050;background-color:#1e0010">&#39;</span>
+</span></span></code></pre></div><p>連線進去後，要來安裝 <a href="https://libreswan.org/">Libreswan</a>，首先要修改軟體源配置文件，確保我們下載得到 Librwswan</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo vi /etc/yum.repos.d/fedora.repo
+</span></span></code></pre></div><ul>
+<li>指令解釋:
+<ul>
+<li>這條指令的功能是用來編輯 Linux 系統中的 <strong><code>/etc/yum.repos.d/fedora.repo</code></strong> 文件。這是一個典型的場景，適合於 Fedora 或使用 <code>yum</code> 軟體包管理器的其他 Linux 發行版。</li>
+</ul>
+</li>
+</ul>
+<p>關於 vi 的操作方式如下，後面不會再重複說明此操作方式:</p>
+<ol>
+<li>按下 <code>i</code> 進入 INSERT 模式</li>
+<li>貼上下方內容</li>
+<li>按下 <code>Esc</code></li>
+<li>輸入 <code>:wq</code></li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>fedora<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>name<span style="color:#f92672">=</span>Fedora <span style="color:#ae81ff">36</span> - $basearch
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#baseurl=http://download.example/pub/fedora/linux/releases/36/Everything/$basearch/os/</span>
+</span></span><span style="display:flex;"><span>metalink<span style="color:#f92672">=</span>https://mirrors.fedoraproject.org/metalink?repo<span style="color:#f92672">=</span>fedora-36&amp;arch<span style="color:#f92672">=</span>$basearch
+</span></span><span style="display:flex;"><span>enabled<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>countme<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>metadata_expire<span style="color:#f92672">=</span>7d
+</span></span><span style="display:flex;"><span>repo_gpgcheck<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>type<span style="color:#f92672">=</span>rpm
+</span></span><span style="display:flex;"><span>gpgcheck<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>gpgkey<span style="color:#f92672">=</span>https://getfedora.org/static/fedora.gpg
+</span></span><span style="display:flex;"><span>skip_if_unavailable<span style="color:#f92672">=</span>False
+</span></span></code></pre></div><p>執行以下指令來安裝 Libreswan:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo dnf --enablerepo<span style="color:#f92672">=</span>fedora install libreswan -y
+</span></span></code></pre></div><ul>
+<li>指令解釋:
+<ul>
+<li>這條指令 <strong><code>sudo dnf --enablerepo=fedora install libreswan -y</code></strong> 用於在基於 Fedora 的 Linux 發行版上安裝 <strong>Libreswan</strong> 軟體包。</li>
+</ul>
+</li>
+</ul>
+<p>打開 <code>/etc/sysctl.conf</code> 然後加上以下內容:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo vi /etc/sysctl.conf
+</span></span></code></pre></div><p>然後執行指令 <code>sysctl -p</code> ，如下:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo sysctl -p
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>net.ipv4.ip_forward <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>net.ipv4.conf.default.rp_filter <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>net.ipv4.conf.default.accept_source_route <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span></code></pre></div><ul>
+<li>指令解釋:
+<ul>
+<li>指令 <strong><code>sysctl -p</code></strong> 用於加載並應用系統內核參數的配置文件。修改了 <code>/etc/sysctl.conf</code> 後，運行 <code>sysctl -p</code> 可以立即應用這些內核參數，無需重啟系統。</li>
+</ul>
+</li>
+</ul>
+<p>檢查 <code>/etc/ipsec.conf</code> 檔案最後面的 <code>include /etc/ipsec.d/*.conf</code> 前面的 <code>#</code> 已被移除，若沒有移除，請使用 vi 開啟該檔案後將 <code>#</code> 移除，你可以輸入以下指令來查看 <code>/etc/ipsec.conf</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo cat /etc/ipsec.conf
+</span></span></code></pre></div><p>創建一個新檔案 <code>/etc/ipsec.d/aws.conf</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo vi /etc/ipsec.d/aws.conf
+</span></span></code></pre></div><p>接著你務必要參照你在前面下載的 Configuration File 去配置 <code>/etc/ipsec.d/aws.conf</code> ，除此之外由於 Libreswan 有一些配置不支援，因此還有一些內容需要小修改，包括:</p>
+<ol>
+<li>移除 <code>auth=esp</code></li>
+<li><code>phase2alg=aes128-sha1;modp1024</code> 修改為 <code>phase2alg=aes_gcm</code></li>
+<li><code>ike=aes128-sha1;modp1024</code> 修改為 <code>ike=aes256-sha1</code></li>
+<li><code>leftsubnet=&lt;LOCAL NETWORK&gt;</code> 的 <code>&lt;LOCAL NETWORK&gt;</code> 修改為 Data Center 的 CIDR (我的例子是 N. Virginia Region 上的 VPC 來模擬，也就是 <code>192.168.0.0/16</code> )</li>
+<li><code>rightsubnet=&lt;REMOTE NETWORK&gt;</code> 的 <code>&lt;REMOTE NETWORK&gt;</code> 修改為 AWS VPC 的 CIDR (我的例子是 Oregon Region 上的 VPC，也就是 <code>10.0.0.0/16</code> )</li>
+</ol>
+<p>綜合以上，我會在 <code>/etc/ipsec.d/aws.conf</code> 中加入以下內容:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>conn Tunnel1
+</span></span><span style="display:flex;"><span>	authby<span style="color:#f92672">=</span>secret
+</span></span><span style="display:flex;"><span>	auto<span style="color:#f92672">=</span>start
+</span></span><span style="display:flex;"><span>	left<span style="color:#f92672">=</span>%defaultroute
+</span></span><span style="display:flex;"><span>	leftid<span style="color:#f92672">=</span>54.227.52.173
+</span></span><span style="display:flex;"><span>	right<span style="color:#f92672">=</span>35.81.211.175
+</span></span><span style="display:flex;"><span>	type<span style="color:#f92672">=</span>tunnel
+</span></span><span style="display:flex;"><span>	ikelifetime<span style="color:#f92672">=</span>8h
+</span></span><span style="display:flex;"><span>	keylife<span style="color:#f92672">=</span>1h
+</span></span><span style="display:flex;"><span>	phase2alg<span style="color:#f92672">=</span>aes_gcm
+</span></span><span style="display:flex;"><span>	ike<span style="color:#f92672">=</span>aes256-sha1
+</span></span><span style="display:flex;"><span>	keyingtries<span style="color:#f92672">=</span>%forever
+</span></span><span style="display:flex;"><span>	keyexchange<span style="color:#f92672">=</span>ike
+</span></span><span style="display:flex;"><span>	leftsubnet<span style="color:#f92672">=</span>192.168.0.0/16
+</span></span><span style="display:flex;"><span>	rightsubnet<span style="color:#f92672">=</span>10.0.0.0/16
+</span></span><span style="display:flex;"><span>	dpddelay<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>	dpdtimeout<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>
+</span></span><span style="display:flex;"><span>	dpdaction<span style="color:#f92672">=</span>restart_by_peer
+</span></span></code></pre></div><p>創建一個新檔案 <code>/etc/ipsec.d/aws.secrets</code> :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo vi /etc/ipsec.d/aws.secrets
+</span></span></code></pre></div><p>務必要參照你在前面下載的 Configuration File 去配置 <code>/etc/ipsec.d/aws.secrets</code></p>
+<p>以我的為例，我會在 <code>/etc/ipsec.d/aws.secrets</code> 加入以下內容:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>54.227.52.173 35.81.211.175: PSK <span style="color:#e6db74">&#34;TFIcmolpZYe4_y0zhjJiSaetWD8F4VZr&#34;</span>
+</span></span></code></pre></div><p>終於我們配置好了，可以啟動 Service 囉:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl start ipsec.service
+</span></span></code></pre></div><p>啟動 IPSec Service 後，輸入以下指令檢查狀態:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ sudo systemctl status ipsec.service
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>● ipsec.service - Internet Key Exchange <span style="color:#f92672">(</span>IKE<span style="color:#f92672">)</span> Protocol Daemon <span style="color:#66d9ef">for</span> IPsec
+</span></span><span style="display:flex;"><span>     Loaded: loaded <span style="color:#f92672">(</span>/usr/lib/systemd/system/ipsec.service; disabled; preset: disabled<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>     Active: active <span style="color:#f92672">(</span>running<span style="color:#f92672">)</span> since Mon 2024-10-21 14:15:03 UTC; 27s ago
+</span></span><span style="display:flex;"><span>       Docs: man:ipsec<span style="color:#f92672">(</span>8<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>             man:pluto<span style="color:#f92672">(</span>8<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>             man:ipsec.conf<span style="color:#f92672">(</span>5<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    Process: <span style="color:#ae81ff">28237</span> ExecStartPre<span style="color:#f92672">=</span>/usr/libexec/ipsec/addconn --config /etc/ipsec.conf --checkconfig <span style="color:#f92672">(</span>code<span style="color:#f92672">=</span>exited, status<span style="color:#f92672">=</span>0/SUCCESS<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    Process: <span style="color:#ae81ff">28239</span> ExecStartPre<span style="color:#f92672">=</span>/usr/libexec/ipsec/_stackmanager start <span style="color:#f92672">(</span>code<span style="color:#f92672">=</span>exited, status<span style="color:#f92672">=</span>0/SUCCESS<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    Process: <span style="color:#ae81ff">28677</span> ExecStartPre<span style="color:#f92672">=</span>/usr/sbin/ipsec --checknss <span style="color:#f92672">(</span>code<span style="color:#f92672">=</span>exited, status<span style="color:#f92672">=</span>0/SUCCESS<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    Process: <span style="color:#ae81ff">28682</span> ExecStartPre<span style="color:#f92672">=</span>/usr/sbin/ipsec --checknflog <span style="color:#f92672">(</span>code<span style="color:#f92672">=</span>exited, status<span style="color:#f92672">=</span>0/SUCCESS<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>   Main PID: <span style="color:#ae81ff">28693</span> <span style="color:#f92672">(</span>pluto<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>     Status: <span style="color:#e6db74">&#34;Startup completed.&#34;</span>
+</span></span><span style="display:flex;"><span>      Tasks: <span style="color:#ae81ff">2</span> <span style="color:#f92672">(</span>limit: 1112<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>     Memory: 8.7M
+</span></span><span style="display:flex;"><span>        CPU: 523ms
+</span></span><span style="display:flex;"><span>     CGroup: /system.slice/ipsec.service
+</span></span><span style="display:flex;"><span>             └─28693 /usr/libexec/ipsec/pluto --leak-detective --config /etc/ipsec.conf --nofork
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Oct <span style="color:#ae81ff">21</span> 14:15:03 ip-192-168-2-57.ec2.internal pluto<span style="color:#f92672">[</span>28693<span style="color:#f92672">]</span>: adding UDP interface lo 127.0.0.1:4500
+</span></span><span style="display:flex;"><span>Oct <span style="color:#ae81ff">21</span> 14:15:03 ip-192-168-2-57.ec2.internal pluto<span style="color:#f92672">[</span>28693<span style="color:#f92672">]</span>: adding UDP interface lo <span style="color:#f92672">[</span>::1<span style="color:#f92672">]</span>:500
+</span></span><span style="display:flex;"><span>Oct <span style="color:#ae81ff">21</span> 14:15:03 ip-192-168-2-57.ec2.internal pluto<span style="color:#f92672">[</span>28693<span style="color:#f92672">]</span>: adding UDP interface lo <span style="color:#f92672">[</span>::1<span style="color:#f92672">]</span>:4500
+</span></span><span style="display:flex;"><span>Oct <span style="color:#ae81ff">21</span> 14:15:03 ip-192-168-2-57.ec2.internal pluto<span style="color:#f92672">[</span>28693<span style="color:#f92672">]</span>: loading secrets from <span style="color:#e6db74">&#34;/etc/ipsec.secrets&#34;</span>
+</span></span><span style="display:flex;"><span>Oct <span style="color:#ae81ff">21</span> 14:15:03 ip-192-168-2-57.ec2.internal pluto<span style="color:#f92672">[</span>28693<span style="color:#f92672">]</span>: loading secrets from <span style="color:#e6db74">&#34;/etc/ipsec.d/aws.secrets&#34;</span>
+</span></span><span style="display:flex;"><span>Oct <span style="color:#ae81ff">21</span> 14:15:03 ip-192-168-2-57.ec2.internal pluto<span style="color:#f92672">[</span>28693<span style="color:#f92672">]</span>: <span style="color:#e6db74">&#34;Tunnel1&#34;</span> <span style="color:#75715e">#1: initiating IKEv2 connection</span>
+</span></span><span style="display:flex;"><span>Oct <span style="color:#ae81ff">21</span> 14:15:03 ip-192-168-2-57.ec2.internal pluto<span style="color:#f92672">[</span>28693<span style="color:#f92672">]</span>: <span style="color:#e6db74">&#34;Tunnel1&#34;</span> <span style="color:#75715e">#1: sent IKE_SA_INIT request to 35.81.211.175:500</span>
+</span></span><span style="display:flex;"><span>Oct <span style="color:#ae81ff">21</span> 14:15:03 ip-192-168-2-57.ec2.internal pluto<span style="color:#f92672">[</span>28693<span style="color:#f92672">]</span>: <span style="color:#e6db74">&#34;Tunnel1&#34;</span> <span style="color:#75715e">#1: sent IKE_AUTH request {cipher=AES_CBC_256 integ=HMAC_SHA1_96 prf=HMAC_SHA1 group=MODP2048}</span>
+</span></span><span style="display:flex;"><span>Oct <span style="color:#ae81ff">21</span> 14:15:03 ip-192-168-2-57.ec2.internal pluto<span style="color:#f92672">[</span>28693<span style="color:#f92672">]</span>: <span style="color:#e6db74">&#34;Tunnel1&#34;</span> <span style="color:#75715e">#1: initiator established IKE SA; authenticated peer using authby=secret and ID_IPV4_ADDR &#39;35.81.211.175&#39;</span>
+</span></span><span style="display:flex;"><span>Oct <span style="color:#ae81ff">21</span> 14:15:03 ip-192-168-2-57.ec2.internal pluto<span style="color:#f92672">[</span>28693<span style="color:#f92672">]</span>: <span style="color:#e6db74">&#34;Tunnel1&#34;</span> <span style="color:#75715e">#2: initiator established Child SA using #1; IPsec tunnel [192.168.0.0-192.168.255.255:0-65535 0] -&gt; [10.0.0.0-10.0.255.255:0-65535 0] {ESPinUDP=&gt;0xca93ac2d &lt;0x2f788c&gt;</span>
+</span></span><span style="display:flex;"><span>lines 1-28/28 <span style="color:#f92672">(</span>END<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>按下 <code>q</code> 即可跳出</p>
+<h2 id="十二測試是否可以-ping-到-oregon-region-上的-private-ec2-instance">十二、測試是否可以 Ping 到 Oregon Region 上的 Private EC2 Instance<a hidden class="anchor" aria-hidden="true" href="#十二測試是否可以-ping-到-oregon-region-上的-private-ec2-instance">#</a></h2>
+<p>我們已經建立好 Site-to-Site VPN，若配置正常，Data Center 和 AWS 是可以彼此互相通信的</p>
+<!-- raw HTML omitted -->
+<p>在這裡我們會使用 N. Virginia Region 中的這台 EC2 去 Ping 看看 Oregon Region 上的 Private EC2 Instance，所以請去 Oregon Region 複製其 Private IPv4 address:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ping 10.0.0.131
+</span></span></code></pre></div><!-- raw HTML omitted -->
+<p>可以看到我們成功 Ping 到 Oregon 上的 EC2 Instance 了！</p>
+<h2 id="十三pricing">十三、Pricing<a hidden class="anchor" aria-hidden="true" href="#十三pricing">#</a></h2>
+<p>透過這篇文章，我們學會如何在 AWS 建立 Site-to-Site VPN，最後練習完也別忘記要清理資源避免衍生出不必要的花費。而最後這裡我想稍微介紹一下 Site-to-Site VPN 收費，但最新資訊仍以官方為主 (<a href="https://aws.amazon.com/vpn/pricing/"><strong>連結</strong></a>)</p>
+<p>AWS Site-to-Site VPN 的收費方式如下：</p>
+<ol>
+<li><strong>連線費用</strong>：當你建立一個 Site-to-Site VPN 連接時，AWS 會按 <strong>每小時</strong>計費，只要連線處於啟用狀態，無論有沒有數據傳輸都會計算費用。例如，在 Ohio Region，這個連線的費用是 <strong>每小時 $0.05</strong>，一個月持續啟用下來，大約是 <strong>$36</strong> 美元​​。</li>
+<li><strong>數據傳輸費用</strong>：數據傳輸會有額外的費用。前 <strong>100 GB 的傳輸是免費</strong>的，但超過 100 GB 後，傳輸費用是 <strong>每 GB $0.09</strong>。例如，如果你一個月傳輸了 1,000 GB，則你需要支付超出免費流量的 <strong>400 GB 傳輸費用（$36</strong>）​。</li>
+<li><strong>加速 VPN（選擇性）</strong>：如果你啟用了 <strong>加速 Site-to-Site VPN</strong>（利用 AWS Global Accelerator），則會有額外的費用。除了 VPN 連線費用，還包括每個 Global Accelerator 的費用（每小時 $0.025），以及 Data Transfer Premium（依照地區與傳輸方向計算）​​。</li>
+</ol>
+<p>綜合來看，一個基本的 AWS Site-to-Site VPN 連線每月費用可能為 $72，而加速 VPN 的費用更高，可能達到 $123 一個月，視數據量和是否啟用加速功能而定​。</p>
+<h2 id="相關連結">相關連結<a hidden class="anchor" aria-hidden="true" href="#相關連結">#</a></h2>
+<ul>
+<li><a href="https://aws.amazon.com/vpn/pricing/">AWS VPN Pricing</a></li>
+<li><a href="https://libreswan.org/">libreswan</a></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://shiun.me/tags/aws/">AWS</a></li>
+      <li><a href="https://shiun.me/tags/networking/">Networking</a></li>
+      <li><a href="https://shiun.me/tags/vpn/">VPN</a></li>
+      <li><a href="https://shiun.me/tags/aws-vpc/">AWS VPC</a></li>
+      <li><a href="https://shiun.me/tags/libreswan/">Libreswan</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://shiun.me/blog/how-does-email-sending-work/">
+    <span class="title">Next »</span>
+    <br>
+    <span>以真實世界寄信來比喻，理解電子郵件寄送流程</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step) on x"
+            href="https://x.com/intent/tweet/?text=AWS%20Site-to-Site%20VPN%20with%20Libreswan%20%e5%bb%ba%e7%bd%ae%e6%95%99%e5%ad%b8%20%28Step-by-Step%29&amp;url=https%3a%2f%2fshiun.me%2fblog%2fhow-to-set-up-a-aws-site-to-site-vpn-with-libreswan%2f&amp;hashtags=AWS%2cNetworking%2cVPN%2cAWSVPC%2cLibreswan">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step) on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fshiun.me%2fblog%2fhow-to-set-up-a-aws-site-to-site-vpn-with-libreswan%2f&amp;title=AWS%20Site-to-Site%20VPN%20with%20Libreswan%20%e5%bb%ba%e7%bd%ae%e6%95%99%e5%ad%b8%20%28Step-by-Step%29&amp;summary=AWS%20Site-to-Site%20VPN%20with%20Libreswan%20%e5%bb%ba%e7%bd%ae%e6%95%99%e5%ad%b8%20%28Step-by-Step%29&amp;source=https%3a%2f%2fshiun.me%2fblog%2fhow-to-set-up-a-aws-site-to-site-vpn-with-libreswan%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step) on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fshiun.me%2fblog%2fhow-to-set-up-a-aws-site-to-site-vpn-with-libreswan%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step) on telegram"
+            href="https://telegram.me/share/url?text=AWS%20Site-to-Site%20VPN%20with%20Libreswan%20%e5%bb%ba%e7%bd%ae%e6%95%99%e5%ad%b8%20%28Step-by-Step%29&amp;url=https%3a%2f%2fshiun.me%2fblog%2fhow-to-set-up-a-aws-site-to-site-vpn-with-libreswan%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer><div class="disqus markdown"><div id="disqus_thread"></div>
+<script>
+  
+
+  
+
+  (function () {
+    
+    var d = document,
+      s = d.createElement("script");
+    s.src = "https://shiun-me.disqus.com/embed.js";
+    s.setAttribute("data-timestamp", +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript
+  >Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript"
+    >comments powered by Disqus.</a
+  ></noscript
+>
+</div>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://shiun.me/">Shiun</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

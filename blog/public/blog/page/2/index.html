@@ -237,6 +237,24 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">如何使用 Lambda 處理 AWS Cognito User 首次登入被系統要求強制變更密碼
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>情境描述 上圖顯示的是我剛在 Cognito User Pool 中新增了一個 user，可以注意到箭頭處顯示 Force change password。
+當這個 user 嘗試首次登入時，他們會遇到這樣的情況:
+{ &#34;message&#34;: &#34;New password required&#34;， &#34;challengeName&#34;: &#34;NEW_PASSWORD_REQUIRED&#34;， &#34;session&#34;: &#34;AYABeAsYJsR3yEr0iJssKPPUPEgAHQABAAdTZXJ2aWNlABBDb2duaXRvVXNlclBvb2xzAAEAB2F3cy1rbXMAS2Fybjphd3M6a21zOnVzLXdlc3QtMjowMTU3MzY3MjcxOTg6a2V5LzI5OTFhNGE5LTM5YTAtNDQ0Mi04MWU4LWRkYjY4NTllMTg2MQC4AQIBAHhPj7k9zU4nGXUQUvM0Ccwk42DS-fm3vKmH75ktTrktNQG1gnjl6HkUVUYN1J_HPow6AAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMulTha32s34j2CmQWAgEQgDtog8CDFh2e-4YyjM2kB_MXheMgmrdY_IF3aN9TImZXddMBj7djEAPPduLZnG3ddBLYQa8x3T3WPKUkvwIAAAAADAAAEAAAAAAAAAAAAAAAAADCbdmpLPo0E4QkWLlyH8ov_____wAAAAEAAAAAAAAAAAAAAAEAAAC1oMtgshmuUU4fk36WHKBzPgJEoE1MmL0PFyhR9lRcimImOIObhhxvC1fwiYylgbYx0Gu0i1cp5Le8AvrAnUGEJjZp54TMPP4N-JCT3qSrHeq_Kat_2CuECVSQqkc1qH4z9FVOTvAnos4FrDSn2W6KvFfLo8YQh2LJxM1h3GdIeyYqj7Ipfk6PZKGYmV5P741rRMNcuYBtvE8Hq9gVqMbEPG-c5MppY_q9JoG9TyQRN7rVGlZf62_WtTqST2F3-DZPoXTMTyY&#34;， &#34;challengeParameters&#34;: { &#34;USER_ID_FOR_SRP&#34;: &#34;shiun&#34;， &#34;requiredAttributes&#34;: &#34;[]&#34;， &#34;userAttributes&#34;: &#34;{\&#34;email\&#34;:\&#34;xxxxx@gmail.com\&#34;}&#34; } } Cognito 回傳了一個 NEW_PASSWORD_REQUIRED 的 challenge，同時給了我們一個 session token。這就是我們需要處理的 case。
+解決方案 要解決這個問題，我們需要提供一個 change-password 的 API endpoint，讓 user 可以順利更改密碼。整個 flow 大致如下:
+User 首次登入 Cognito 回傳 NEW_PASSWORD_REQUIRED challenge 和 session token 前端帶著 session token 呼叫我們的 change-password API 密碼更改成功，user 順利登入系統 以下是一個處理這種情況的 Lambda function 範例:
+import json import logging import boto3 from botocore.exceptions import ClientError # Initialize logger logger = logging.getLogger() logger.setLevel(logging.INFO) # Initialize Cognito client client = boto3.client(&#34;cognito-idp&#34;) def lambda_handler(event, context): &#34;&#34;&#34; Handles the NEW_PASSWORD_REQUIRED challenge from Cognito &#34;&#34;&#34; try: # Parse the request body body = json.loads(event[&#34;body&#34;]) # Respond to the new password required challenge response = client.respond_to_auth_challenge( ClientId=&#34;YOUR_CLIENT_ID&#34;, ChallengeName=&#34;NEW_PASSWORD_REQUIRED&#34;, Session=body[&#34;session&#34;], ChallengeResponses={ &#34;USERNAME&#34;: body[&#34;username&#34;], &#34;NEW_PASSWORD&#34;: body[&#34;new_password&#34;], # Add any required attributes here if necessary }, ) logger.info(&#34;Cognito respond to challenge response: %s&#34;, response) # Extract access token from the response access_token = response[&#34;AuthenticationResult&#34;][&#34;AccessToken&#34;] # Return successful response with the access token set in cookies return { &#34;statusCode&#34;: 200, &#34;headers&#34;: { &#34;Set-Cookie&#34;: f&#34;accessToken={access_token}; Path=/; Secure; HttpOnly; SameSite=None; Domain=.aws-educate.tw&#34; }, &#34;body&#34;: json.dumps({&#34;message&#34;: &#34;Password changed successfully&#34;}), } except ClientError as e: # Handle Cognito client errors logger.error(&#34;Cognito client error: %s&#34;, e) return { &#34;statusCode&#34;: 400, &#34;body&#34;: json.dumps({&#34;message&#34;: e.response[&#34;Error&#34;][&#34;Message&#34;]}), } except json.JSONDecodeError as e: # Handle JSON decoding errors logger.error(&#34;JSON decode error: %s&#34;, e) return { &#34;statusCode&#34;: 400, &#34;body&#34;: json.dumps({&#34;message&#34;: &#34;Invalid JSON format in request body&#34;}), } 這個 Lambda function 做了以下幾件事:
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-07-19 23:04:08 +0800 CST'>July 19, 2024</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to 如何使用 Lambda 處理 AWS Cognito User 首次登入被系統要求強制變更密碼" href="https://shiun.me/blog/aws-cognito-how-to-handle-force-change-password/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能
     </h2>
   </header>
@@ -302,21 +320,6 @@ Windows 安裝 Windows 安裝相當簡單，只要去官方文檔裡面下載 MS
   </div>
   <footer class="entry-footer"><span title='2024-04-29 23:47:09 +0800 CST'>April 29, 2024</span>&nbsp;·&nbsp;9 min</footer>
   <a class="entry-link" aria-label="post link to AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda" href="https://shiun.me/blog/aws-sam-101/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>Serverless Framework 簡介 Serverless Framework 是一個開源的無服務器應用框架，它允許開發者快速建立、部署和管理在 AWS Lambda、Google Cloud Functions、Azure Functions 等雲平台上運行的無服務器應用。這個框架使用一個簡潔的配置文件（通常是 serverless.yml），在其中定義了應用的所有資源和設定，讓開發者可以專注於編寫業務邏輯而非管理基礎設施。
-安裝 Serverless Framework Prerequisites:
-需要有 npm，若你的電腦沒有 npm，請去下載 NodeJS $ npm install -g serverless 創建一個 Service $ serverless ? What do you want to make? AWS - Node.js - Starter AWS - Node.js - HTTP API AWS - Node.js - Scheduled Task AWS - Node.js - SQS Worker AWS - Node.js - Express API AWS - Node.js - Express API with DynamoDB AWS - Python - Starter &gt; AWS - Python - HTTP API AWS - Python - Scheduled Task AWS - Python - SQS Worker AWS - Python - Flask API AWS - Python - Flask API with DynamoDB Other 輸入指令後透過方向鍵選取你要的 Template，本文將已 AWS - Python HTTP API 示範
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-04-28 04:27:23 +0800 CST'>April 28, 2024</span>&nbsp;·&nbsp;3 min</footer>
-  <a class="entry-link" aria-label="post link to Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda" href="https://shiun.me/blog/serverless-framework-101/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

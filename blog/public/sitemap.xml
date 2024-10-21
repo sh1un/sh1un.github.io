@@ -2,11 +2,41 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://shiun.me/tags/aws/</loc>
+    <lastmod>2024-10-22T00:00:14+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/aws/</loc>
+    <lastmod>2024-10-22T00:00:14+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/blog/how-to-set-up-a-aws-site-to-site-vpn-with-libreswan/</loc>
+    <lastmod>2024-10-22T00:00:14+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/aws-vpc/</loc>
+    <lastmod>2024-10-22T00:00:14+08:00</lastmod>
+  </url><url>
     <loc>https://shiun.me/blog/</loc>
-    <lastmod>2024-08-08T21:27:44+08:00</lastmod>
+    <lastmod>2024-10-22T00:00:14+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/categories/</loc>
-    <lastmod>2024-08-08T21:27:44+08:00</lastmod>
+    <lastmod>2024-10-22T00:00:14+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/libreswan/</loc>
+    <lastmod>2024-10-22T00:00:14+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/networking/</loc>
+    <lastmod>2024-10-22T00:00:14+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/networking/</loc>
+    <lastmod>2024-10-22T00:00:14+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/</loc>
+    <lastmod>2024-10-22T00:00:14+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/</loc>
+    <lastmod>2024-10-22T00:00:14+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/vpn/</loc>
+    <lastmod>2024-10-22T00:00:14+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/dns/</loc>
     <lastmod>2024-08-08T21:27:44+08:00</lastmod>
@@ -23,20 +53,11 @@
     <loc>https://shiun.me/categories/network/</loc>
     <lastmod>2024-08-08T21:27:44+08:00</lastmod>
   </url><url>
-    <loc>https://shiun.me/</loc>
-    <lastmod>2024-08-08T21:27:44+08:00</lastmod>
-  </url><url>
     <loc>https://shiun.me/tags/smtp/</loc>
-    <lastmod>2024-08-08T21:27:44+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/</loc>
     <lastmod>2024-08-08T21:27:44+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/blog/how-does-email-sending-work/</loc>
     <lastmod>2024-08-08T21:27:44+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/categories/aws/</loc>
-    <lastmod>2024-08-06T02:25:14+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/aws-lambda/</loc>
     <lastmod>2024-08-06T02:25:14+08:00</lastmod>
@@ -108,9 +129,6 @@
     <lastmod>2024-07-20T23:06:18+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/categories/ai/</loc>
-    <lastmod>2024-07-20T23:06:18+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/aws/</loc>
     <lastmod>2024-07-20T23:06:18+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/aws-bedrock/</loc>

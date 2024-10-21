@@ -11,8 +11,15 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Thu, 08 Aug 2024 21:27:44 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 22 Oct 2024 00:00:14 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step)</title>
+      <link>https://shiun.me/blog/how-to-set-up-a-aws-site-to-site-vpn-with-libreswan/</link>
+      <pubDate>Tue, 22 Oct 2024 00:00:14 +0800</pubDate>
+      <guid>https://shiun.me/blog/how-to-set-up-a-aws-site-to-site-vpn-with-libreswan/</guid>
+      <description>這篇文章將一步一步教你如何在 AWS 上建立 Site-to-Site VPN</description>
+    </item>
     <item>
       <title>以真實世界寄信來比喻，理解電子郵件寄送流程</title>
       <link>https://shiun.me/blog/how-does-email-sending-work/</link>

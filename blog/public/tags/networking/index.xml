@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Networking on Shiun</title>
+    <link>https://shiun.me/tags/networking/</link>
+    <description>Recent content in Networking on Shiun</description>
+    <image>
+      <title>Shiun</title>
+      <url>https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea</url>
+      <link>https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-tw</language>
+    <lastBuildDate>Tue, 22 Oct 2024 00:00:14 +0800</lastBuildDate>
+    <atom:link href="https://shiun.me/tags/networking/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step)</title>
+      <link>https://shiun.me/blog/how-to-set-up-a-aws-site-to-site-vpn-with-libreswan/</link>
+      <pubDate>Tue, 22 Oct 2024 00:00:14 +0800</pubDate>
+      <guid>https://shiun.me/blog/how-to-set-up-a-aws-site-to-site-vpn-with-libreswan/</guid>
+      <description>這篇文章將一步一步教你如何在 AWS 上建立 Site-to-Site VPN</description>
+    </item>
+  </channel>
+</rss>
