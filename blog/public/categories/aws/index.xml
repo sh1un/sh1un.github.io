@@ -11,8 +11,15 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Tue, 06 Aug 2024 02:25:14 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 22 Oct 2024 00:00:14 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/categories/aws/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step)</title>
+      <link>https://shiun.me/blog/how-to-set-up-a-aws-site-to-site-vpn-with-libreswan/</link>
+      <pubDate>Tue, 22 Oct 2024 00:00:14 +0800</pubDate>
+      <guid>https://shiun.me/blog/how-to-set-up-a-aws-site-to-site-vpn-with-libreswan/</guid>
+      <description>這篇文章將一步一步教你如何在 AWS 上建立 Site-to-Site VPN</description>
+    </item>
     <item>
       <title>從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐</title>
       <link>https://shiun.me/blog/troubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids/</link>
