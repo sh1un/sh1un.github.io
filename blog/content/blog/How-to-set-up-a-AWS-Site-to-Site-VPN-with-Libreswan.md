@@ -37,7 +37,7 @@ keywords:
 
 ## 二、配置 Route Table (Oregon Region)
 
-然後創建 Route Table，並和剛才創建的 Subnet 建立 Association
+然後創建 Route Table，並和上一步創建的 Subnet 建立 Association
 
 ![2-1 CreatePrivateSubnetRT](https://github.com/user-attachments/assets/1dff8965-86cd-4654-af32-e141e174fd30)
 

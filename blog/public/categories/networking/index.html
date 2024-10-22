@@ -229,7 +229,7 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
     <p>最近正在準備 AWS ANS 證照剛好學到 AWS Site-to-Site VPN，也因此實作練習對我來說很重要所以打算寫這篇文章，一方面記錄實作過程一方面留著可以作為教學文章供他人參考
 這篇文章將教學如何在 AWS 上建立 Site-to-Site VPN，我們會使用 Libreswan 來配置 VPN Server，這樣就可以在 AWS VPC 和 Data Center (本文示範會在 N. Virginia Region 中建立 VPC 來模擬 Data Center) 之間建立一個安全的 VPN Tunnel，讓兩者可以互相通信
 一、創建 VPC (Oregon Region) 首先我們先創建架構圖右邊 AWS 的 VPC，因此我切換到 Oregon Region，並且依照下圖配置 VPC 以及 Subnet
-二、配置 Route Table (Oregon Region) 然後創建 Route Table，並和剛才創建的 Subnet 建立 Association
+二、配置 Route Table (Oregon Region) 然後創建 Route Table，並和上一步創建的 Subnet 建立 Association
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2024-10-22 00:00:14 +0800 CST'>October 22, 2024</span>&nbsp;·&nbsp;5 min</footer>
