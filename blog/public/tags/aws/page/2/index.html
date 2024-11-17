@@ -222,6 +222,22 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">要導入 IaC？用 Terraform Import 導入現有資源
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p> Terraform Import 簡介 Terraform Import 是 Terraform 中的一個功能，允許你將現有的基礎設施資源導入到 Terraform 的狀態文件中。這樣，你可以將已有的基礎設施與 Terraform 的配置文件同步，並開始使用 Terraform 來管理這些資源
+什麼時候需要用到 terraform import？ terraform import 並不是一個自動偵測 AWS 資源上的東西，然後自動幫忙寫程式碼的工具 如果你以前沒有使用任何 IaC 的工具，都是直接在 AWS Console 上管理和創建資源，但現在想要導入 IaC，然後把那些「現有資源」導入到 Terraform 來管理，那你就會需要用到 terraform import
+terraform import 的主要目的是將已經存在的基礎設施資源導入到 Terraform 的狀態文件中，這樣你就可以用 Terraform 來管理這些資源。例如，如果你有一個已經存在的 AWS EC2 實例，而你現在想開始用 Terraform 來管理它，你需要導入這個實例以便 Terraform 知道它的存在和當前狀態
+Synopsis $ terraform import [options] ADDRESS ID ADDRESS 是 Terraform 配置中資源的地址。例如，aws_instance.my_instance ID 是資源的唯一標識符，這個值根據不同的資源類型會有所不同。例如，對於 AWS EC2 實例，這個 ID 是實例的 ID（例如 i-1234567890abcdef0） Example $ terraform import aws_instance.my_instance i-1234567890abcdef0 data.aws_region.current: Reading... data.aws_availability_zones.available: Reading... data.aws_ami.ubuntu: Reading... aws_instance.aws_linux: Import prepared! Prepared aws_instance for import aws_instance.aws_linux: Refreshing state... [id=i-00066e5627229c90e] data.aws_region.current: Read complete after 0s [id=us-east-1] data.aws_availability_zones.available: Read complete after 1s [id=us-east-1] data.aws_ami.ubuntu: Read complete after 1s [id=ami-0f81732f07ce19b1c] Import successful! The resources that were imported are shown above. These resources are now in your Terraform state and will henceforth be managed by Terraform. Hands-on 到 AWS Console 創建資源
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-06-06 10:50:53 +0800 CST'>June 6, 2024</span>&nbsp;·&nbsp;3 min</footer>
+  <a class="entry-link" aria-label="post link to 要導入 IaC？用 Terraform Import 導入現有資源" href="https://shiun.me/blog/how-to-use-terraform-import-to-import-existing-resources-into-iac/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄
     </h2>
   </header>
@@ -292,29 +308,12 @@ NAT Gateway 收費 = NAT Gateway 開啟時間 USD 0.062 per Hour &#43; 經過 NA
   <footer class="entry-footer"><span title='2024-04-06 23:45:32 +0800 CST'>April 6, 2024</span>&nbsp;·&nbsp;2 min</footer>
   <a class="entry-link" aria-label="post link to 如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU" href="https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/"></a>
 </article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">如何成為 AWS Educate 雲端大使？履歷準備、面試技巧大公開
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>報名流程 履歷及申請動機 本篇文章主要以「技術支援」這個角度來探討履歷準備的方向，當然！這當中肯定有很多方向也是其他職能也可以拿來參考用的。即便您第一志願不是「技術支援」職能，我仍然建議你繼續讀完！
-先來了解 Technical Support (技術支援)這個角色會做哪些事 技術工作坊上台演講並教學雲端技術 提供組內雲端技術的諮詢和建議 撰寫工作坊所需的技術教學文件及應用 履歷準備方向 了解技術支援這個角色會做哪些事，盡可能地在撰寫履歷時，使內容可以讓面試官覺得你很適合這個角色
-教學技術的經驗 上台演講的經驗 技術專案的經驗 有使用到 AWS 尤佳 內容可以和 Amazon 領導力準則掛勾 展現你在技術上的所專精的專業領域，例如：
-AI Data Analysis DevOps … 展現你的 Leadership 和 Ownership
-量化你的成果
-雲端技術證照
-履歷常見錯誤 ❌ 履歷的大頭照可放可不放，但仍建議不要放，部分職位、傳統台商或特別要求則例外，原因如下： 避免因種族、膚色、人種… 產生任何 Bias 篇幅過長，超過兩頁 技術方面寫的過多過雜、許多不必要的雜訊，例如： 您有提到您會 Flask, Django，那就不必列出你會 Python 把有碰過的技術都寫上去，例如： 僅用過 Java 印出過 “Hello World” 就在「技能」區塊寫 Java 把專精的技術寫上去就好，怎樣算是專精呢？只要您對於這個技術有信心給面試官隨便問 5 個 Why 你都有信心可以回答就寫上來 未量化你的各經歷的成果，例如： 你曾舉辦過技術工作坊，但你僅僅寫了你任期內舉辦了工作坊 更好的寫法是，你可以告訴我們你舉辦了幾人的 XXX 技術工作坊，觀眾對於您的講評評價高達 4.8/5 分 把自己描述成跨領域通才了，你應要把自己描述成一個專精 XX 技術領域的跨領域人才，例如： 因履歷投遞的職能是「技術支援」，你應該要讓自己成為一個「專精 XX 技術領域的雲端人才，同時附帶了活動規劃的跨領域優勢」 而非把自己寫的什麼都很會，讓人摸不清你到底是來投技術職能還是來投活動規畫職能，又或者讓人覺得你是一個通才 把其他人的貢獻寫在自己的履歷，例如： 你參與了某專案你僅負責後端開發，前端開發部分並非你做的，然而你卻在專案中的經歷寫到你使用了前端的 XXX 技術做了 XXX 功能 申請動機準備方向 申請動機這一塊就有比較多自由發揮的空間 以下就給出兩點簡單的小建議：
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-01-28 01:31:05 +0800 CST'>January 28, 2024</span>&nbsp;·&nbsp;1 min</footer>
-  <a class="entry-link" aria-label="post link to 如何成為 AWS Educate 雲端大使？履歷準備、面試技巧大公開" href="https://shiun.me/blog/aws-educate-6th-cloud-ambassador-resume-and-interview-preparation/"></a>
-</article>
 <footer class="page-footer">
   <nav class="pagination">
     <a class="prev" href="https://shiun.me/tags/aws/">
       «&nbsp;Prev&nbsp;
+    </a>
+    <a class="next" href="https://shiun.me/tags/aws/page/3/">Next&nbsp;&nbsp;»
     </a>
   </nav>
 </footer>
