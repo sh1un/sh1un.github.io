@@ -222,6 +222,22 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0)
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Overview 就在 2024/11/20 AWS 釋出了重磅消息 — 「Amazon Aurora Serverless v2 supports scaling to zero capacity」，簡單來說這個功能能夠讓 Aurora 在閒置一段時間後，自動停止實例 (Auto-pause)，停止期間不會收取「執行實例小時數費用」 (Aurora Capacity Units = 0)，達到所謂的 Truly Serverless!! 官方把這個新功能稱為 Auto-pause ，在這個功能釋出以前， Aurora Capacity Units (ACU) 最低最低只能設定成 0.5。
+實際 RDS 定價 其實還有其他收費，像是儲存成本、 IOPS、傳輸… 等等，詳細內容敬請參考官方文件 (連結)
+Amazon Aurora vs RDS for MySQL 在 us-west-2 的定價比較:
+Aurora Serverless v2 每個 ACU 一小時 0.12 美金 RDS for MySQL - db.t4g.micro 一小時 0.016 美金 約等於一 ACU 可以開 7.5 小時的 db.t4g.micro，建議大家要根據自己的實際情境去好好計算成本喔，並不是 Serverless = 經濟實惠。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-12-04 19:32:03 +0800 CST'>December 4, 2024</span>&nbsp;·&nbsp;5 min</footer>
+  <a class="entry-link" aria-label="post link to 開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0)" href="https://shiun.me/blog/unboxing-amazon-aurora-serverless-v2-auto-pause-acu-0/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">一起回顧我的 AWS Educate 雲端大使成長之旅
     </h2>
   </header>
@@ -301,22 +317,6 @@ API 獲取歌單： 伺服器端提供一個 API，根據用戶的請求返回�
   </div>
   <footer class="entry-footer"><span title='2024-07-21 23:29:27 +0800 CST'>July 21, 2024</span>&nbsp;·&nbsp;4 min</footer>
   <a class="entry-link" aria-label="post link to 在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲" href="https://shiun.me/blog/dynamic-preload-for-performance-optimization/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">2024 伊雲谷實習計畫 - 雲端工程師實習心得
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>大家好，我是 Shiun，今天想和大家分享我在 eCloudValley MSP 部門擔任雲端工程師實習生的經歷。這段實習讓我學到了很多實用的雲端技術，同時也在工作中遇到了許多有趣的挑戰。 實習工作內容 在 eCloudValley 的實習期間，我主要負責以下幾項工作：
-學習使用公有雲，包括 AWS 和 Azure。 開發公司內部的 GenAI 應用。 與同期且同部門實習生共同開發專案。 定期與 Mentor 開會。 參與最終展演。 撰寫系統文件。 實習期間大事紀 專案大改方向 在 eCloudValley 實習期間，我們的專案經歷了一次重大轉變。起初，我們的任務是開發一個 AI Bot 開單助理，目的是幫助客戶在雲端遇到問題時能夠迅速獲得支援。這個專案的初步構想是：
-客戶向 AI 助理求助，並向 AI 助理提供必要資訊，例如： EC2 SG Inbound Rule, 健康檢查狀態… 等等 如果客戶提供的資訊不夠明確，AI 助理要明確地告知客戶還需提供哪些資訊。 AI 助理彙總客戶問題，轉化為技術人員易於理解的語言。 將資訊轉化後，開 ticket 到開單系統。 然而，在實作過程中，我們發現這個 AI 助理的效果不如預期，且後續優化存在技術瓶頸。客戶問題過於多樣化、且問題幾乎都很具情境，不是那種有標準解答或是標準 SOP 就能解決的問題，所以 AI 助理難以處理，導致準確率低，最終還是需要人工介入，反而增加了工作量。
-因此，我們在 4 月底決定將專案轉變為一個「會議錄影機器人」。這個機器人會被邀請到 LINE 群組中，默默記錄每一條訊息以及圖片 (圖片透過 Claude 3 Sonnet 取得 Caption)。TAM 只需在群組中輸入特殊指令或貼圖即可控制錄影，最終在前端頁面查看記錄並由 LLM 總結，創建 Ticket 到 MSP 部門的 Ticket System。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-07-20 23:06:18 +0800 CST'>July 20, 2024</span>&nbsp;·&nbsp;1 min</footer>
-  <a class="entry-link" aria-label="post link to 2024 伊雲谷實習計畫 - 雲端工程師實習心得" href="https://shiun.me/blog/2024-ecloudvalley-internship/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

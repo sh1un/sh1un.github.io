@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
+<meta name="robots" content="index, follow" />
+<title>
+  開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0) | Shiun
+</title>
+<meta
+  name="keywords"
+  content="Aurora Serverless v2, Auto-pause, Pay-as-you-go database, Serverless database solutions, AWS database optimization, MySQL, AWS RDS"
+/> <meta name="description" content="這篇文章帶你開箱體驗 2024 年 Amazon Aurora Serverless v2 的新功能 - Auto-pause。這個功能能夠讓 Aurora 在閒置一段時間後，自動停止實例 (Auto-pause)，停止期間不會收取「執行實例小時數費用」 (Aurora Capacity Units = 0)，達到所謂的 Truly Serverless!!"> <meta name="author" content=""> <link rel="canonical" href="https://shiun.me/blog/unboxing-amazon-aurora-serverless-v2-auto-pause-acu-0/">
+<link
+  crossorigin="anonymous"
+  href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css"
+  integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A="
+  rel="preload stylesheet"
+  as="style"
+/> <link rel="icon" href="https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"> <link
+rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://shiun.me/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://shiun.me/apple-touch-icon.png"> <link rel="mask-icon" href="https://shiun.me/safari-pinned-tab.svg"> <meta name="theme-color" content="#2e2e33"> <meta name="msapplication-TileColor" content="#2e2e33"> <link rel="alternate" hreflang="en" href="https://shiun.me/blog/unboxing-amazon-aurora-serverless-v2-auto-pause-acu-0/" />
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script>
+
+
+<meta property="og:url" content="https://shiun.me/blog/unboxing-amazon-aurora-serverless-v2-auto-pause-acu-0/">
+  <meta property="og:site_name" content="Shiun">
+  <meta property="og:title" content="開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0)">
+  <meta property="og:description" content="這篇文章帶你開箱體驗 2024 年 Amazon Aurora Serverless v2 的新功能 - Auto-pause。這個功能能夠讓 Aurora 在閒置一段時間後，自動停止實例 (Auto-pause)，停止期間不會收取「執行實例小時數費用」 (Aurora Capacity Units = 0)，達到所謂的 Truly Serverless!!">
+  <meta property="og:locale" content="zh_tw">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="blog">
+    <meta property="article:published_time" content="2024-12-04T19:32:03+08:00">
+    <meta property="article:modified_time" content="2024-12-04T19:32:03+08:00">
+    <meta property="article:tag" content="AWS RDS">
+    <meta property="article:tag" content="Auto-Pause">
+    <meta property="article:tag" content="Serverless">
+    <meta property="article:tag" content="AWS Aurora">
+    <meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+  <meta name="twitter:title" content="開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0)">
+  <meta name="twitter:description" content="這篇文章帶你開箱體驗 2024 年 Amazon Aurora Serverless v2 的新功能 - Auto-pause。這個功能能夠讓 Aurora 在閒置一段時間後，自動停止實例 (Auto-pause)，停止期間不會收取「執行實例小時數費用」 (Aurora Capacity Units = 0)，達到所謂的 Truly Serverless!!">
+
+
+<noscript>
+  <style>
+    #theme-toggle,
+    .top-link {
+      display: none;
+    }
+  </style>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --theme: rgb(29, 30, 32);
+        --entry: rgb(46, 46, 51);
+        --primary: rgb(218, 218, 219);
+        --secondary: rgb(155, 156, 157);
+        --tertiary: rgb(65, 66, 68);
+        --content: rgb(196, 196, 197);
+        --code-block-bg: rgb(46, 46, 51);
+        --code-bg: rgb(55, 56, 62);
+        --border: rgb(51, 51, 51);
+      }
+
+      .list {
+        background: var(--theme);
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-track {
+        background: 0 0;
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-thumb {
+        border-color: var(--theme);
+      }
+    }
+  </style>
+</noscript>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script><meta property="og:title" content="開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0)" />
+<meta property="og:description" content="這篇文章帶你開箱體驗 2024 年 Amazon Aurora Serverless v2 的新功能 - Auto-pause。這個功能能夠讓 Aurora 在閒置一段時間後，自動停止實例 (Auto-pause)，停止期間不會收取「執行實例小時數費用」 (Aurora Capacity Units = 0)，達到所謂的 Truly Serverless!!" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/unboxing-amazon-aurora-serverless-v2-auto-pause-acu-0/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-12-04T19:32:03+08:00" />
+<meta property="article:modified_time" content="2024-12-04T19:32:03+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/>
+
+<meta name="twitter:title" content="開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0)"/>
+<meta name="twitter:description" content="這篇文章帶你開箱體驗 2024 年 Amazon Aurora Serverless v2 的新功能 - Auto-pause。這個功能能夠讓 Aurora 在閒置一段時間後，自動停止實例 (Auto-pause)，停止期間不會收取「執行實例小時數費用」 (Aurora Capacity Units = 0)，達到所謂的 Truly Serverless!!"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Blogs",
+      "item": "https://shiun.me/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0)",
+      "item": "https://shiun.me/blog/unboxing-amazon-aurora-serverless-v2-auto-pause-acu-0/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0)",
+  "name": "開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0)",
+  "description": "這篇文章帶你開箱體驗 2024 年 Amazon Aurora Serverless v2 的新功能 - Auto-pause。這個功能能夠讓 Aurora 在閒置一段時間後，自動停止實例 (Auto-pause)，停止期間不會收取「執行實例小時數費用」 (Aurora Capacity Units = 0)，達到所謂的 Truly Serverless!!",
+  "keywords": [
+    "Aurora Serverless v2", "Auto-pause", "Pay-as-you-go database", "Serverless database solutions", "AWS database optimization", "MySQL", "AWS RDS"
+  ],
+  "articleBody": "Overview 就在 2024/11/20 AWS 釋出了重磅消息 — 「Amazon Aurora Serverless v2 supports scaling to zero capacity」，簡單來說這個功能能夠讓 Aurora 在閒置一段時間後，自動停止實例 (Auto-pause)，停止期間不會收取「執行實例小時數費用」 (Aurora Capacity Units = 0)，達到所謂的 Truly Serverless!! 官方把這個新功能稱為 Auto-pause ，在這個功能釋出以前， Aurora Capacity Units (ACU) 最低最低只能設定成 0.5。\n實際 RDS 定價 其實還有其他收費，像是儲存成本、 IOPS、傳輸… 等等，詳細內容敬請參考官方文件 (連結)\nAmazon Aurora vs RDS for MySQL 在 us-west-2 的定價比較:\nAurora Serverless v2 每個 ACU 一小時 0.12 美金 RDS for MySQL - db.t4g.micro 一小時 0.016 美金 約等於一 ACU 可以開 7.5 小時的 db.t4g.micro，建議大家要根據自己的實際情境去好好計算成本喔，並不是 Serverless = 經濟實惠。\n一、Auto-pause 介紹 自動暫停 什麼是自動暫停？ 當資料庫一段時間內沒有任何連線時，Aurora Serverless v2 會自動將其暫停，並釋放所有計算資源，將容量縮減到 0 ACUs。 在暫停期間，您只需要支付儲存費用，計算資源費用暫停。 暫停條件 沒有任何連線（用戶活動）在指定的閒置時間內觸發。 支援的閒置時間範圍：5 分鐘 (300 秒) 至 24 小時 (86,400 秒)。 自動恢復 什麼是自動恢復？ 當資料庫收到第一個連線請求時，系統會自動恢復，並動態分配計算資源。 恢復時間約為 15 秒。 唯獨一定要特別注意！如果你的 Aurora Instance 超過 24 小時以上是停止狀態，那冷啟動會超過 30 秒以上\n官方文件描述如下:\nIf an Aurora Serverless v2 instance remains paused more than 24 hours, Aurora can put the instance into a deeper sleep that takes longer to resume. In that case, the resume time can be 30 seconds or longer\nReference: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2-auto-pause.html#auto-pause-whynot\n二、建立 Aurora Serverless v2 注意 Engine Version！以下版本才支援 ACU 設定成 0\nIf you’re using Aurora PostgreSQL, the database engine must be running at least version 16.3, 15.7, 14.12, or 13.15. If you’re using Aurora MySQL, the database engine must be running version 3.08.0 or higher. 配置 Engine\n選擇 Aurora (MySQL Compatible) Engine version: 3.08.0 以上 配置資料庫 Credential\n選 Dev/Test 設定密碼並再次輸入密碼 配置 Cluster / Instance\n選擇 Aurora Standard 選擇 Serverless v2 Minimum capacity: 0 配置 Connectivity\nPublic access 打開 (生產環境不建議打開)\nVPC security group\nCreate new New VPC security group name: aurora-serverless-v2-sg 不建議生產環境這樣用，由於這部分並非本工作坊主要教學目標，基於簡化複雜配置，才會將 RDS 的 Public access 打開，並設定允許所有來源 IP。 在生產環境中，建議要切好網段，配置好 RDS Subnet Group，將 RDS 放置於 Private Subnet，並且基於最小需求設定 NACL, Security Group。Lambda 也需要部署在 VPC 而需要連到 Internet 需要配置 NAT Gateway。\n其餘保持預設 \u003e Create database 三、如何觀察是否成功 Auto-pause? 注意！！！即使執行個體進入自動暫停，RDS Console 仍會顯示為 Available，這是 Aurora Serverless 的特性。\n1. 查看 RDS 主控台中的執行個體狀態 步驟： 進入 AWS Management Console。 選擇 Amazon RDS \u003e Databases。 在資料庫清單中找到您的 Aurora Serverless V2 集群或執行個體。 檢查執行個體的 狀態（Status）。 如果顯示為 Available 且未顯示負載數據，可能已自動暫停。 注意：在暫停期間，狀態仍會顯示 Available，但其行為與正常運行有所不同。 2. 查看 CloudWatch 指標 AWS CloudWatch 提供了多種監控指標，可以確認執行個體是否處於自動暫停狀態。\n關鍵指標:\nACUUtilization 值為 0 時，表示執行個體已縮容到 0 ACUs，即已自動暫停。 ServerlessDatabaseCapacity 值為 0 時，表示目前沒有計算資源分配，也意味著已經自動暫停。 CPUUtilization 值為 0% 時，執行個體沒有進行任何處理，可能處於暫停狀態。 下圖為成功 Auto-pause 的範例，注意 ACUUtilization Metric 有某段時間是成功完全貼平在最底 (0 percent)\n3. 查看事件記錄 AWS 會記錄執行個體的暫停與恢復相關事件。可以到 Cluster \u003e Logs \u0026 events 頁籤查看 Recent events\n四、Troubleshooting - 明明沒有活動為什麼 Aurora Serverless v2 沒有 Auto-pause 1. 自動暫停的限制與條件 哪些情況下不會自動暫停？ 有用戶連線活動時 當存在未關閉的用戶連線，系統不會進入暫停狀態。 啟用了某些功能或集成： 邏輯複製 (PostgreSQL) 或 Binlog 複製 (MySQL) 這些功能需要保持活躍，因此不支援自動暫停。 RDS Proxy (很重要！！！如果有使用 RDS Proxy 會導致 Auto-pause 無法啟用喔) RDS Proxy 保持與資料庫的持續連線，導致無法暫停。 跨區集群 (Aurora Global Database) 主要集群的寫入節點無法自動暫停。 次要集群的節點可能會根據優先級部分支持暫停。 2. Failover Priority 與自動暫停的關係 Failover Priority 的行為 優先級 0 和 1 的節點通常不會自動暫停： 這些節點被視為關鍵節點，通常與寫入節點（Writer Instance）行為一致。\n當寫入節點恢復時，這些節點也會自動恢復。\n如果叢集只有單一實例(寫入器)，Failover priority 不會影響 auto-pause 行為。單一實例的自動暫停僅取決於：\n最小容量設為 0 ACU 無使用者連線 達到設定的閒置時間 無使用不相容功能(如複製、Proxy 等) 如何配置 Failover Priority？ 可以設置不同節點的 Failover Priority： 高優先級節點（如 priority = 0 或 1）：保持可用，不進入暫停。 低優先級節點（如 priority = 2 或更高）：根據負載自動暫停。 3. 觀察 instance.log 來排查原因 Aurora writes a separate log file for Aurora Serverless v2 DB instances with auto-pause enabled. Aurora writes to the log for each 10-minute interval that the instance isn’t paused. Aurora retains up to seven of these logs, rotated daily. The current log file is named instance.log, and older logs are named using the pattern instance.*YYYY-MM-DD*.*N*.log.\nThe instance.log provides more granular detail about the reasons why an Aurora Serverless v2 instance might or might not be able to pause.\n日誌中常見訊息與排查方法:\n[INFO] No auto-pause blockers registered since time 意義：在設定的自動暫停時間內，沒有阻止暫停的活動。 多執行個體集群的差異： 當讀取節點的活動在暫停時間結束前結束，寫入節點仍可按預期時間暫停。 [INFO] Unable to pause database due to a new database activity 意義：執行個體嘗試暫停，但新連線請求在暫停完成前抵達，阻止了暫停。 [INFO] Auto-pause blockers registered since time: list_of_conditions 意義：列出阻止暫停的所有條件。 解決建議：檢查列出的條件，調整配置或使用方式。 以我這邊為例，進入 RDS Console \u003e 選擇 database 實例 \u003e 切換至 Logs \u0026 events 頁籤 \u003e Logs 選取 instance/instance.log \u003e View Logs\n2024-11-28T01:33:12,982 [INFO] Auto-pause blockers registered since 2024-11-27T21:18:00.611Z: database activity before auto-pause timeout, continuous backup lag 2024-11-28T01:43:15,085 [INFO] Auto-pause blockers registered since 2024-11-28T01:33:12.981Z: database activity before auto-pause timeout, continuous backup lag, service or customer maintenance action 2024-11-28T01:53:15,591 [INFO] Auto-pause blockers registered since 2024-11-28T01:43:15.085Z: database activity before auto-pause timeout, continuous backup lag 2024-11-28T02:03:16,185 [INFO] Auto-pause blockers registered since 2024-11-28T01:53:15.590Z: database activity before auto-pause timeout, continuous backup lag 2024-11-28T02:13:16,790 [INFO] Auto-pause blockers registered since 2024-11-28T02:03:16.185Z: database activity before auto-pause timeout, continuous backup lag, service or customer maintenance action 2024-11-28T02:23:17,389 [INFO] Auto-pause blockers registered since 2024-11-28T02:13:16.790Z: database activity before auto-pause timeout, continuous backup lag 2024-11-28T02:33:17,989 [INFO] Auto-pause blockers registered since 2024-11-28T02:23:17.389Z: database activity before auto-pause timeout, continuous backup lag, service or customer maintenance action 2024-11-28T02:43:18,586 [INFO] Auto-pause blockers registered since 2024-11-28T02:33:17.988Z: database activity before auto-pause timeout, continuous backup lag, service or customer maintenance action 2024-11-28T02:53:19,186 [INFO] Auto-pause blockers registered since 2024-11-28T02:43:18.586Z: database activity before auto-pause timeout, continuous backup lag 2024-11-28T03:03:19,787 [INFO] Auto-pause blockers registered since 2024-11-28T02:53:19.186Z: database activity before auto-pause timeout, continuous backup lag, service or customer maintenance action 2024-11-28T03:13:20,386 [INFO] Auto-pause blockers registered since 2024-11-28T03:03:19.787Z: database activity before auto-pause timeout, continuous backup lag, service or customer maintenance action 2024-11-28T03:23:20,987 [INFO] Auto-pause blockers registered since 2024-11-28T03:13:20.386Z: database activity before auto-pause timeout, continuous backup lag, service or customer maintenance action ----------------------- END OF LOG ---------------------- 於是我連線進去 Instance 執行以下指令:\n可以 Enable RDS Data API 後，去使用 Query Editor 連線到資料庫唷！\n進入 Query Editor 後 \u003e 可以參考下圖配置連線到 database\nSHOW FULL PROCESSLIST KILL connection_id; -- connection_id 從 PROCESSLIST 中獲得 我的看法和心得 Aurora Serverless v2 的 Auto-pause 功能對我而言非常具有吸引力，特別是因為我有幾個專案都是 Fully Serverless 的架構，而那些專案都有這些特性：「間歇性負載」且「流量較低」，因此 Pay-as-you-go 的計費模式成為我考量的重點。\n在 Aurora Auto-pause 功能推出之前，在 AWS 上要符合 Pay-as-you-go 特性的資料庫選擇只有 NoSQL - DynamoDB。\n我這篇文章對 Pay-as-you-go 的主觀認定，有一個重要指標是「閒置期間不會產生費用」\n由於 DynamoDB 的特性，在實作分頁功能（Pagination）時，若要實現順暢的上一頁和下一頁切換，通常會較為繁瑣，甚至需要額外的開發成本。此外，某些需求在使用關聯式資料庫時會更加直覺，尤其當資料之間存在強烈關聯性且需要高一致性支援的情境下，關聯式資料庫的優勢則更為明顯。\nAurora Serverless v2 的 Auto-pause 滿足了 Serverless 架構對彈性與低成本的需求，同時還能提供關聯式資料庫的能力。但以現況需要冷啟動超過 15 秒，甚至有時候超過 24 hrs 以上沒 Resume 資料庫會發生超過 30 秒的冷啟動，除非使用者可以忍受很高的延遲，不然我認為現況還不足以放到 Production 環境來服務我們專案的使用者。\n也許是可以用一些額外機制讓資料庫提前 Resume (例如某事件發生就去觸發資料庫連線，提前讓資料庫 Resume)，但是我認為這反而引來了額外維護的成本，目前還不夠足以吸引我去投資那樣的精力維護那個機制。\n我相信 AWS 日後一定會把 Aurora 的冷啟動時間優化，我推測 2025 re:Invent 應該可以看到這邊還會有新的重大突破！\n相關連結 Shiun - 如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU\nScaling to Zero ACUs with automatic pause and resume for Aurora Serverless v2 - Amazon Aurora\nManaging Aurora Serverless v2 DB clusters - Amazon Aurora\n",
+  "wordCount" : "912",
+  "inLanguage": "en",
+  "datePublished": "2024-12-04T19:32:03+08:00",
+  "dateModified": "2024-12-04T19:32:03+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://shiun.me/blog/unboxing-amazon-aurora-serverless-v2-auto-pause-acu-0/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Shiun",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://shiun.me/" accesskey="h" title="Shiun (Alt + H)">Shiun</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://shiun.me/blog/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.notion.site/Shiun-s-Learning-Journal-ded4cd4a3efd47b2805f2f99dee8f9a1?pvs=4" title="Notion">
+                    <span>Notion</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.linkedin.com/in/shiunchiu" title="About me">
+                    <span>About me</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://shiun.me/">Home</a>&nbsp;»&nbsp;<a href="https://shiun.me/blog/">Blogs</a></div>
+    <h1 class="post-title entry-hint-parent">
+      開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0)
+    </h1>
+    <div class="post-description">
+      這篇文章帶你開箱體驗 2024 年 Amazon Aurora Serverless v2 的新功能 - Auto-pause。這個功能能夠讓 Aurora 在閒置一段時間後，自動停止實例 (Auto-pause)，停止期間不會收取「執行實例小時數費用」 (Aurora Capacity Units = 0)，達到所謂的 Truly Serverless!!
+    </div>
+    <div class="post-meta"><span title='2024-12-04 19:32:03 +0800 CST'>December 4, 2024</span>&nbsp;·&nbsp;5 min
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#overview" aria-label="Overview">Overview</a></li>
+                <li>
+                    <a href="#%e4%b8%80auto-pause-%e4%bb%8b%e7%b4%b9" aria-label="一、Auto-pause 介紹">一、Auto-pause 介紹</a><ul>
+                        
+                <li>
+                    <a href="#%e8%87%aa%e5%8b%95%e6%9a%ab%e5%81%9c" aria-label="自動暫停">自動暫停</a></li>
+                <li>
+                    <a href="#%e8%87%aa%e5%8b%95%e6%81%a2%e5%be%a9" aria-label="自動恢復">自動恢復</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e4%ba%8c%e5%bb%ba%e7%ab%8b-aurora-serverless-v2" aria-label="二、建立 Aurora Serverless v2">二、建立 Aurora Serverless v2</a></li>
+                <li>
+                    <a href="#%e4%b8%89%e5%a6%82%e4%bd%95%e8%a7%80%e5%af%9f%e6%98%af%e5%90%a6%e6%88%90%e5%8a%9f-auto-pause" aria-label="三、如何觀察是否成功 Auto-pause?">三、如何觀察是否成功 Auto-pause?</a><ul>
+                        
+                <li>
+                    <a href="#1-%e6%9f%a5%e7%9c%8b-rds-%e4%b8%bb%e6%8e%a7%e5%8f%b0%e4%b8%ad%e7%9a%84%e5%9f%b7%e8%a1%8c%e5%80%8b%e9%ab%94%e7%8b%80%e6%85%8b" aria-label="1. 查看 RDS 主控台中的執行個體狀態">1. 查看 RDS 主控台中的執行個體狀態</a></li>
+                <li>
+                    <a href="#2-%e6%9f%a5%e7%9c%8b-cloudwatch-%e6%8c%87%e6%a8%99" aria-label="2. 查看 CloudWatch 指標">2. 查看 CloudWatch 指標</a></li>
+                <li>
+                    <a href="#3-%e6%9f%a5%e7%9c%8b%e4%ba%8b%e4%bb%b6%e8%a8%98%e9%8c%84" aria-label="3. 查看事件記錄">3. 查看事件記錄</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%9b%9btroubleshooting---%e6%98%8e%e6%98%8e%e6%b2%92%e6%9c%89%e6%b4%bb%e5%8b%95%e7%82%ba%e4%bb%80%e9%ba%bc-aurora-serverless-v2-%e6%b2%92%e6%9c%89-auto-pause" aria-label="四、Troubleshooting - 明明沒有活動為什麼 Aurora Serverless v2 沒有 Auto-pause">四、Troubleshooting - 明明沒有活動為什麼 Aurora Serverless v2 沒有 Auto-pause</a><ul>
+                        
+                <li>
+                    <a href="#1-%e8%87%aa%e5%8b%95%e6%9a%ab%e5%81%9c%e7%9a%84%e9%99%90%e5%88%b6%e8%88%87%e6%a2%9d%e4%bb%b6" aria-label="1. 自動暫停的限制與條件">1. 自動暫停的限制與條件</a><ul>
+                        
+                <li>
+                    <a href="#%e5%93%aa%e4%ba%9b%e6%83%85%e6%b3%81%e4%b8%8b%e4%b8%8d%e6%9c%83%e8%87%aa%e5%8b%95%e6%9a%ab%e5%81%9c" aria-label="哪些情況下不會自動暫停？">哪些情況下不會自動暫停？</a></li></ul>
+                </li>
+                <li>
+                    <a href="#2-failover-priority-%e8%88%87%e8%87%aa%e5%8b%95%e6%9a%ab%e5%81%9c%e7%9a%84%e9%97%9c%e4%bf%82" aria-label="2. Failover Priority 與自動暫停的關係">2. Failover Priority 與自動暫停的關係</a><ul>
+                        
+                <li>
+                    <a href="#failover-priority-%e7%9a%84%e8%a1%8c%e7%82%ba" aria-label="Failover Priority 的行為">Failover Priority 的行為</a></li>
+                <li>
+                    <a href="#%e5%a6%82%e4%bd%95%e9%85%8d%e7%bd%ae-failover-priority" aria-label="如何配置 Failover Priority？">如何配置 Failover Priority？</a></li></ul>
+                </li>
+                <li>
+                    <a href="#3-%e8%a7%80%e5%af%9f-instancelog-%e4%be%86%e6%8e%92%e6%9f%a5%e5%8e%9f%e5%9b%a0" aria-label="3. 觀察 instance.log 來排查原因">3. 觀察 instance.log 來排查原因</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%88%91%e7%9a%84%e7%9c%8b%e6%b3%95%e5%92%8c%e5%bf%83%e5%be%97" aria-label="我的看法和心得">我的看法和心得</a></li>
+                <li>
+                    <a href="#%e7%9b%b8%e9%97%9c%e9%80%a3%e7%b5%90" aria-label="相關連結">相關連結</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="overview">Overview<a hidden class="anchor" aria-hidden="true" href="#overview">#</a></h2>
+<p>就在 2024/11/20 AWS 釋出了重磅消息 — 「<a href="https://aws.amazon.com/tw/about-aws/whats-new/2024/11/amazon-aurora-serverless-v2-scaling-zero-capacity/"><strong>Amazon Aurora Serverless v2 supports scaling to zero capacity</strong></a>」，簡單來說這個功能能夠讓 Aurora 在閒置一段時間後，自動停止實例 (Auto-pause)，停止期間不會收取「執行實例小時數費用」 (Aurora Capacity Units = <code>0</code>)，達到所謂的 Truly Serverless!! 官方把這個新功能稱為 <strong>Auto-pause</strong> ，在這個功能釋出以前， Aurora Capacity Units (ACU) 最低最低只能設定成 <code>0.5</code>。</p>
+<blockquote>
+<p>實際 RDS 定價 其實還有其他收費，像是儲存成本、 IOPS、傳輸… 等等，詳細內容敬請參考官方文件 (<a href="https://aws.amazon.com/tw/rds/pricing/">連結</a>)</p>
+<p>Amazon Aurora vs RDS for MySQL 在 us-west-2 的定價比較:</p>
+<ul>
+<li>Aurora Serverless v2 每個 ACU 一小時 <strong>0.12</strong> 美金</li>
+<li>RDS for MySQL - db.t4g.micro 一小時 <strong>0.016</strong> 美金</li>
+</ul>
+<p>約等於一 ACU 可以開 7.5 小時的 db.t4g.micro，建議大家要<strong>根據自己的實際情境去好好計算成本</strong>喔，<strong>並不是 Serverless = 經濟實惠</strong>。</p>
+</blockquote>
+<hr>
+<h2 id="一auto-pause-介紹">一、Auto-pause 介紹<a hidden class="anchor" aria-hidden="true" href="#一auto-pause-介紹">#</a></h2>
+<h3 id="自動暫停">自動暫停<a hidden class="anchor" aria-hidden="true" href="#自動暫停">#</a></h3>
+<ul>
+<li><strong>什麼是自動暫停？</strong>
+<ul>
+<li>當資料庫一段時間內沒有任何連線時，Aurora Serverless v2 會自動將其暫停，並釋放所有計算資源，將容量縮減到 <strong>0 ACUs</strong>。</li>
+<li>在暫停期間，您只需要支付儲存費用，計算資源費用暫停。</li>
+</ul>
+</li>
+<li><strong>暫停條件</strong>
+<ul>
+<li>沒有任何連線（用戶活動）在指定的閒置時間內觸發。</li>
+<li>支援的閒置時間範圍：<strong>5 分鐘 (300 秒) 至 24 小時 (86,400 秒)</strong>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="自動恢復">自動恢復<a hidden class="anchor" aria-hidden="true" href="#自動恢復">#</a></h3>
+<ul>
+<li><strong>什麼是自動恢復？</strong>
+<ul>
+<li>當資料庫收到第一個連線請求時，系統會自動恢復，並動態分配計算資源。</li>
+<li>恢復時間約為 <strong>15 秒</strong>。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>唯獨一定要特別注意！如果你的 Aurora Instance 超過 24 小時以上是停止狀態，那冷啟動會超過 30 秒以上</p>
+<p>官方文件描述如下:</p>
+<p>If an Aurora Serverless v2 instance remains paused more than 24 hours, Aurora can put the instance into a deeper sleep that takes longer to resume. In that case, the resume time can be 30 seconds or longer</p>
+<p><em>Reference: <a href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2-auto-pause.html#auto-pause-whynot">https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2-auto-pause.html#auto-pause-whynot</a></em></p>
+</blockquote>
+<hr>
+<h2 id="二建立-aurora-serverless-v2">二、建立 Aurora Serverless v2<a hidden class="anchor" aria-hidden="true" href="#二建立-aurora-serverless-v2">#</a></h2>
+<p>注意 Engine Version！以下版本才支援 ACU 設定成 0</p>
+<blockquote>
+<ul>
+<li>If you&rsquo;re using Aurora PostgreSQL, the database engine must be running at least version 16.3, 15.7, 14.12, or 13.15.</li>
+<li>If you&rsquo;re using Aurora MySQL, the database engine must be running version 3.08.0 or higher.</li>
+</ul>
+</blockquote>
+<ol>
+<li>
+<p>配置 Engine</p>
+<ul>
+<li>選擇 <strong>Aurora (MySQL Compatible)</strong></li>
+<li><strong>Engine version:</strong> 3.08.0 以上
+<img loading="lazy" src="https://github.com/user-attachments/assets/a330d811-c637-445d-8cf5-9ec6fb433ebe" alt="image 0 - Create RDS - Engine Options"  />
+</li>
+</ul>
+</li>
+<li>
+<p>配置資料庫 Credential</p>
+<ul>
+<li>選 <strong>Dev/Test</strong></li>
+<li>設定密碼並再次輸入密碼
+<img loading="lazy" src="https://github.com/user-attachments/assets/a86fa90e-6105-4a77-83b3-91f020318209" alt="image 1 - Create RDS - Credential"  />
+</li>
+</ul>
+</li>
+<li>
+<p>配置 Cluster / Instance</p>
+<ul>
+<li>選擇 <strong>Aurora Standard</strong></li>
+<li>選擇 <strong>Serverless v2</strong></li>
+<li><strong>Minimum capacity:</strong> <code>0</code>
+<img loading="lazy" src="https://github.com/user-attachments/assets/7c0ecc73-65d8-4f87-bfaa-ec0363570687" alt="image 2 - Create RDS - Instance Configuration"  />
+</li>
+</ul>
+</li>
+<li>
+<p>配置 Connectivity</p>
+<ul>
+<li>
+<p>Public access 打開 (生產環境不建議打開)</p>
+</li>
+<li>
+<p>VPC security group</p>
+<ul>
+<li><strong>Create new</strong></li>
+<li><strong>New VPC security group name:</strong> <code>aurora-serverless-v2-sg</code></li>
+</ul>
+<blockquote>
+<p>不建議生產環境這樣用，由於這部分並非本工作坊主要教學目標，基於簡化複雜配置，才會將 RDS 的 Public access 打開，並設定允許所有來源 IP。
+在生產環境中，建議要切好網段，配置好 RDS Subnet Group，將 RDS 放置於 Private Subnet，並且基於最小需求設定 NACL, Security Group。Lambda 也需要部署在 VPC 而需要連到 Internet 需要配置 NAT Gateway。</p>
+</blockquote>
+</li>
+</ul>
+<p><img loading="lazy" src="https://github.com/user-attachments/assets/c5d519c9-8d50-435f-b4ff-4d40258f8a1f" alt="image 3- Create RDS - Connectivity"  />
+</p>
+</li>
+<li>
+<p>其餘保持預設 &gt; <strong>Create database</strong>
+<img loading="lazy" src="https://github.com/user-attachments/assets/5c5c1fb7-2479-4583-aeb8-5095ab4edcbd" alt="image 4 - Create RDS - Click Create database"  />
+</p>
+</li>
+</ol>
+<hr>
+<h2 id="三如何觀察是否成功-auto-pause">三、如何觀察是否成功 Auto-pause?<a hidden class="anchor" aria-hidden="true" href="#三如何觀察是否成功-auto-pause">#</a></h2>
+<p>注意！！！即使執行個體進入自動暫停，RDS Console 仍會顯示為 <code>Available</code>，這是 Aurora Serverless 的特性。</p>
+<h3 id="1-查看-rds-主控台中的執行個體狀態">1. 查看 RDS 主控台中的執行個體狀態<a hidden class="anchor" aria-hidden="true" href="#1-查看-rds-主控台中的執行個體狀態">#</a></h3>
+<ul>
+<li><strong>步驟</strong>：
+<ol>
+<li>進入 <strong>AWS Management Console</strong>。</li>
+<li>選擇 <strong>Amazon RDS</strong> &gt; <strong>Databases</strong>。</li>
+<li>在資料庫清單中找到您的 <strong>Aurora Serverless V2</strong> 集群或執行個體。</li>
+<li>檢查執行個體的 <strong>狀態（Status）</strong>。
+<ul>
+<li>如果顯示為 <strong>Available</strong> 且未顯示負載數據，可能已自動暫停。</li>
+<li>注意：在暫停期間，狀態仍會顯示 <strong>Available</strong>，但其行為與正常運行有所不同。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h3 id="2-查看-cloudwatch-指標">2. 查看 CloudWatch 指標<a hidden class="anchor" aria-hidden="true" href="#2-查看-cloudwatch-指標">#</a></h3>
+<p>AWS CloudWatch 提供了多種監控指標，可以確認執行個體是否處於自動暫停狀態。</p>
+<p><strong>關鍵指標</strong>:</p>
+<ol>
+<li><strong><code>ACUUtilization</code></strong>
+<ul>
+<li>值為 <code>0</code> 時，表示執行個體已縮容到 <code>0 ACUs</code>，即已自動暫停。</li>
+</ul>
+</li>
+<li><strong><code>ServerlessDatabaseCapacity</code></strong>
+<ul>
+<li>值為 <code>0</code> 時，表示目前沒有計算資源分配，也意味著已經自動暫停。</li>
+</ul>
+</li>
+<li><strong><code>CPUUtilization</code></strong>
+<ul>
+<li>值為 <code>0%</code> 時，執行個體沒有進行任何處理，可能處於暫停狀態。</li>
+</ul>
+</li>
+</ol>
+<p>下圖為成功 Auto-pause 的範例，注意 <strong><code>ACUUtilization</code> Metric 有某段時間是成功完全貼平在最底 (0 percent)</strong></p>
+<p><img loading="lazy" src="https://github.com/user-attachments/assets/3d512390-3a5b-47a7-9d23-7d76b087dfac" alt="image 5 - Aurora Serverless v2 - CloudWatch Metrics"  />
+</p>
+<hr>
+<h3 id="3-查看事件記錄">3. 查看事件記錄<a hidden class="anchor" aria-hidden="true" href="#3-查看事件記錄">#</a></h3>
+<p>AWS 會記錄執行個體的暫停與恢復相關事件。可以到 <strong>Cluster &gt; Logs &amp; events</strong> 頁籤查看 <strong>Recent events</strong></p>
+<p><img loading="lazy" src="https://github.com/user-attachments/assets/bde7147a-4ec9-4b65-b442-56a9b2270e84" alt="image 6 - Aurora Serverless v2 - Recent events"  />
+</p>
+<hr>
+<h2 id="四troubleshooting---明明沒有活動為什麼-aurora-serverless-v2-沒有-auto-pause">四、Troubleshooting - 明明沒有活動為什麼 Aurora Serverless v2 沒有 Auto-pause<a hidden class="anchor" aria-hidden="true" href="#四troubleshooting---明明沒有活動為什麼-aurora-serverless-v2-沒有-auto-pause">#</a></h2>
+<h3 id="1-自動暫停的限制與條件">1. 自動暫停的限制與條件<a hidden class="anchor" aria-hidden="true" href="#1-自動暫停的限制與條件">#</a></h3>
+<h4 id="哪些情況下不會自動暫停">哪些情況下不會自動暫停？<a hidden class="anchor" aria-hidden="true" href="#哪些情況下不會自動暫停">#</a></h4>
+<ol>
+<li><strong>有用戶連線活動時</strong>
+<ul>
+<li>當存在未關閉的用戶連線，系統不會進入暫停狀態。</li>
+</ul>
+</li>
+<li><strong>啟用了某些功能或集成</strong>：
+<ul>
+<li><strong>邏輯複製 (PostgreSQL) 或 Binlog 複製 (MySQL)</strong>
+<ul>
+<li>這些功能需要保持活躍，因此不支援自動暫停。</li>
+</ul>
+</li>
+<li><strong>RDS Proxy (很重要！！！如果有使用 RDS Proxy 會導致 Auto-pause 無法啟用喔)</strong>
+<ul>
+<li>RDS Proxy 保持與資料庫的持續連線，導致無法暫停。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>跨區集群 (Aurora Global Database)</strong>
+<ul>
+<li>主要集群的寫入節點無法自動暫停。</li>
+<li>次要集群的節點可能會根據優先級部分支持暫停。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="2-failover-priority-與自動暫停的關係">2. Failover Priority 與自動暫停的關係<a hidden class="anchor" aria-hidden="true" href="#2-failover-priority-與自動暫停的關係">#</a></h3>
+<h4 id="failover-priority-的行為">Failover Priority 的行為<a hidden class="anchor" aria-hidden="true" href="#failover-priority-的行為">#</a></h4>
+<ul>
+<li>優先級 <strong>0 和 1</strong> 的節點通常不會自動暫停：
+<ul>
+<li>
+<p>這些節點被視為關鍵節點，通常與寫入節點（Writer Instance）行為一致。</p>
+</li>
+<li>
+<p>當寫入節點恢復時，這些節點也會自動恢復。</p>
+<blockquote>
+<p>如果叢集只有單一實例(寫入器)，Failover priority 不會影響 auto-pause 行為。單一實例的自動暫停僅取決於：</p>
+<ol>
+<li>最小容量設為 0 ACU</li>
+<li>無使用者連線</li>
+<li>達到設定的閒置時間</li>
+<li>無使用不相容功能(如複製、Proxy 等)</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="如何配置-failover-priority">如何配置 Failover Priority？<a hidden class="anchor" aria-hidden="true" href="#如何配置-failover-priority">#</a></h4>
+<ul>
+<li>可以設置不同節點的 Failover Priority：
+<ul>
+<li>高優先級節點（如 <code>priority = 0 或 1</code>）：保持可用，不進入暫停。</li>
+<li>低優先級節點（如 <code>priority = 2 或更高</code>）：根據負載自動暫停。
+<img loading="lazy" src="https://github.com/user-attachments/assets/1f65094c-bb5a-4967-8d1b-efc4f66f335c" alt="image 7 - Click Modify RDS Instance"  />
+
+<img loading="lazy" src="https://github.com/user-attachments/assets/80096bc6-336c-4cd5-8fbb-32e61ad0eebc" alt="image 8 - Edit Failover priority"  />
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="3-觀察-instancelog-來排查原因">3. 觀察 <code>instance.log</code> 來排查原因<a hidden class="anchor" aria-hidden="true" href="#3-觀察-instancelog-來排查原因">#</a></h3>
+<blockquote>
+<p>Aurora writes a separate log file for Aurora Serverless v2 DB instances with auto-pause enabled. Aurora writes to the log for each 10-minute interval that the instance isn&rsquo;t paused. Aurora retains up to seven of these logs, rotated daily. The current log file is named <code>instance.log</code>, and older logs are named using the pattern <code>instance.*YYYY-MM-DD*.*N*.log</code>.</p>
+<p>The <code>instance.log</code> provides more granular detail about the reasons why an Aurora Serverless v2 instance might or might not be able to pause.</p>
+</blockquote>
+<p><strong>日誌中常見訊息與排查方法</strong>:</p>
+<ul>
+<li><strong><code>[INFO] No auto-pause blockers registered since time</code></strong>
+<ul>
+<li><strong>意義</strong>：在設定的自動暫停時間內，沒有阻止暫停的活動。</li>
+<li><strong>多執行個體集群的差異</strong>：
+<ul>
+<li>當讀取節點的活動在暫停時間結束前結束，寫入節點仍可按預期時間暫停。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong><code>[INFO] Unable to pause database due to a new database activity</code></strong>
+<ul>
+<li><strong>意義</strong>：執行個體嘗試暫停，但新連線請求在暫停完成前抵達，阻止了暫停。</li>
+</ul>
+</li>
+<li><strong><code>[INFO] Auto-pause blockers registered since time: list_of_conditions</code></strong>
+<ul>
+<li><strong>意義</strong>：列出阻止暫停的所有條件。</li>
+<li><strong>解決建議</strong>：檢查列出的條件，調整配置或使用方式。</li>
+</ul>
+</li>
+</ul>
+<p>以我這邊為例，進入 <strong>RDS Console</strong> &gt; 選擇 <strong>database</strong> 實例 &gt; 切換至 <strong>Logs &amp; events</strong> 頁籤 &gt; <strong>Logs</strong> 選取 <code>instance/instance.log</code> &gt; View
+<img loading="lazy" src="https://github.com/user-attachments/assets/d3729ee5-ea76-49c3-8cf3-6b4f5fe9d223" alt="image 9 - List Logs - instance log"  />
+</p>
+<p><img loading="lazy" src="https://github.com/user-attachments/assets/0abacefd-4cb8-477c-b472-07170394003d" alt="image 10 - View instance log"  />
+</p>
+<ul>
+<li>
+<p>Logs</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>2024-11-28T01:33:12,982 <span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span> Auto-pause blockers registered since 2024-11-27T21:18:00.611Z: database activity before auto-pause timeout, continuous backup lag
+</span></span><span style="display:flex;"><span>2024-11-28T01:43:15,085 <span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span> Auto-pause blockers registered since 2024-11-28T01:33:12.981Z: database activity before auto-pause timeout, continuous backup lag, service or customer maintenance action
+</span></span><span style="display:flex;"><span>2024-11-28T01:53:15,591 <span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span> Auto-pause blockers registered since 2024-11-28T01:43:15.085Z: database activity before auto-pause timeout, continuous backup lag
+</span></span><span style="display:flex;"><span>2024-11-28T02:03:16,185 <span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span> Auto-pause blockers registered since 2024-11-28T01:53:15.590Z: database activity before auto-pause timeout, continuous backup lag
+</span></span><span style="display:flex;"><span>2024-11-28T02:13:16,790 <span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span> Auto-pause blockers registered since 2024-11-28T02:03:16.185Z: database activity before auto-pause timeout, continuous backup lag, service or customer maintenance action
+</span></span><span style="display:flex;"><span>2024-11-28T02:23:17,389 <span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span> Auto-pause blockers registered since 2024-11-28T02:13:16.790Z: database activity before auto-pause timeout, continuous backup lag
+</span></span><span style="display:flex;"><span>2024-11-28T02:33:17,989 <span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span> Auto-pause blockers registered since 2024-11-28T02:23:17.389Z: database activity before auto-pause timeout, continuous backup lag, service or customer maintenance action
+</span></span><span style="display:flex;"><span>2024-11-28T02:43:18,586 <span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span> Auto-pause blockers registered since 2024-11-28T02:33:17.988Z: database activity before auto-pause timeout, continuous backup lag, service or customer maintenance action
+</span></span><span style="display:flex;"><span>2024-11-28T02:53:19,186 <span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span> Auto-pause blockers registered since 2024-11-28T02:43:18.586Z: database activity before auto-pause timeout, continuous backup lag
+</span></span><span style="display:flex;"><span>2024-11-28T03:03:19,787 <span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span> Auto-pause blockers registered since 2024-11-28T02:53:19.186Z: database activity before auto-pause timeout, continuous backup lag, service or customer maintenance action
+</span></span><span style="display:flex;"><span>2024-11-28T03:13:20,386 <span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span> Auto-pause blockers registered since 2024-11-28T03:03:19.787Z: database activity before auto-pause timeout, continuous backup lag, service or customer maintenance action
+</span></span><span style="display:flex;"><span>2024-11-28T03:23:20,987 <span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span> Auto-pause blockers registered since 2024-11-28T03:13:20.386Z: database activity before auto-pause timeout, continuous backup lag, service or customer maintenance action
+</span></span><span style="display:flex;"><span>----------------------- END OF LOG ----------------------
+</span></span></code></pre></div></li>
+</ul>
+<p>於是我連線進去 Instance 執行以下指令:</p>
+<blockquote>
+<p>可以 <strong>Enable RDS Data API</strong> 後，去使用 <strong>Query Editor</strong> 連線到資料庫唷！</p>
+<p><img loading="lazy" src="https://github.com/user-attachments/assets/59e2ce43-43cf-4c57-89a8-2cb4802f7923" alt="image 11 - Click Query Editor"  />
+</p>
+<p>進入 <strong>Query Editor</strong> 後 &gt; 可以參考下圖配置連線到 database</p>
+<p><img loading="lazy" src="https://github.com/user-attachments/assets/75208a56-0612-48d5-a745-1346e867710e" alt="image 12 - Query Editor - Connect to database"  />
+</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SHOW</span> <span style="color:#66d9ef">FULL</span> PROCESSLIST
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>KILL connection_id;  <span style="color:#75715e">-- connection_id 從 PROCESSLIST 中獲得
+</span></span></span></code></pre></div><hr>
+<h2 id="我的看法和心得">我的看法和心得<a hidden class="anchor" aria-hidden="true" href="#我的看法和心得">#</a></h2>
+<p>Aurora Serverless v2 的 Auto-pause 功能對我而言非常具有吸引力，特別是因為我有幾個專案都是 Fully Serverless 的架構，而那些專案都有這些特性：「間歇性負載」且「流量較低」，因此 <strong>Pay-as-you-go</strong> 的計費模式成為我考量的重點。</p>
+<p>在 Aurora Auto-pause 功能推出之前，在 AWS 上要符合 <strong>Pay-as-you-go</strong> 特性的資料庫選擇只有 NoSQL - DynamoDB。</p>
+<blockquote>
+<p>我這篇文章對 <strong>Pay-as-you-go</strong> 的主觀認定，有一個重要指標是「<strong>閒置期間不會產生費用</strong>」</p>
+</blockquote>
+<p>由於 DynamoDB 的特性，在實作分頁功能（Pagination）時，若要實現順暢的上一頁和下一頁切換，通常會較為繁瑣，甚至需要額外的開發成本。此外，某些需求在使用關聯式資料庫時會更加直覺，尤其當資料之間存在強烈關聯性且需要高一致性支援的情境下，關聯式資料庫的優勢則更為明顯。</p>
+<p>Aurora Serverless v2 的 Auto-pause 滿足了 Serverless 架構對彈性與低成本的需求，同時還能提供關聯式資料庫的能力。但以現況需要冷啟動超過 15 秒，甚至有時候超過 24 hrs 以上沒 Resume 資料庫會發生超過 30 秒的冷啟動，除非使用者可以忍受很高的延遲，不然我認為現況還不足以放到 Production 環境來服務我們專案的使用者。</p>
+<p>也許是可以用一些額外機制讓資料庫提前 Resume (例如某事件發生就去觸發資料庫連線，提前讓資料庫 Resume)，但是我認為這反而引來了額外維護的成本，目前還不夠足以吸引我去投資那樣的精力維護那個機制。</p>
+<p>我相信 AWS 日後一定會把 Aurora 的冷啟動時間優化，我推測 2025 re:Invent 應該可以看到這邊還會有新的重大突破！</p>
+<hr>
+<h2 id="相關連結">相關連結<a hidden class="anchor" aria-hidden="true" href="#相關連結">#</a></h2>
+<ul>
+<li>
+<p><a href="https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/">Shiun - 如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU</a></p>
+</li>
+<li>
+<p><a href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2-auto-pause.html">Scaling to Zero ACUs with automatic pause and resume for Aurora Serverless v2 - Amazon Aurora</a></p>
+</li>
+<li>
+<p><a href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2-administration.html#autopause-logging-instance-log">Managing Aurora Serverless v2 DB clusters - Amazon Aurora</a></p>
+</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://shiun.me/tags/aws-rds/">AWS RDS</a></li>
+      <li><a href="https://shiun.me/tags/auto-pause/">Auto-Pause</a></li>
+      <li><a href="https://shiun.me/tags/serverless/">Serverless</a></li>
+      <li><a href="https://shiun.me/tags/aws-aurora/">AWS Aurora</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://shiun.me/blog/my-growth-journey-as-an-aws-educate-cloud-ambassador/">
+    <span class="title">Next »</span>
+    <br>
+    <span>一起回顧我的 AWS Educate 雲端大使成長之旅</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0) on x"
+            href="https://x.com/intent/tweet/?text=%e9%96%8b%e7%ae%b1%20Amazon%20Aurora%20Serverless%20v2%20Auto-pause%20Feature%20%28ACU%200%29&amp;url=https%3a%2f%2fshiun.me%2fblog%2funboxing-amazon-aurora-serverless-v2-auto-pause-acu-0%2f&amp;hashtags=AWSRDS%2cAuto-pause%2cServerless%2cAWSAurora">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0) on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fshiun.me%2fblog%2funboxing-amazon-aurora-serverless-v2-auto-pause-acu-0%2f&amp;title=%e9%96%8b%e7%ae%b1%20Amazon%20Aurora%20Serverless%20v2%20Auto-pause%20Feature%20%28ACU%200%29&amp;summary=%e9%96%8b%e7%ae%b1%20Amazon%20Aurora%20Serverless%20v2%20Auto-pause%20Feature%20%28ACU%200%29&amp;source=https%3a%2f%2fshiun.me%2fblog%2funboxing-amazon-aurora-serverless-v2-auto-pause-acu-0%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0) on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fshiun.me%2fblog%2funboxing-amazon-aurora-serverless-v2-auto-pause-acu-0%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0) on telegram"
+            href="https://telegram.me/share/url?text=%e9%96%8b%e7%ae%b1%20Amazon%20Aurora%20Serverless%20v2%20Auto-pause%20Feature%20%28ACU%200%29&amp;url=https%3a%2f%2fshiun.me%2fblog%2funboxing-amazon-aurora-serverless-v2-auto-pause-acu-0%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer><div class="disqus markdown"><div id="disqus_thread"></div>
+<script>
+  
+
+  
+
+  (function () {
+    
+    var d = document,
+      s = d.createElement("script");
+    s.src = "https://shiun-me.disqus.com/embed.js";
+    s.setAttribute("data-timestamp", +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript
+  >Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript"
+    >comments powered by Disqus.</a
+  ></noscript
+>
+</div>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://shiun.me/">Shiun</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

@@ -11,8 +11,15 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Fri, 14 Jun 2024 23:41:33 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 04 Dec 2024 19:32:03 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/categories/serverless/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0)</title>
+      <link>https://shiun.me/blog/unboxing-amazon-aurora-serverless-v2-auto-pause-acu-0/</link>
+      <pubDate>Wed, 04 Dec 2024 19:32:03 +0800</pubDate>
+      <guid>https://shiun.me/blog/unboxing-amazon-aurora-serverless-v2-auto-pause-acu-0/</guid>
+      <description>這篇文章帶你開箱體驗 2024 年 Amazon Aurora Serverless v2 的新功能 - Auto-pause。這個功能能夠讓 Aurora 在閒置一段時間後，自動停止實例 (Auto-pause)，停止期間不會收取「執行實例小時數費用」 (Aurora Capacity Units = 0)，達到所謂的 Truly Serverless!!</description>
+    </item>
     <item>
       <title>深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能</title>
       <link>https://shiun.me/blog/understanding-lambda-proxy-integration/</link>
