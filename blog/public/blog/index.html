@@ -237,6 +237,22 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0)
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Overview 就在 2024/11/20 AWS 釋出了重磅消息 — 「Amazon Aurora Serverless v2 supports scaling to zero capacity」，簡單來說這個功能能夠讓 Aurora 在閒置一段時間後，自動停止實例 (Auto-pause)，停止期間不會收取「執行實例小時數費用」 (Aurora Capacity Units = 0)，達到所謂的 Truly Serverless!! 官方把這個新功能稱為 Auto-pause ，在這個功能釋出以前， Aurora Capacity Units (ACU) 最低最低只能設定成 0.5。
+實際 RDS 定價 其實還有其他收費，像是儲存成本、 IOPS、傳輸… 等等，詳細內容敬請參考官方文件 (連結)
+Amazon Aurora vs RDS for MySQL 在 us-west-2 的定價比較:
+Aurora Serverless v2 每個 ACU 一小時 0.12 美金 RDS for MySQL - db.t4g.micro 一小時 0.016 美金 約等於一 ACU 可以開 7.5 小時的 db.t4g.micro，建議大家要根據自己的實際情境去好好計算成本喔，並不是 Serverless = 經濟實惠。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-12-04 19:32:03 +0800 CST'>December 4, 2024</span>&nbsp;·&nbsp;5 min</footer>
+  <a class="entry-link" aria-label="post link to 開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0)" href="https://shiun.me/blog/unboxing-amazon-aurora-serverless-v2-auto-pause-acu-0/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">一起回顧我的 AWS Educate 雲端大使成長之旅
     </h2>
   </header>
@@ -312,30 +328,6 @@ Source: Add embedded image in emails in AWS SES service
   </div>
   <footer class="entry-footer"><span title='2024-08-06 02:25:14 +0800 CST'>August 6, 2024</span>&nbsp;·&nbsp;2 min</footer>
   <a class="entry-link" aria-label="post link to 從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐" href="https://shiun.me/blog/troubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>程式碼在這邊的 feature/preload 分支: https://github.com/sh1un/Nextjs-Musive-app
-此專案是一個 Next.js 專案，原作者為 Ansh Rathod，我已經過作者本人授權使用，因此 Fork 過來稍微改了一下。
-我本身不是一名專精於前端技術的開發者，所以我所修改的 Code 都是由 ChatGPT-4 產生的。我今天這樣做的主要目的是想實驗 preload 是否能做到效能優化，以此來做一個簡單的 PoC。
-補充一下，這篇文章的內容本來是要放在 「2024 AWS Educate 陪跑計畫的獎勵課程 - 雲端串流挑戰：復刻 Spotify 的技術旅程」中教學，此工作坊旨在教學如何利用 CloudFront 優化速度與降低延遲，但礙於當天工作坊的內容太滿已經塞不下了，所以當天工作坊就沒有講到 Preload，如果看到這篇文章，想要學學 CloudFront 歡迎參觀我們當天的教材 (連結)
-什麼是 Preload? Preload 是一種網頁性能優化技術，讓瀏覽器在頁面加載時預先加載指定的資源，這樣在使用這些資源時可以更快地顯示或播放。這可以減少等待時間，提升用戶體驗。
-你可以想成：原本你是要“按下去播放按鈕”才會開始下載音樂，現在我們提前幫你下載，你之後“按下去播放按鈕”就會立即播放。
-舉例 如果你在網頁上有一段影片或音樂，你可以用 preload 告訴瀏覽器提前下載這些文件，這樣當用戶點擊播放按鈕時，影片或音樂就會立即播放，而不是先等待下載。
-基本用法： 在 HTML 中，你可以在 &lt;link&gt; 標籤中使用 rel=&#34;preload&#34; 來預加載資源。例如：
-&lt;link rel=&#34;preload&#34; href=&#34;path/to/your/file.mp3&#34; as=&#34;audio&#34;&gt; 這樣，瀏覽器會在頁面加載時預先下載 file.mp3，提高用戶播放音樂的速度。
-動態 Preload 的實現思路 每個用戶的歌單都不一樣，所以我們當然不希望把 preload 的 href 寫死成一個 URL。
-解決方案 我們可以通過以下幾個步驟來實現動態的 preload：
-API 獲取歌單： 伺服器端提供一個 API，根據用戶的請求返回該用戶的歌單。這個 API 返回一個 JSON 結構，其中包含了音樂檔案的 URL 列表。 JavaScript 動態生成 Preload 標籤： 使用 JavaScript 在頁面加載後動態地從 API 獲取歌單，並為每個音樂文件創建 preload 標籤，將其添加到頁面的 &lt;head&gt; 中。 具體實現 注意⚠️ 我的寫法並非添加 preload 到頁面的 &lt;head&gt;，而是直接用 React 和 JS 本身提供的內建物件來達到同樣效果，詳見本段說明。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-07-21 23:29:27 +0800 CST'>July 21, 2024</span>&nbsp;·&nbsp;4 min</footer>
-  <a class="entry-link" aria-label="post link to 在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲" href="https://shiun.me/blog/dynamic-preload-for-performance-optimization/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
