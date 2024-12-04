@@ -2,7 +2,7 @@
 title: '開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0)'
 date: 2024-12-04T19:32:03+08:00
 draft: false
-description: "這篇文章帶你開箱體驗 2024 年 Amazon Aurora Serverless v2 的新功能 - Auto-pause! 這個功能能夠讓 Aurora 在閒置一段時間後，自動停止實例 (Auto-pause)，停止期間不會收取「執行實例小時數費用」 (Aurora Capacity Units = 0)，達到所謂的 Truly Serverless!!"
+description: "這篇文章帶你開箱體驗 2024 年 Amazon Aurora Serverless v2 的新功能 - Auto-pause。這個功能能夠讓 Aurora 在閒置一段時間後，自動停止實例 (Auto-pause)，停止期間不會收取「執行實例小時數費用」 (Aurora Capacity Units = 0)，達到所謂的 Truly Serverless!!"
 tags: ["AWS RDS", "Auto-pause", "Serverless", "AWS Aurora"]
 categories: ["AWS", "Database", "Serverless"]
 keywords:
@@ -11,17 +11,21 @@ keywords:
 - Pay-as-you-go database
 - Serverless database solutions
 - AWS database optimization
+- MySQL
+- AWS RDS
 ---
 ## Overview
 
 就在 2024/11/20 AWS 釋出了重磅消息 — 「[**Amazon Aurora Serverless v2 supports scaling to zero capacity**](https://aws.amazon.com/tw/about-aws/whats-new/2024/11/amazon-aurora-serverless-v2-scaling-zero-capacity/)」，簡單來說這個功能能夠讓 Aurora 在閒置一段時間後，自動停止實例 (Auto-pause)，停止期間不會收取「執行實例小時數費用」 (Aurora Capacity Units = `0`)，達到所謂的 Truly Serverless!! 官方把這個新功能稱為 **Auto-pause** ，在這個功能釋出以前， Aurora Capacity Units (ACU) 最低最低只能設定成 `0.5`。
 
 > 實際 RDS 定價 其實還有其他收費，像是儲存成本、 IOPS、傳輸… 等等，詳細內容敬請參考官方文件 ([連結](https://aws.amazon.com/tw/rds/pricing/))
->  RDS 在 us-west-2 的定價
+> 
+>  Amazon Aurora vs RDS for MySQL 在 us-west-2 的定價比較:
 >
-> - Aurora Serverless v2 每個 ACU 一小時 0.12 美金
-> - RDS for MySQL - db.t4g.micro 一小時 0.016 美金
->  等於一 ACU 可以開 7.5 小時的 db.t4g.micro，建議大家要**根據自己的實際情境去好好計算成本**喔，**並不是 Serverless = 經濟實惠**。
+> - Aurora Serverless v2 每個 ACU 一小時 **0.12** 美金
+> - RDS for MySQL - db.t4g.micro 一小時 **0.016** 美金
+> 
+>  約等於一 ACU 可以開 7.5 小時的 db.t4g.micro，建議大家要**根據自己的實際情境去好好計算成本**喔，**並不是 Serverless = 經濟實惠**。
 
 ---
 
@@ -44,11 +48,12 @@ keywords:
 
 > 唯獨一定要特別注意！如果你的 Aurora Instance 超過 24 小時以上是停止狀態，那冷啟動會超過 30 秒以上
 >
+>
 > 官方文件描述如下:
+>
 > If an Aurora Serverless v2 instance remains paused more than 24 hours, Aurora can put the instance into a deeper sleep that takes longer to resume. In that case, the resume time can be 30 seconds or longer
 >
 > *Reference: [https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2-auto-pause.html#auto-pause-whynot](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2-auto-pause.html#auto-pause-whynot)*
-
 
 ---
 
@@ -61,19 +66,18 @@ keywords:
 1. 配置 Engine
     - 選擇 **Aurora (MySQL Compatible)**
     - **Engine version:** 3.08.0 以上
-    <img width="1248" alt="image 0 - Create RDS - Engine Options" src="https://github.com/user-attachments/assets/a330d811-c637-445d-8cf5-9ec6fb433ebe">
-
+    ![image 0 - Create RDS - Engine Options](https://github.com/user-attachments/assets/a330d811-c637-445d-8cf5-9ec6fb433ebe)
 
 2. 配置資料庫 Credential
     - 選 **Dev/Test**
     - 設定密碼並再次輸入密碼
-    <img width="1680" alt="image 1 - Create RDS - Credential" src="https://github.com/user-attachments/assets/a86fa90e-6105-4a77-83b3-91f020318209">
+    ![image 1 - Create RDS - Credential](https://github.com/user-attachments/assets/a86fa90e-6105-4a77-83b3-91f020318209)
 
 3. 配置 Cluster / Instance
     - 選擇 **Aurora Standard**
     - 選擇 **Serverless v2**
     - **Minimum capacity:** `0`
-    <img width="1682" alt="image 2 - Create RDS - Instance Configuration" src="https://github.com/user-attachments/assets/7c0ecc73-65d8-4f87-bfaa-ec0363570687">
+    ![image 2 - Create RDS - Instance Configuration](https://github.com/user-attachments/assets/7c0ecc73-65d8-4f87-bfaa-ec0363570687)
 
 4. 配置 Connectivity
     - Public access 打開 (生產環境不建議打開)
@@ -84,11 +88,10 @@ keywords:
         > 不建議生產環境這樣用，由於這部分並非本工作坊主要教學目標，基於簡化複雜配置，才會將 RDS 的 Public access 打開，並設定允許所有來源 IP。
         > 在生產環境中，建議要切好網段，配置好 RDS Subnet Group，將 RDS 放置於 Private Subnet，並且基於最小需求設定 NACL, Security Group。Lambda 也需要部署在 VPC 而需要連到 Internet 需要配置 NAT Gateway。
 
-      <img width="1681" alt="image 3- Create RDS - Connectivity" src="https://github.com/user-attachments/assets/c5d519c9-8d50-435f-b4ff-4d40258f8a1f">
-
+    ![image 3- Create RDS - Connectivity](https://github.com/user-attachments/assets/c5d519c9-8d50-435f-b4ff-4d40258f8a1f)
 
 5. 其餘保持預設 > **Create database**
-  <img width="1267" alt="image 4 - Create RDS - Click Create database" src="https://github.com/user-attachments/assets/5c5c1fb7-2479-4583-aeb8-5095ab4edcbd">
+    ![image 4 - Create RDS - Click Create database](https://github.com/user-attachments/assets/5c5c1fb7-2479-4583-aeb8-5095ab4edcbd)
 
 ---
 
@@ -112,19 +115,18 @@ keywords:
 
 AWS CloudWatch 提供了多種監控指標，可以確認執行個體是否處於自動暫停狀態。
 
-#### 關鍵指標
+**關鍵指標**:
 
-1. **`ACUUtilization`**：
+1. **`ACUUtilization`**
     - 值為 `0` 時，表示執行個體已縮容到 `0 ACUs`，即已自動暫停。
-2. **`ServerlessDatabaseCapacity`**：
+2. **`ServerlessDatabaseCapacity`**
     - 值為 `0` 時，表示目前沒有計算資源分配，也意味著已經自動暫停。
-3. **`CPUUtilization`**：
+3. **`CPUUtilization`**
     - 值為 `0%` 時，執行個體沒有進行任何處理，可能處於暫停狀態。
 
 下圖為成功 Auto-pause 的範例，注意 **`ACUUtilization` Metric 有某段時間是成功完全貼平在最底 (0 percent)**
 
-<img width="1673" alt="image 5 - Aurora Serverless v2 - CloudWatch Metrics" src="https://github.com/user-attachments/assets/3d512390-3a5b-47a7-9d23-7d76b087dfac">
-
+![image 5 - Aurora Serverless v2 - CloudWatch Metrics](https://github.com/user-attachments/assets/3d512390-3a5b-47a7-9d23-7d76b087dfac)
 
 ---
 
@@ -132,7 +134,7 @@ AWS CloudWatch 提供了多種監控指標，可以確認執行個體是否處�
 
 AWS 會記錄執行個體的暫停與恢復相關事件。可以到 **Cluster > Logs & events** 頁籤查看 **Recent events**
 
-<img width="1687" alt="image 6 - Aurora Serverless v2 - Recent events" src="https://github.com/user-attachments/assets/bde7147a-4ec9-4b65-b442-56a9b2270e84">
+![image 6 - Aurora Serverless v2 - Recent events](https://github.com/user-attachments/assets/bde7147a-4ec9-4b65-b442-56a9b2270e84)
 
 ---
 
@@ -175,8 +177,8 @@ AWS 會記錄執行個體的暫停與恢復相關事件。可以到 **Cluster > 
 - 可以設置不同節點的 Failover Priority：
   - 高優先級節點（如 `priority = 0 或 1`）：保持可用，不進入暫停。
   - 低優先級節點（如 `priority = 2 或更高`）：根據負載自動暫停。
-  <img width="1687" alt="image 7 - Click Modify RDS Instance" src="https://github.com/user-attachments/assets/1f65094c-bb5a-4967-8d1b-efc4f66f335c">
-  <img width="1898" alt="image 8 - Edit Failover priority" src="https://github.com/user-attachments/assets/80096bc6-336c-4cd5-8fbb-32e61ad0eebc">
+  ![image 7 - Click Modify RDS Instance](https://github.com/user-attachments/assets/1f65094c-bb5a-4967-8d1b-efc4f66f335c)
+  ![image 8 - Edit Failover priority](https://github.com/user-attachments/assets/80096bc6-336c-4cd5-8fbb-32e61ad0eebc)
 
 ---
 
@@ -186,7 +188,7 @@ AWS 會記錄執行個體的暫停與恢復相關事件。可以到 **Cluster > 
 >
 > The `instance.log` provides more granular detail about the reasons why an Aurora Serverless v2 instance might or might not be able to pause.
 
-**日誌中常見訊息與排查方法**
+**日誌中常見訊息與排查方法**:
 
 - **`[INFO] No auto-pause blockers registered since time`**
   - **意義**：在設定的自動暫停時間內，沒有阻止暫停的活動。
@@ -199,10 +201,9 @@ AWS 會記錄執行個體的暫停與恢復相關事件。可以到 **Cluster > 
   - **解決建議**：檢查列出的條件，調整配置或使用方式。
 
 以我這邊為例，進入 **RDS Console** > 選擇 **database** 實例 > 切換至 **Logs & events** 頁籤 > **Logs** 選取 `instance/instance.log` > View
-<img width="1669" alt="image 9 - List Logs - instance log" src="https://github.com/user-attachments/assets/d3729ee5-ea76-49c3-8cf3-6b4f5fe9d223">
+![image 9 - List Logs - instance log](https://github.com/user-attachments/assets/d3729ee5-ea76-49c3-8cf3-6b4f5fe9d223)
 
-<img width="1666" alt="image 10 - View instance log" src="https://github.com/user-attachments/assets/0abacefd-4cb8-477c-b472-07170394003d">
-
+![image 10 - View instance log](https://github.com/user-attachments/assets/0abacefd-4cb8-477c-b472-07170394003d)
 
 - Logs
 
@@ -226,12 +227,11 @@ AWS 會記錄執行個體的暫停與恢復相關事件。可以到 **Cluster > 
 
 > 可以 **Enable RDS Data API** 後，去使用 **Query Editor** 連線到資料庫唷！
 >
->
-> <img width="1901" alt="image 11 - Click Query Editor" src="https://github.com/user-attachments/assets/59e2ce43-43cf-4c57-89a8-2cb4802f7923">
+> ![image 11 - Click Query Editor](https://github.com/user-attachments/assets/59e2ce43-43cf-4c57-89a8-2cb4802f7923)
 >
 > 進入 **Query Editor** 後 > 可以參考下圖配置連線到 database
 >
-> <img width="451" alt="image 12 - Query Editor - Connect to database" src="https://github.com/user-attachments/assets/75208a56-0612-48d5-a745-1346e867710e">
+> ![image 12 - Query Editor - Connect to database](https://github.com/user-attachments/assets/75208a56-0612-48d5-a745-1346e867710e)
 >
 
 ```sql
@@ -241,6 +241,8 @@ SHOW FULL PROCESSLIST
 ```sql
 KILL connection_id;  -- connection_id 從 PROCESSLIST 中獲得
 ```
+
+---
 
 ## 我的看法和心得
 
