@@ -85,7 +85,7 @@ keywords:
         - **Create new**
         - **New VPC security group name:** `aurora-serverless-v2-sg`
 
-        > 不建議生產環境這樣用，由於這部分並非本工作坊主要教學目標，基於簡化複雜配置，才會將 RDS 的 Public access 打開，並設定允許所有來源 IP。
+        > 不建議生產環境這樣用，由於這部分並非本文主要教學目標，基於簡化複雜配置，才會將 RDS 的 Public access 打開，並設定允許所有來源 IP。
         > 在生產環境中，建議要切好網段，配置好 RDS Subnet Group，將 RDS 放置於 Private Subnet，並且基於最小需求設定 NACL, Security Group。Lambda 也需要部署在 VPC 而需要連到 Internet 需要配置 NAT Gateway。
 
     ![image 3- Create RDS - Connectivity](https://github.com/user-attachments/assets/c5d519c9-8d50-435f-b4ff-4d40258f8a1f)
