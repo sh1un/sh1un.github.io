@@ -266,6 +266,24 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">[Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>前言 - 現有架構的挑戰 最近，我在一個 Serverless 專案中遇到了一個讓人頭疼的挑戰。這個專案運行在多個 Lambda Functions 之上，為了避免冷啟動帶來的延遲問題影響使用者體驗，需要確保 Functions 處於「熱啟動」狀態（Warm Start），如何有效管理大量的預熱 (prewarm) 操作變得非常棘手。
+常見的解決方案之一，是為每個 Lambda Function 配置一個 EventBridge Scheduler，雖然可以達到預熱效果，但：
+管理成本高：需要單獨為每個 Lambda Function 配置 Scheduler，數量多難以管理。 靈活性不足：難以快速響應需求變更，重新部署新的 Lambda Function 時，需要修改 Scheduler 的 Target。 基於這些挑戰，我開發了 Tag-Based Lambda Warmer Terraform Module，提供了一種低成本、高靈活性的解決方案。
+Tag-Based Lambda Warmer 介紹 Tag-Based Lambda Warmer 的核心理念非常簡單：
+將需要被預熱 (prewarm) 的 Lambda Function 加上指定的 Tag（例如：Prewarm=true）。
+當你部署 Terraform Module 後，EventBridge Schduler 會定期調用 Tag-Based Lambda Warmer，Warmer 會根據 Tag 自動篩選需要被預熱的 Lambda Functions
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-12-30 22:27:20 +0800 CST'>December 30, 2024</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to [Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer" href="https://shiun.me/blog/tag-based-lambda-warmer-low-cost-high-flexibility/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0)
     </h2>
   </header>
@@ -335,28 +353,6 @@ Aurora Serverless v2 每個 ACU 一小時 0.12 美金 RDS for MySQL - db.t4g.mic
   </div>
   <footer class="entry-footer"><span title='2024-08-08 21:27:44 +0800 CST'>August 8, 2024</span>&nbsp;·&nbsp;1 min</footer>
   <a class="entry-link" aria-label="post link to 以真實世界寄信來比喻，理解電子郵件寄送流程" href="https://shiun.me/blog/how-does-email-sending-work/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>我遇到了什麼問題 最近我用 SES, S3, Lambda 開發了轉寄信件的功能，簡單介紹一下這功能： 假設我就職於公司的開發部門，我們對外有一個信箱是 dev@example.com 當客戶遇到軟體開發上的問題時寄信到 dev@example.com，開發部門的所有同仁就會在自己的信箱收到此客戶寄來的電子郵件，重點是開發部門的同仁們都可以用自己的帳號回覆該客戶
-而開發好這功能後，我遇到一個問題 — 轉寄出去的信件沒辦法正確顯示內嵌圖片
-關於轉寄信件的程式碼我放在 GitHub 上囉 (連結)，之後有時間會寫一篇 Forward Email 的完整教學，或是也可以關注我的 Notion，我每天都會寫筆記記錄自己的學習過程
-讓我們直接看例子 首先，我登入私人帳號模擬我是客戶，寄信給 test@aws-educate.tw，下圖是當時寄出去的內容: 寄給 test@aws-educate.tw 後，SES 會收到信，然後根據我配置的 Receipt rule，原始郵件檔案會被儲存至我指定的 S3 Bucket
-延續 用 SES, S3, Lambda 實現轉寄信件功能 ，當我嘗試在轉寄出去的信件中內嵌圖片，最後收到轉寄來的信，都會出現下圖的現象：圖片沒辦法內嵌在裡面，倒是跑去附件了
-寫文章時，已經把原本轉寄過來的信件刪了，所以下圖信件主旨跟前一張圖片不一樣不要介意，下圖信件已經詮釋我想表達的現象了 XD
-我起初嘗試的解法 後來下面這篇 Stack Overflow，裡面有人提到 Gmail 還不支援顯示 base64 編碼的圖片 (有待確認，希望有人可以告訴我正確答案)
-As of January 2020, Gmail still does not support base64 encoded images.
-Source: Add embedded image in emails in AWS SES service
-因此使用 Data URI: &lt;img src=&#34;data:image/png;base64,iVBORw0KGgoAA&#34; alt=&#34;Image&#34;&gt; 嵌入圖片的方式現在可以打消念頭了
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-08-06 02:25:14 +0800 CST'>August 6, 2024</span>&nbsp;·&nbsp;2 min</footer>
-  <a class="entry-link" aria-label="post link to 從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐" href="https://shiun.me/blog/troubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

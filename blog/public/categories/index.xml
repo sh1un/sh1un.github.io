@@ -11,13 +11,20 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Wed, 04 Dec 2024 19:32:03 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 30 Dec 2024 22:27:20 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>AWS</title>
       <link>https://shiun.me/categories/aws/</link>
-      <pubDate>Wed, 04 Dec 2024 19:32:03 +0800</pubDate>
+      <pubDate>Mon, 30 Dec 2024 22:27:20 +0800</pubDate>
       <guid>https://shiun.me/categories/aws/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Serverless</title>
+      <link>https://shiun.me/categories/serverless/</link>
+      <pubDate>Mon, 30 Dec 2024 22:27:20 +0800</pubDate>
+      <guid>https://shiun.me/categories/serverless/</guid>
       <description></description>
     </item>
     <item>
@@ -25,13 +32,6 @@
       <link>https://shiun.me/categories/database/</link>
       <pubDate>Wed, 04 Dec 2024 19:32:03 +0800</pubDate>
       <guid>https://shiun.me/categories/database/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Serverless</title>
-      <link>https://shiun.me/categories/serverless/</link>
-      <pubDate>Wed, 04 Dec 2024 19:32:03 +0800</pubDate>
-      <guid>https://shiun.me/categories/serverless/</guid>
       <description></description>
     </item>
     <item>

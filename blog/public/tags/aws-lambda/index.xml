@@ -11,8 +11,15 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Tue, 06 Aug 2024 02:25:14 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 30 Dec 2024 22:27:20 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/tags/aws-lambda/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer</title>
+      <link>https://shiun.me/blog/tag-based-lambda-warmer-low-cost-high-flexibility/</link>
+      <pubDate>Mon, 30 Dec 2024 22:27:20 +0800</pubDate>
+      <guid>https://shiun.me/blog/tag-based-lambda-warmer-low-cost-high-flexibility/</guid>
+      <description>Tag-Based Lambda Warmer 透過簡單的 Tag 篩選機制定期預熱大量 AWS Lambda Functions，輕鬆解決冷啟動問題。這個 Terraform Module 提供了一個低成本且高靈活性的解決方案，特別適合間歇性工作負載、流量低且對成本敏感的 Serverless 中小型專案。</description>
+    </item>
     <item>
       <title>從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐</title>
       <link>https://shiun.me/blog/troubleshooting-embedded-images-in-aws-ses-forwarded-emails-a-deep-dive-into-mime-and-content-ids/</link>

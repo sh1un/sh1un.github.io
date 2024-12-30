@@ -222,6 +222,30 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>程式碼在這邊的 feature/preload 分支: https://github.com/sh1un/Nextjs-Musive-app
+此專案是一個 Next.js 專案，原作者為 Ansh Rathod，我已經過作者本人授權使用，因此 Fork 過來稍微改了一下。
+我本身不是一名專精於前端技術的開發者，所以我所修改的 Code 都是由 ChatGPT-4 產生的。我今天這樣做的主要目的是想實驗 preload 是否能做到效能優化，以此來做一個簡單的 PoC。
+補充一下，這篇文章的內容本來是要放在 「2024 AWS Educate 陪跑計畫的獎勵課程 - 雲端串流挑戰：復刻 Spotify 的技術旅程」中教學，此工作坊旨在教學如何利用 CloudFront 優化速度與降低延遲，但礙於當天工作坊的內容太滿已經塞不下了，所以當天工作坊就沒有講到 Preload，如果看到這篇文章，想要學學 CloudFront 歡迎參觀我們當天的教材 (連結)
+什麼是 Preload? Preload 是一種網頁性能優化技術，讓瀏覽器在頁面加載時預先加載指定的資源，這樣在使用這些資源時可以更快地顯示或播放。這可以減少等待時間，提升用戶體驗。
+你可以想成：原本你是要“按下去播放按鈕”才會開始下載音樂，現在我們提前幫你下載，你之後“按下去播放按鈕”就會立即播放。
+舉例 如果你在網頁上有一段影片或音樂，你可以用 preload 告訴瀏覽器提前下載這些文件，這樣當用戶點擊播放按鈕時，影片或音樂就會立即播放，而不是先等待下載。
+基本用法： 在 HTML 中，你可以在 &lt;link&gt; 標籤中使用 rel=&#34;preload&#34; 來預加載資源。例如：
+&lt;link rel=&#34;preload&#34; href=&#34;path/to/your/file.mp3&#34; as=&#34;audio&#34;&gt; 這樣，瀏覽器會在頁面加載時預先下載 file.mp3，提高用戶播放音樂的速度。
+動態 Preload 的實現思路 每個用戶的歌單都不一樣，所以我們當然不希望把 preload 的 href 寫死成一個 URL。
+解決方案 我們可以通過以下幾個步驟來實現動態的 preload：
+API 獲取歌單： 伺服器端提供一個 API，根據用戶的請求返回該用戶的歌單。這個 API 返回一個 JSON 結構，其中包含了音樂檔案的 URL 列表。 JavaScript 動態生成 Preload 標籤： 使用 JavaScript 在頁面加載後動態地從 API 獲取歌單，並為每個音樂文件創建 preload 標籤，將其添加到頁面的 &lt;head&gt; 中。 具體實現 注意⚠️ 我的寫法並非添加 preload 到頁面的 &lt;head&gt;，而是直接用 React 和 JS 本身提供的內建物件來達到同樣效果，詳見本段說明。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-07-21 23:29:27 +0800 CST'>July 21, 2024</span>&nbsp;·&nbsp;4 min</footer>
+  <a class="entry-link" aria-label="post link to 在 Next.js 音樂應用中使用動態 Preload 技術提升前端效能降低延遲" href="https://shiun.me/blog/dynamic-preload-for-performance-optimization/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">2024 伊雲谷實習計畫 - 雲端工程師實習心得
     </h2>
   </header>
@@ -284,25 +308,6 @@ Synopsis $ terraform import [options] ADDRESS ID ADDRESS 是 Terraform 配置中
   </div>
   <footer class="entry-footer"><span title='2024-06-06 10:50:53 +0800 CST'>June 6, 2024</span>&nbsp;·&nbsp;3 min</footer>
   <a class="entry-link" aria-label="post link to 要導入 IaC？用 Terraform Import 導入現有資源" href="https://shiun.me/blog/how-to-use-terraform-import-to-import-existing-resources-into-iac/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p> 比賽簡介 這場比賽是 DIGITIMES 主辦，AWS 作為技術支援，總共邀請六個企業來命題，分為黑客組和創意交流組（簡單來說就是技術和非技術組），而黑客組在這場比賽必須使用 AWS 相關的服務和模型依照企業命題打造出 LLM Application 比賽前 賽前工作坊 在比賽前，比賽主辦方有舉辦多場賽前工作坊，讓我們熟悉 AI 技術，而我只要有空都有去參加，我把我在的工作坊的學習筆記都寫在我的 Notion 日誌
-2024/04/27 - 基礎 AI 工作坊 2024/04/28 - 基礎 AI 工作坊 2024/05/05 - 進階 AI 工作坊 (這場有 GameDay) 2024/05/07 - Gogoro 企業數據工作坊 其實 AI 這領域真的不是我的專長領域，我自己會開始開發 GenAI 應用是從加入伊雲谷後開始的，在伊雲谷執手的專案就是一個 LLM Application，加上 GenAI 話題真的是時下最火熱的話題，活在這時代，開發的日常要不碰到 AI 真的蠻難的
-而賽前工作坊的主講者們真的人都很好，講解的也都很清楚，特別感謝 Roger 和 Ginny 在工作坊的教導，以及 Scott 在 GameDay 當天賽後的支援，在賽前工作坊也和現場的人交流，認識了不少技術高手！
-比賽還沒開始，但光是前面的工作坊就覺得這次的參賽體驗真的很棒，賽前能跟這些技術大神學習，真的是一次難得的機會。
-比賽題目公布 在報名時是要填寫競賽主題的志願序的，我們當初投的第一個志願是「智慧應用」第二為「智慧移動 - Gogoro」，最終我們被安排在智慧移動的組別。
-而我們這組的題目如下: 官方提供的數據就是 Gogoro 官網上的車主手冊: https://support.gogoro.com/tw/manual/collections/236738689176894/
-基本上這個命題絕對逃不過 “RAG”
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-05-21 22:32:41 +0800 CST'>May 21, 2024</span>&nbsp;·&nbsp;3 min</footer>
-  <a class="entry-link" aria-label="post link to 學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄" href="https://shiun.me/blog/2024-aws-genai-hackathon/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

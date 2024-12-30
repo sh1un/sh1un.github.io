@@ -11,8 +11,15 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Wed, 04 Dec 2024 19:32:03 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 30 Dec 2024 22:27:20 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/tags/serverless/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer</title>
+      <link>https://shiun.me/blog/tag-based-lambda-warmer-low-cost-high-flexibility/</link>
+      <pubDate>Mon, 30 Dec 2024 22:27:20 +0800</pubDate>
+      <guid>https://shiun.me/blog/tag-based-lambda-warmer-low-cost-high-flexibility/</guid>
+      <description>Tag-Based Lambda Warmer 透過簡單的 Tag 篩選機制定期預熱大量 AWS Lambda Functions，輕鬆解決冷啟動問題。這個 Terraform Module 提供了一個低成本且高靈活性的解決方案，特別適合間歇性工作負載、流量低且對成本敏感的 Serverless 中小型專案。</description>
+    </item>
     <item>
       <title>開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0)</title>
       <link>https://shiun.me/blog/unboxing-amazon-aurora-serverless-v2-auto-pause-acu-0/</link>

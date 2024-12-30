@@ -2,10 +2,46 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://shiun.me/tags/auto-pause/</loc>
-    <lastmod>2024-12-04T19:32:03+08:00</lastmod>
+    <loc>https://shiun.me/blog/tag-based-lambda-warmer-low-cost-high-flexibility/</loc>
+    <lastmod>2024-12-30T22:27:20+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/aws/</loc>
+    <lastmod>2024-12-30T22:27:20+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/categories/aws/</loc>
+    <lastmod>2024-12-30T22:27:20+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/aws-eventbridge/</loc>
+    <lastmod>2024-12-30T22:27:20+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/aws-eventbridge-scheduler/</loc>
+    <lastmod>2024-12-30T22:27:20+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/aws-lambda/</loc>
+    <lastmod>2024-12-30T22:27:20+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/blog/</loc>
+    <lastmod>2024-12-30T22:27:20+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/</loc>
+    <lastmod>2024-12-30T22:27:20+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/serverless/</loc>
+    <lastmod>2024-12-30T22:27:20+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/serverless/</loc>
+    <lastmod>2024-12-30T22:27:20+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/</loc>
+    <lastmod>2024-12-30T22:27:20+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/</loc>
+    <lastmod>2024-12-30T22:27:20+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/terraform/</loc>
+    <lastmod>2024-12-30T22:27:20+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/auto-pause/</loc>
     <lastmod>2024-12-04T19:32:03+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/aws-aurora/</loc>
@@ -14,32 +50,11 @@
     <loc>https://shiun.me/tags/aws-rds/</loc>
     <lastmod>2024-12-04T19:32:03+08:00</lastmod>
   </url><url>
-    <loc>https://shiun.me/blog/</loc>
-    <lastmod>2024-12-04T19:32:03+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/categories/</loc>
-    <lastmod>2024-12-04T19:32:03+08:00</lastmod>
-  </url><url>
     <loc>https://shiun.me/categories/database/</loc>
-    <lastmod>2024-12-04T19:32:03+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/serverless/</loc>
-    <lastmod>2024-12-04T19:32:03+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/categories/serverless/</loc>
-    <lastmod>2024-12-04T19:32:03+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/</loc>
-    <lastmod>2024-12-04T19:32:03+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/</loc>
     <lastmod>2024-12-04T19:32:03+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/blog/unboxing-amazon-aurora-serverless-v2-auto-pause-acu-0/</loc>
     <lastmod>2024-12-04T19:32:03+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/aws/</loc>
-    <lastmod>2024-11-17T13:33:51+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/aws-educate/</loc>
     <lastmod>2024-11-17T13:33:51+08:00</lastmod>
@@ -103,9 +118,6 @@
   </url><url>
     <loc>https://shiun.me/blog/how-does-email-sending-work/</loc>
     <lastmod>2024-08-08T21:27:44+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/aws-lambda/</loc>
-    <lastmod>2024-08-06T02:25:14+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/aws-s3/</loc>
     <lastmod>2024-08-06T02:25:14+08:00</lastmod>
@@ -272,9 +284,6 @@
     <loc>https://shiun.me/tags/technical-tutorial/</loc>
     <lastmod>2024-06-06T10:50:53+08:00</lastmod>
   </url><url>
-    <loc>https://shiun.me/tags/terraform/</loc>
-    <lastmod>2024-06-06T10:50:53+08:00</lastmod>
-  </url><url>
     <loc>https://shiun.me/categories/terraform/</loc>
     <lastmod>2024-06-06T10:50:53+08:00</lastmod>
   </url><url>
@@ -354,12 +363,6 @@
     <lastmod>2024-04-06T23:45:32+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/aws-aurora-serverless-v2/</loc>
-    <lastmod>2024-04-06T23:45:32+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/aws-eventbridge/</loc>
-    <lastmod>2024-04-06T23:45:32+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/aws-eventbridge-scheduler/</loc>
     <lastmod>2024-04-06T23:45:32+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/cron/</loc>

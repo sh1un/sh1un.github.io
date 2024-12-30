@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
+<meta name="robots" content="index, follow" />
+<title>
+  [Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer | Shiun
+</title>
+<meta
+  name="keywords"
+  content="AWS Lambda, Serverless, AWS EventBridge, AWS EventBridge Scheduler, Terraform, Terraform Module, Tag-Based Lambda Warmer, Cold Start, Warm Start, Prewarm, Serverless Optimization, Serverless Cost Optimization, Serverless Best Practices, Serverless Architecture"
+/> <meta name="description" content="Tag-Based Lambda Warmer 透過簡單的 Tag 篩選機制定期預熱大量 AWS Lambda Functions，輕鬆解決冷啟動問題。這個 Terraform Module 提供了一個低成本且高靈活性的解決方案，特別適合間歇性工作負載、流量低且對成本敏感的 Serverless 中小型專案。"> <meta name="author" content=""> <link rel="canonical" href="https://shiun.me/blog/tag-based-lambda-warmer-low-cost-high-flexibility/">
+<link
+  crossorigin="anonymous"
+  href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css"
+  integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A="
+  rel="preload stylesheet"
+  as="style"
+/> <link rel="icon" href="https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"> <link
+rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://shiun.me/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://shiun.me/apple-touch-icon.png"> <link rel="mask-icon" href="https://shiun.me/safari-pinned-tab.svg"> <meta name="theme-color" content="#2e2e33"> <meta name="msapplication-TileColor" content="#2e2e33"> <link rel="alternate" hreflang="en" href="https://shiun.me/blog/tag-based-lambda-warmer-low-cost-high-flexibility/" />
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script>
+
+
+<meta property="og:url" content="https://shiun.me/blog/tag-based-lambda-warmer-low-cost-high-flexibility/">
+  <meta property="og:site_name" content="Shiun">
+  <meta property="og:title" content="[Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer">
+  <meta property="og:description" content="Tag-Based Lambda Warmer 透過簡單的 Tag 篩選機制定期預熱大量 AWS Lambda Functions，輕鬆解決冷啟動問題。這個 Terraform Module 提供了一個低成本且高靈活性的解決方案，特別適合間歇性工作負載、流量低且對成本敏感的 Serverless 中小型專案。">
+  <meta property="og:locale" content="zh_tw">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="blog">
+    <meta property="article:published_time" content="2024-12-30T22:27:20+08:00">
+    <meta property="article:modified_time" content="2024-12-30T22:27:20+08:00">
+    <meta property="article:tag" content="AWS">
+    <meta property="article:tag" content="AWS Lambda">
+    <meta property="article:tag" content="AWS EventBridge">
+    <meta property="article:tag" content="AWS EventBridge Scheduler">
+    <meta property="article:tag" content="Terraform">
+    <meta property="article:tag" content="Serverless">
+    <meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+  <meta name="twitter:title" content="[Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer">
+  <meta name="twitter:description" content="Tag-Based Lambda Warmer 透過簡單的 Tag 篩選機制定期預熱大量 AWS Lambda Functions，輕鬆解決冷啟動問題。這個 Terraform Module 提供了一個低成本且高靈活性的解決方案，特別適合間歇性工作負載、流量低且對成本敏感的 Serverless 中小型專案。">
+
+
+<noscript>
+  <style>
+    #theme-toggle,
+    .top-link {
+      display: none;
+    }
+  </style>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --theme: rgb(29, 30, 32);
+        --entry: rgb(46, 46, 51);
+        --primary: rgb(218, 218, 219);
+        --secondary: rgb(155, 156, 157);
+        --tertiary: rgb(65, 66, 68);
+        --content: rgb(196, 196, 197);
+        --code-block-bg: rgb(46, 46, 51);
+        --code-bg: rgb(55, 56, 62);
+        --border: rgb(51, 51, 51);
+      }
+
+      .list {
+        background: var(--theme);
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-track {
+        background: 0 0;
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-thumb {
+        border-color: var(--theme);
+      }
+    }
+  </style>
+</noscript>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script><meta property="og:title" content="[Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer" />
+<meta property="og:description" content="Tag-Based Lambda Warmer 透過簡單的 Tag 篩選機制定期預熱大量 AWS Lambda Functions，輕鬆解決冷啟動問題。這個 Terraform Module 提供了一個低成本且高靈活性的解決方案，特別適合間歇性工作負載、流量低且對成本敏感的 Serverless 中小型專案。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/tag-based-lambda-warmer-low-cost-high-flexibility/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-12-30T22:27:20+08:00" />
+<meta property="article:modified_time" content="2024-12-30T22:27:20+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/>
+
+<meta name="twitter:title" content="[Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer"/>
+<meta name="twitter:description" content="Tag-Based Lambda Warmer 透過簡單的 Tag 篩選機制定期預熱大量 AWS Lambda Functions，輕鬆解決冷啟動問題。這個 Terraform Module 提供了一個低成本且高靈活性的解決方案，特別適合間歇性工作負載、流量低且對成本敏感的 Serverless 中小型專案。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Blogs",
+      "item": "https://shiun.me/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "[Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer",
+      "item": "https://shiun.me/blog/tag-based-lambda-warmer-low-cost-high-flexibility/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer",
+  "name": "[Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer",
+  "description": "Tag-Based Lambda Warmer 透過簡單的 Tag 篩選機制定期預熱大量 AWS Lambda Functions，輕鬆解決冷啟動問題。這個 Terraform Module 提供了一個低成本且高靈活性的解決方案，特別適合間歇性工作負載、流量低且對成本敏感的 Serverless 中小型專案。",
+  "keywords": [
+    "AWS Lambda", "Serverless", "AWS EventBridge", "AWS EventBridge Scheduler", "Terraform", "Terraform Module", "Tag-Based Lambda Warmer", "Cold Start", "Warm Start", "Prewarm", "Serverless Optimization", "Serverless Cost Optimization", "Serverless Best Practices", "Serverless Architecture"
+  ],
+  "articleBody": "前言 - 現有架構的挑戰 最近，我在一個 Serverless 專案中遇到了一個讓人頭疼的挑戰。這個專案運行在多個 Lambda Functions 之上，為了避免冷啟動帶來的延遲問題影響使用者體驗，需要確保 Functions 處於「熱啟動」狀態（Warm Start），如何有效管理大量的預熱 (prewarm) 操作變得非常棘手。\n常見的解決方案之一，是為每個 Lambda Function 配置一個 EventBridge Scheduler，雖然可以達到預熱效果，但：\n管理成本高：需要單獨為每個 Lambda Function 配置 Scheduler，數量多難以管理。 靈活性不足：難以快速響應需求變更，重新部署新的 Lambda Function 時，需要修改 Scheduler 的 Target。 基於這些挑戰，我開發了 Tag-Based Lambda Warmer Terraform Module，提供了一種低成本、高靈活性的解決方案。\nTag-Based Lambda Warmer 介紹 Tag-Based Lambda Warmer 的核心理念非常簡單：\n將需要被預熱 (prewarm) 的 Lambda Function 加上指定的 Tag（例如：Prewarm=true）。\n當你部署 Terraform Module 後，EventBridge Schduler 會定期調用 Tag-Based Lambda Warmer，Warmer 會根據 Tag 自動篩選需要被預熱的 Lambda Functions\n這套解決方案特別適合以下情境：\n低流量、間歇性工作負載：例如開發環境或小型應用中的 Lambda Functions，需要偶爾處於熱啟動狀態，但不需要持續高效能。 多環境管理：通過不同的 Tag（例如 Environment=dev 或 Environment=prod），可以輕鬆在多個環境中靈活部署。 成本敏感型專案：對於中小型 Serverless 應用，這種解決方案能有效降低運維成本。 還是要提醒，這種透過定期調用來保持熱啟動狀態的解決方案，只能讓你保持至少有一個熱啟動狀態的 Execution Environment，今天流量突然有一個高峰，碰上冷啟動是不可避免的\n我已經將 Tag-Based Lambda Warmer 寫成 Terraform Module 並發布到 Terraform Registry 囉，你只需要在你的 Terraform 配置中引用模組:\nmodule \"lambda_warmer\" { source = \"aws-educate-tw/tag-based-lambda-warmer/aws\" # version = \"0.2.1\" aws_region = \"ap-northeast-1\" # Optional: Custom configuration environment = \"prod\" prewarm_tag_key = \"Project\" prewarm_tag_value = \"MyProject\" lambda_schedule_expression = \"rate(5 minutes)\" scheduler_max_retry_attempts = 0 invocation_type = \"Event\" } 執行流程 EventBridge Scheduler 定時觸發 Tag-Based Lambda Warmer Function。 Warmer Function 調用 Lambda API，獲取所有 Lambda Functions 列表。 根據指定的 Tag Key 和 Value，篩選出需要預熱的 Lambda Functions。 非同步觸發這些函數進行預熱。 執行日誌記錄在 CloudWatch Logs，方便後續監控與調試。 優點 如果某個 Lambda Function 不再需要預熱，只需 移除 Tag 或修改其值；如果日後又有預熱需求，只需重新加上 Tag，即可輕鬆加入預熱名單。\n這種 Tag-Based 的設計具有以下幾個關鍵優勢：\n靈活性高： 可以快速調整預熱範圍，無需重新部署基礎設施。 支援客製化篩選條件，例如基於專案名稱 (Project=MyApp) 或環境 (Environment=prod) 的 Tag。 低成本： 只需一個 EventBridge Scheduler 和一個 Lambda Function 的組合，即可實現多個 Lambda 的集中化管理。 避免了高昂的 Provisioned Concurrency 成本，完全按需付費。 簡單易用： 部署 Module 後，唯一需要做的就是為 Lambda Functions 添加或移除 Tag，無需其他額外配置。 (視情況需要新增一小段程式碼) 注意事項 那些需要被預熱的 Lambda Functions 視情況可能需要在請求一到達時先檢查是否是 Prewarming 操作，避免被預熱後就執行了業務邏輯\n以下是 Python 範例程式碼，你可以將以下程式碼插入至 lambda_handler 函數中，用來檢查是否是 Prewarming 操作：\ndef lambda_handler(event, context): # Identify if the incoming event is a prewarm request if event.get(\"action\") == \"PREWARM\": logger.info(\"Received a prewarm request. Skipping business logic.\") return { \"statusCode\": 200, \"body\": \"Successfully warmed up\" } 結語 Tag-Based Lambda Warmer 是一個低成本、高靈活性的 Lambda 預熱解決方案。無論是小型專案還是多環境部署，它都能幫助你有效管理和優化 Lambda Functions 的冷啟動問題。\n如果你對這個模組感興趣，歡迎參考以下資源：\nGitHub Repository: terraform-aws-tag-based-lambda-warmer Terraform Registry: AWS Lambda Warmer Module 有任何問題，歡迎提交 Issue。希望這個工具能幫助你更好地管理 Serverless 專案中的 Lambda Functions！\n",
+  "wordCount" : "275",
+  "inLanguage": "en",
+  "datePublished": "2024-12-30T22:27:20+08:00",
+  "dateModified": "2024-12-30T22:27:20+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://shiun.me/blog/tag-based-lambda-warmer-low-cost-high-flexibility/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Shiun",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://shiun.me/" accesskey="h" title="Shiun (Alt + H)">Shiun</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://shiun.me/blog/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.notion.site/Shiun-s-Learning-Journal-ded4cd4a3efd47b2805f2f99dee8f9a1?pvs=4" title="Notion">
+                    <span>Notion</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.linkedin.com/in/shiunchiu" title="About me">
+                    <span>About me</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://shiun.me/">Home</a>&nbsp;»&nbsp;<a href="https://shiun.me/blog/">Blogs</a></div>
+    <h1 class="post-title entry-hint-parent">
+      [Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer
+    </h1>
+    <div class="post-description">
+      Tag-Based Lambda Warmer 透過簡單的 Tag 篩選機制定期預熱大量 AWS Lambda Functions，輕鬆解決冷啟動問題。這個 Terraform Module 提供了一個低成本且高靈活性的解決方案，特別適合間歇性工作負載、流量低且對成本敏感的 Serverless 中小型專案。
+    </div>
+    <div class="post-meta"><span title='2024-12-30 22:27:20 +0800 CST'>December 30, 2024</span>&nbsp;·&nbsp;2 min
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e5%89%8d%e8%a8%80---%e7%8f%be%e6%9c%89%e6%9e%b6%e6%a7%8b%e7%9a%84%e6%8c%91%e6%88%b0" aria-label="前言 - 現有架構的挑戰">前言 - 現有架構的挑戰</a></li>
+                <li>
+                    <a href="#tag-based-lambda-warmer-%e4%bb%8b%e7%b4%b9" aria-label="Tag-Based Lambda Warmer 介紹">Tag-Based Lambda Warmer 介紹</a><ul>
+                        
+                <li>
+                    <a href="#%e5%9f%b7%e8%a1%8c%e6%b5%81%e7%a8%8b" aria-label="執行流程">執行流程</a></li>
+                <li>
+                    <a href="#%e5%84%aa%e9%bb%9e" aria-label="優點">優點</a></li>
+                <li>
+                    <a href="#%e6%b3%a8%e6%84%8f%e4%ba%8b%e9%a0%85" aria-label="注意事項">注意事項</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e7%b5%90%e8%aa%9e" aria-label="結語">結語</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="前言---現有架構的挑戰">前言 - 現有架構的挑戰<a hidden class="anchor" aria-hidden="true" href="#前言---現有架構的挑戰">#</a></h2>
+<p>最近，我在一個 Serverless 專案中遇到了一個讓人頭疼的挑戰。這個專案運行在<strong>多個 Lambda Functions</strong> 之上，為了避免冷啟動帶來的延遲問題影響使用者體驗，需要確保 Functions 處於「熱啟動」狀態（Warm Start），如何有效管理大量的預熱 (prewarm) 操作變得非常棘手。</p>
+<p>常見的解決方案之一，是為每個 Lambda Function 配置一個 <strong>EventBridge Scheduler</strong>，雖然可以達到預熱效果，但：</p>
+<ul>
+<li><strong>管理成本高</strong>：需要單獨為每個 Lambda Function 配置 Scheduler，數量多難以管理。</li>
+<li><strong>靈活性不足</strong>：難以快速響應需求變更，重新部署新的 Lambda Function 時，需要修改 Scheduler 的 Target。</li>
+</ul>
+<p>基於這些挑戰，我開發了 <strong>Tag-Based Lambda Warmer Terraform Module</strong>，提供了一種低成本、高靈活性的解決方案。</p>
+<hr>
+<h2 id="tag-based-lambda-warmer-介紹">Tag-Based Lambda Warmer 介紹<a hidden class="anchor" aria-hidden="true" href="#tag-based-lambda-warmer-介紹">#</a></h2>
+<p><img loading="lazy" src="https://github.com/user-attachments/assets/51faed13-9501-4819-b687-c91291cc6009" alt="AWS Tag-based Lambda Warmer Archietecure Diagram"  />
+</p>
+<p><strong>Tag-Based Lambda Warmer</strong> 的核心理念非常簡單：</p>
+<p>將需要被預熱 (prewarm) 的 Lambda Function <strong>加上指定的 Tag</strong>（例如：<code>Prewarm=true</code>）。</p>
+<p>當你部署 Terraform Module 後，EventBridge Schduler 會定期調用 Tag-Based Lambda Warmer，Warmer 會根據 Tag 自動篩選需要被預熱的 Lambda Functions</p>
+<p>這套解決方案特別適合以下情境：</p>
+<ol>
+<li><strong>低流量、間歇性工作負載</strong>：例如開發環境或小型應用中的 Lambda Functions，需要偶爾處於熱啟動狀態，但不需要持續高效能。</li>
+<li><strong>多環境管理</strong>：通過不同的 Tag（例如 <code>Environment=dev</code> 或 <code>Environment=prod</code>），可以輕鬆在多個環境中靈活部署。</li>
+<li><strong>成本敏感型專案</strong>：對於中小型 Serverless 應用，這種解決方案能有效降低運維成本。</li>
+</ol>
+<blockquote>
+<p>還是要提醒，這種透過定期調用來保持熱啟動狀態的解決方案，只能讓你保持至少有一個熱啟動狀態的 Execution Environment，今天流量突然有一個高峰，碰上冷啟動是不可避免的</p>
+</blockquote>
+<p>我已經將 Tag-Based Lambda Warmer 寫成 Terraform Module 並發布到 <a href="https://registry.terraform.io/modules/aws-educate-tw/tag-based-lambda-warmer/aws/latest">Terraform Registry</a> 囉，你只需要在你的 Terraform 配置中引用模組:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-hcl" data-lang="hcl"><span style="display:flex;"><span><span style="color:#66d9ef">module</span> <span style="color:#e6db74">&#34;lambda_warmer&#34;</span> {
+</span></span><span style="display:flex;"><span>  source  <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;aws-educate-tw/tag-based-lambda-warmer/aws&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  # version = &#34;0.2.1&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>  aws_region <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;ap-northeast-1&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  # Optional: Custom configuration
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  environment <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;prod&#34;</span>
+</span></span><span style="display:flex;"><span>  prewarm_tag_key <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Project&#34;</span>
+</span></span><span style="display:flex;"><span>  prewarm_tag_value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;MyProject&#34;</span>
+</span></span><span style="display:flex;"><span>  lambda_schedule_expression <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;rate(5 minutes)&#34;</span>
+</span></span><span style="display:flex;"><span>  scheduler_max_retry_attempts <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>  invocation_type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Event&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="執行流程">執行流程<a hidden class="anchor" aria-hidden="true" href="#執行流程">#</a></h3>
+<ol>
+<li><strong>EventBridge Scheduler</strong> 定時觸發 Tag-Based Lambda Warmer Function。</li>
+<li><strong>Warmer Function</strong> 調用 <strong>Lambda API</strong>，獲取所有 Lambda Functions 列表。</li>
+<li>根據指定的 Tag Key 和 Value，篩選出需要預熱的 Lambda Functions。</li>
+<li>非同步觸發這些函數進行預熱。</li>
+<li>執行日誌記錄在 <strong>CloudWatch Logs</strong>，方便後續監控與調試。</li>
+</ol>
+<h3 id="優點">優點<a hidden class="anchor" aria-hidden="true" href="#優點">#</a></h3>
+<p>如果某個 Lambda Function 不再需要預熱，只需 <strong>移除 Tag</strong> 或修改其值；如果日後又有預熱需求，只需重新加上 Tag，即可輕鬆加入預熱名單。</p>
+<p>這種 <strong>Tag-Based</strong> 的設計具有以下幾個關鍵優勢：</p>
+<ol>
+<li><strong>靈活性高</strong>：
+<ul>
+<li>可以快速調整預熱範圍，無需重新部署基礎設施。</li>
+<li>支援客製化篩選條件，例如基於專案名稱 (<code>Project=MyApp</code>) 或環境 (<code>Environment=prod</code>) 的 Tag。</li>
+</ul>
+</li>
+<li><strong>低成本</strong>：
+<ul>
+<li>只需一個 EventBridge Scheduler 和一個 Lambda Function 的組合，即可實現多個 Lambda 的集中化管理。</li>
+<li>避免了高昂的 <strong>Provisioned Concurrency</strong> 成本，完全按需付費。</li>
+</ul>
+</li>
+<li><strong>簡單易用</strong>：
+<ul>
+<li>部署 Module 後，唯一需要做的就是為 Lambda Functions 添加或移除 Tag，無需其他額外配置。 <em>(視情況需要新增一小段程式碼)</em></li>
+</ul>
+</li>
+</ol>
+<h3 id="注意事項">注意事項<a hidden class="anchor" aria-hidden="true" href="#注意事項">#</a></h3>
+<p>那些需要被預熱的 Lambda Functions 視情況可能需要在請求一到達時<strong>先檢查是否是 Prewarming 操作</strong>，避免被預熱後就執行了業務邏輯</p>
+<p>以下是 Python 範例程式碼，你可以將以下程式碼插入至 <code>lambda_handler</code> 函數中，用來檢查是否是 Prewarming 操作：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">lambda_handler</span>(event, context):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Identify if the incoming event is a prewarm request</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> event<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;action&#34;</span>) <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;PREWARM&#34;</span>:
+</span></span><span style="display:flex;"><span>        logger<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#34;Received a prewarm request. Skipping business logic.&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;statusCode&#34;</span>: <span style="color:#ae81ff">200</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;body&#34;</span>: <span style="color:#e6db74">&#34;Successfully warmed up&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span></code></pre></div><hr>
+<h2 id="結語">結語<a hidden class="anchor" aria-hidden="true" href="#結語">#</a></h2>
+<p><strong>Tag-Based Lambda Warmer</strong> 是一個低成本、高靈活性的 Lambda 預熱解決方案。無論是小型專案還是多環境部署，它都能幫助你有效管理和優化 Lambda Functions 的冷啟動問題。</p>
+<p>如果你對這個模組感興趣，歡迎參考以下資源：</p>
+<ul>
+<li><strong>GitHub Repository</strong>: <a href="https://github.com/aws-educate-tw/terraform-aws-tag-based-lambda-warmer">terraform-aws-tag-based-lambda-warmer</a></li>
+<li><strong>Terraform Registry</strong>: <a href="https://registry.terraform.io/modules/aws-educate-tw/tag-based-lambda-warmer/aws/latest">AWS Lambda Warmer Module</a></li>
+</ul>
+<p>有任何問題，歡迎提交 <a href="https://github.com/aws-educate-tw/terraform-aws-tag-based-lambda-warmer/issues/new">Issue</a>。希望這個工具能幫助你更好地管理 Serverless 專案中的 Lambda Functions！</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://shiun.me/tags/aws/">AWS</a></li>
+      <li><a href="https://shiun.me/tags/aws-lambda/">AWS Lambda</a></li>
+      <li><a href="https://shiun.me/tags/aws-eventbridge/">AWS EventBridge</a></li>
+      <li><a href="https://shiun.me/tags/aws-eventbridge-scheduler/">AWS EventBridge Scheduler</a></li>
+      <li><a href="https://shiun.me/tags/terraform/">Terraform</a></li>
+      <li><a href="https://shiun.me/tags/serverless/">Serverless</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://shiun.me/blog/unboxing-amazon-aurora-serverless-v2-auto-pause-acu-0/">
+    <span class="title">Next »</span>
+    <br>
+    <span>開箱 Amazon Aurora Serverless v2 Auto-pause Feature (ACU 0)</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share [Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer on x"
+            href="https://x.com/intent/tweet/?text=%5bTerraform%20Module%5d%20%e4%b8%80%e5%80%8b%e4%bd%8e%e6%88%90%e6%9c%ac%e3%80%81%e9%ab%98%e9%9d%88%e6%b4%bb%e6%80%a7%ef%bc%8c%e8%bc%95%e9%ac%86%e9%a0%90%e7%86%b1%e4%b8%8a%e7%99%be%e5%80%8b%20Lambda%20Function%20%e7%9a%84%e8%a7%a3%e6%b1%ba%e6%96%b9%e6%a1%88%ef%bc%9aTag-Based%20Lambda%20Warmer&amp;url=https%3a%2f%2fshiun.me%2fblog%2ftag-based-lambda-warmer-low-cost-high-flexibility%2f&amp;hashtags=AWS%2cAWSLambda%2cServerless%2cAWSEventBridge%2cAWSEventBridgeScheduler%2cTerraform%2cServerless">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share [Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fshiun.me%2fblog%2ftag-based-lambda-warmer-low-cost-high-flexibility%2f&amp;title=%5bTerraform%20Module%5d%20%e4%b8%80%e5%80%8b%e4%bd%8e%e6%88%90%e6%9c%ac%e3%80%81%e9%ab%98%e9%9d%88%e6%b4%bb%e6%80%a7%ef%bc%8c%e8%bc%95%e9%ac%86%e9%a0%90%e7%86%b1%e4%b8%8a%e7%99%be%e5%80%8b%20Lambda%20Function%20%e7%9a%84%e8%a7%a3%e6%b1%ba%e6%96%b9%e6%a1%88%ef%bc%9aTag-Based%20Lambda%20Warmer&amp;summary=%5bTerraform%20Module%5d%20%e4%b8%80%e5%80%8b%e4%bd%8e%e6%88%90%e6%9c%ac%e3%80%81%e9%ab%98%e9%9d%88%e6%b4%bb%e6%80%a7%ef%bc%8c%e8%bc%95%e9%ac%86%e9%a0%90%e7%86%b1%e4%b8%8a%e7%99%be%e5%80%8b%20Lambda%20Function%20%e7%9a%84%e8%a7%a3%e6%b1%ba%e6%96%b9%e6%a1%88%ef%bc%9aTag-Based%20Lambda%20Warmer&amp;source=https%3a%2f%2fshiun.me%2fblog%2ftag-based-lambda-warmer-low-cost-high-flexibility%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share [Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fshiun.me%2fblog%2ftag-based-lambda-warmer-low-cost-high-flexibility%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share [Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer on telegram"
+            href="https://telegram.me/share/url?text=%5bTerraform%20Module%5d%20%e4%b8%80%e5%80%8b%e4%bd%8e%e6%88%90%e6%9c%ac%e3%80%81%e9%ab%98%e9%9d%88%e6%b4%bb%e6%80%a7%ef%bc%8c%e8%bc%95%e9%ac%86%e9%a0%90%e7%86%b1%e4%b8%8a%e7%99%be%e5%80%8b%20Lambda%20Function%20%e7%9a%84%e8%a7%a3%e6%b1%ba%e6%96%b9%e6%a1%88%ef%bc%9aTag-Based%20Lambda%20Warmer&amp;url=https%3a%2f%2fshiun.me%2fblog%2ftag-based-lambda-warmer-low-cost-high-flexibility%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer><div class="disqus markdown"><div id="disqus_thread"></div>
+<script>
+  
+
+  
+
+  (function () {
+    
+    var d = document,
+      s = d.createElement("script");
+    s.src = "https://shiun-me.disqus.com/embed.js";
+    s.setAttribute("data-timestamp", +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript
+  >Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript"
+    >comments powered by Disqus.</a
+  ></noscript
+>
+</div>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://shiun.me/">Shiun</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
