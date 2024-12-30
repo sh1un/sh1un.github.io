@@ -9,12 +9,12 @@
 />
 <meta name="robots" content="index, follow" />
 <title>
-  AWS EventBridge | Shiun
+  Serverless | Shiun
 </title>
 <meta
   name="keywords"
   content=""
-/> <meta name="description" content="Shiun&#39;s Blog"> <meta name="author" content=""> <link rel="canonical" href="https://shiun.me/tags/aws-eventbridge/">
+/> <meta name="description" content="Shiun&#39;s Blog"> <meta name="author" content=""> <link rel="canonical" href="https://shiun.me/categories/serverless/">
 <link
   crossorigin="anonymous"
   href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css"
@@ -27,9 +27,9 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 <link rel="apple-touch-icon" href="https://shiun.me/apple-touch-icon.png"> <link rel="mask-icon" href="https://shiun.me/safari-pinned-tab.svg"> <meta name="theme-color" content="#2e2e33"> <meta name="msapplication-TileColor" content="#2e2e33"> <link
   rel="alternate"
   type="application/rss+xml"
-  href="https://shiun.me/tags/aws-eventbridge/index.xml"
+  href="https://shiun.me/categories/serverless/index.xml"
 />
-<link rel="alternate" hreflang="en" href="https://shiun.me/tags/aws-eventbridge/" />
+<link rel="alternate" hreflang="en" href="https://shiun.me/categories/serverless/" />
 
 
       <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
@@ -48,9 +48,9 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
       </script>
 
 
-<meta property="og:url" content="https://shiun.me/tags/aws-eventbridge/">
+<meta property="og:url" content="https://shiun.me/categories/serverless/">
   <meta property="og:site_name" content="Shiun">
-  <meta property="og:title" content="AWS EventBridge">
+  <meta property="og:title" content="Serverless">
   <meta property="og:description" content="Shiun&#39;s Blog">
   <meta property="og:locale" content="zh_tw">
   <meta property="og:type" content="website">
@@ -61,7 +61,7 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
-  <meta name="twitter:title" content="AWS EventBridge">
+  <meta name="twitter:title" content="Serverless">
   <meta name="twitter:description" content="Shiun&#39;s Blog">
 
 
@@ -113,15 +113,15 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
           gtag('js', new Date());
           gtag('config', 'G-RZR8D4ERKG');
         }
-      </script><meta property="og:title" content="AWS EventBridge" />
+      </script><meta property="og:title" content="Serverless" />
 <meta property="og:description" content="Shiun&#39;s Blog" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://shiun.me/tags/aws-eventbridge/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="og:site_name" content="Shiun&#39;s Blog" />
+<meta property="og:url" content="https://shiun.me/categories/serverless/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="og:site_name" content="Shiun&#39;s Blog" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/>
 
-<meta name="twitter:title" content="AWS EventBridge"/>
+<meta name="twitter:title" content="Serverless"/>
 <meta name="twitter:description" content="Shiun&#39;s Blog"/>
 
 </head>
@@ -214,29 +214,11 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
     </nav>
 </header>
 <main class="main"> 
-<header class="page-header"><div class="breadcrumbs"><a href="https://shiun.me/">Home</a>&nbsp;»&nbsp;<a href="https://shiun.me/tags/">Tags</a></div>
+<header class="page-header"><div class="breadcrumbs"><a href="https://shiun.me/">Home</a>&nbsp;»&nbsp;<a href="https://shiun.me/categories/">Categories</a></div>
   <h1>
-    AWS EventBridge
+    Serverless
   </h1>
 </header>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">[Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>前言 - 現有架構的挑戰 最近，我在一個 Serverless 專案中遇到了一個讓人頭疼的挑戰。這個專案運行在多個 Lambda Functions 之上，為了避免冷啟動帶來的延遲問題影響使用者體驗，需要確保 Functions 處於「熱啟動」狀態（Warm Start），如何有效管理大量的預熱 (prewarm) 操作變得非常棘手。
-常見的解決方案之一，是為每個 Lambda Function 配置一個 EventBridge Scheduler，雖然可以達到預熱效果，但：
-管理成本高：需要單獨為每個 Lambda Function 配置 Scheduler，數量多難以管理。 靈活性不足：難以快速響應需求變更，重新部署新的 Lambda Function 時，需要修改 Scheduler 的 Target。 基於這些挑戰，我開發了 Tag-Based Lambda Warmer Terraform Module，提供了一種低成本、高靈活性的解決方案。
-Tag-Based Lambda Warmer 介紹 Tag-Based Lambda Warmer 的核心理念非常簡單：
-將需要被預熱 (prewarm) 的 Lambda Function 加上指定的 Tag（例如：Prewarm=true）。
-當你部署 Terraform Module 後，EventBridge Schduler 會定期調用 Tag-Based Lambda Warmer，Warmer 會根據 Tag 自動篩選需要被預熱的 Lambda Functions
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-12-30 22:27:20 +0800 CST'>December 30, 2024</span>&nbsp;·&nbsp;2 min</footer>
-  <a class="entry-link" aria-label="post link to [Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer" href="https://shiun.me/blog/tag-based-lambda-warmer-low-cost-high-flexibility/"></a>
-</article>
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
@@ -254,6 +236,13 @@ Tag-Based Lambda Warmer 介紹 Tag-Based Lambda Warmer 的核心理念非常簡�
   <footer class="entry-footer"><span title='2024-04-06 23:45:32 +0800 CST'>April 6, 2024</span>&nbsp;·&nbsp;2 min</footer>
   <a class="entry-link" aria-label="post link to 如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU" href="https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/"></a>
 </article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="prev" href="https://shiun.me/categories/serverless/">
+      «&nbsp;Prev&nbsp;
+    </a>
+  </nav>
+</footer>
     </main>
     
 <footer class="footer">

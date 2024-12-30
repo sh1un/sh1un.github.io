@@ -222,6 +222,24 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">[Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>前言 - 現有架構的挑戰 最近，我在一個 Serverless 專案中遇到了一個讓人頭疼的挑戰。這個專案運行在多個 Lambda Functions 之上，為了避免冷啟動帶來的延遲問題影響使用者體驗，需要確保 Functions 處於「熱啟動」狀態（Warm Start），如何有效管理大量的預熱 (prewarm) 操作變得非常棘手。
+常見的解決方案之一，是為每個 Lambda Function 配置一個 EventBridge Scheduler，雖然可以達到預熱效果，但：
+管理成本高：需要單獨為每個 Lambda Function 配置 Scheduler，數量多難以管理。 靈活性不足：難以快速響應需求變更，重新部署新的 Lambda Function 時，需要修改 Scheduler 的 Target。 基於這些挑戰，我開發了 Tag-Based Lambda Warmer Terraform Module，提供了一種低成本、高靈活性的解決方案。
+Tag-Based Lambda Warmer 介紹 Tag-Based Lambda Warmer 的核心理念非常簡單：
+將需要被預熱 (prewarm) 的 Lambda Function 加上指定的 Tag（例如：Prewarm=true）。
+當你部署 Terraform Module 後，EventBridge Schduler 會定期調用 Tag-Based Lambda Warmer，Warmer 會根據 Tag 自動篩選需要被預熱的 Lambda Functions
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-12-30 22:27:20 +0800 CST'>December 30, 2024</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to [Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer" href="https://shiun.me/blog/tag-based-lambda-warmer-low-cost-high-flexibility/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">一起回顧我的 AWS Educate 雲端大使成長之旅
     </h2>
   </header>
@@ -289,22 +307,6 @@ import json import logging import boto3 from botocore.exceptions import ClientEr
   </div>
   <footer class="entry-footer"><span title='2024-07-19 23:04:08 +0800 CST'>July 19, 2024</span>&nbsp;·&nbsp;2 min</footer>
   <a class="entry-link" aria-label="post link to 如何使用 Lambda 處理 AWS Cognito User 首次登入被系統要求強制變更密碼" href="https://shiun.me/blog/aws-cognito-how-to-handle-force-change-password/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>在 AWS API Gateway 創建 method 時，我們可以指定他要把請求傳到哪個 AWS 服務或是其他 HTTP Endpoint…等等，而如果你選擇 Lambda，你會看到有一個選項是 Lambda Proxy Integration，那我把它勾選起來會怎樣呢？
-TL;DR 如果有打開 Lambda Proxy Integration，接著我們到那個 Resource 的 Method 頁面看一下，會看到下圖的提示 Proxy integration For proxy integrations, API Gateway automatically passes the backend output to the caller as the complete payload.
-但也許沒有很好理解，所以我們後面會實際打 Code 來示範，但我這邊先稍微解釋一下打開這個功能的影響:
-完整的 HTTP 請求資訊：啟用 Lambda Proxy Integration 後，API Gateway 會將整個 HTTP 請求打包成單一的 event object，並傳遞給 Lambda Function 簡化的處理流程：Lambda Function 接收到的是一個包含了所有請求資訊的 event object，因此不需要再通過模板或轉換就可以直接處理請求。這樣簡化了函數的輸入處理，因為 Lambda Function 已經包含了所有必要的請求資訊 控制 HTTP Response：Lambda Function 需要返回一個特定格式的物件，這個物件包括 Status Code、Response Headers 和 Response Body。由於 Response 是直接由 Lambda Function 生成的，所以開發者可以完全控制 Response 的格式和內容 效能和成本效益：由於請求處理的過程更加直接，減少了中間的處理和轉換步驟，可以提高處理效率，可能也會在某種程度上降低成本 總之，選擇 Lambda Proxy Integration 可以使得與 AWS Lambda 的整合更加緊密、直接和高效。這適合需要精細控制 HTTP 響應的場景，或者希望簡化 API 與 Lambda 之間交互的架構設計
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-06-14 23:41:33 +0800 CST'>June 14, 2024</span>&nbsp;·&nbsp;4 min</footer>
-  <a class="entry-link" aria-label="post link to 深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能" href="https://shiun.me/blog/understanding-lambda-proxy-integration/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

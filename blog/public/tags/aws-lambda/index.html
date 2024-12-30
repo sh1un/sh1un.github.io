@@ -222,6 +222,24 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">[Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>前言 - 現有架構的挑戰 最近，我在一個 Serverless 專案中遇到了一個讓人頭疼的挑戰。這個專案運行在多個 Lambda Functions 之上，為了避免冷啟動帶來的延遲問題影響使用者體驗，需要確保 Functions 處於「熱啟動」狀態（Warm Start），如何有效管理大量的預熱 (prewarm) 操作變得非常棘手。
+常見的解決方案之一，是為每個 Lambda Function 配置一個 EventBridge Scheduler，雖然可以達到預熱效果，但：
+管理成本高：需要單獨為每個 Lambda Function 配置 Scheduler，數量多難以管理。 靈活性不足：難以快速響應需求變更，重新部署新的 Lambda Function 時，需要修改 Scheduler 的 Target。 基於這些挑戰，我開發了 Tag-Based Lambda Warmer Terraform Module，提供了一種低成本、高靈活性的解決方案。
+Tag-Based Lambda Warmer 介紹 Tag-Based Lambda Warmer 的核心理念非常簡單：
+將需要被預熱 (prewarm) 的 Lambda Function 加上指定的 Tag（例如：Prewarm=true）。
+當你部署 Terraform Module 後，EventBridge Schduler 會定期調用 Tag-Based Lambda Warmer，Warmer 會根據 Tag 自動篩選需要被預熱的 Lambda Functions
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-12-30 22:27:20 +0800 CST'>December 30, 2024</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to [Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer" href="https://shiun.me/blog/tag-based-lambda-warmer-low-cost-high-flexibility/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐
     </h2>
   </header>
@@ -292,21 +310,6 @@ Windows 安裝 Windows 安裝相當簡單，只要去官方文檔裡面下載 MS
   </div>
   <footer class="entry-footer"><span title='2024-04-29 23:47:09 +0800 CST'>April 29, 2024</span>&nbsp;·&nbsp;9 min</footer>
   <a class="entry-link" aria-label="post link to AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda" href="https://shiun.me/blog/aws-sam-101/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>Serverless Framework 簡介 Serverless Framework 是一個開源的無服務器應用框架，它允許開發者快速建立、部署和管理在 AWS Lambda、Google Cloud Functions、Azure Functions 等雲平台上運行的無服務器應用。這個框架使用一個簡潔的配置文件（通常是 serverless.yml），在其中定義了應用的所有資源和設定，讓開發者可以專注於編寫業務邏輯而非管理基礎設施。
-安裝 Serverless Framework Prerequisites:
-需要有 npm，若你的電腦沒有 npm，請去下載 NodeJS $ npm install -g serverless 創建一個 Service $ serverless ? What do you want to make? AWS - Node.js - Starter AWS - Node.js - HTTP API AWS - Node.js - Scheduled Task AWS - Node.js - SQS Worker AWS - Node.js - Express API AWS - Node.js - Express API with DynamoDB AWS - Python - Starter &gt; AWS - Python - HTTP API AWS - Python - Scheduled Task AWS - Python - SQS Worker AWS - Python - Flask API AWS - Python - Flask API with DynamoDB Other 輸入指令後透過方向鍵選取你要的 Template，本文將已 AWS - Python HTTP API 示範
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-04-28 04:27:23 +0800 CST'>April 28, 2024</span>&nbsp;·&nbsp;3 min</footer>
-  <a class="entry-link" aria-label="post link to Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda" href="https://shiun.me/blog/serverless-framework-101/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
