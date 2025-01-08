@@ -43,26 +43,26 @@ keywords:
 現在的架構是一個很基本的 IPv4 NLB(Internet-facing) → Target Group (IPv4 Instance type ) 的架構
 
 <!-- markdownlint-disable -->
-![Existing-NLB-IPv4-only-Architecture-Diagram.png](Existing-NLB-IPv4-only-Architecture-Diagram.png)
+![Existing NLB IPv4-only Architecture Diagram.png](Existing-NLB-IPv4-only-Architecture-Diagram.png)
 
 <details>
 <summary>展開查看現有架構詳細內容截圖</summary>
 
 - VPC
-    ![image.png](image.png)
-    ![image.png](image%201.png)
+    ![VPC Resource map](image.png)
+    ![VPC CIDR](image%201.png)
 
 - NLB
   - Details
-      ![image.png](image%202.png)
+      ![NLB Details](image%202.png)
   - Security Group
-      ![image.png](image%203.png)
+      ![NLB Security Group](image%203.png)
 
 - Target Group
   - Instance
-      ![image.png](image%204.png)
+      ![Target Group instance](image%204.png)
   - Security Group
-      ![image.png](image%205.png)
+      ![Target Group instance SG](image%205.png)
 
 </details>
 <!-- markdownlint-restore -->
@@ -77,33 +77,33 @@ keywords:
 2. 展開 **Actions menu**
 3. 點擊 **Edit CIDRs**
 
-![image.png](image%206.png)
+![Edit CIDRs](image%206.png)
 
 新增 IPv6 CIDR：
 
 1. 點擊 **Add new IPv6 CIDR**
 2. 選擇 **Amazon-provided IPv6 CIDR block**
 
-![image.png](image%207.png)
+![Add new IPv6 CIDR](image%207.png)
 
-![image.png](image%208.png)
+![Select Amazon-provided IPv6 CIDR block](image%208.png)
 
 ### Step 2: 為 NLB ENI 所處的 Subnet 分配 IPv6 CIDR
 
 在 AWS Console 常常都會迷路，要配置的東西很多，又散亂在不同地方，所以我習慣到 NLB 的頁面直接找到他所處的 Subnet，如下圖，可以看到 NLB Details 頁面中有一個 **Availability Zones 的地方下面的連結就是 Subnet 連結**
 
-![image.png](image%209.png)
+![Go to NLB Subnet](image%209.png)
 
 成功進入 Subnet Details 頁面後：
 
 1. 展開 **Actions menu**
 2. 點擊 **Edit IPv6 CIDRs**
 
-![image.png](image%2010.png)
+![Subnet Edit IPv6 CIDRs](image%2010.png)
 
 從 VPC CIDR 中，切一個 `/64` 的 IPv6 CIDR 給這 Subnet
 
-![image.png](image%2011.png)
+![Assign IPv6 CIDR for subnet](image%2011.png)
 
 ### Step 3: 更新 NLB IP address type
 
@@ -111,22 +111,22 @@ keywords:
 
 更改 NLB address type 前，可以去觀察一下 NLB 的 ENI，確實還沒有 IPv6 address (下圖紅框所示)
 
-![image.png](image%2012.png)
+![NLB no IPv6 address now](image%2012.png)
 
 回到 NLB Details 頁面：
 
 1. 展開 **Actions menu**
 2. 點擊 **Edit IP address type**
 
-![image.png](image%2013.png)
+![Edit IP address type](image%2013.png)
 
 把 Load balancer IP address type 改成 **Dualstack**
 
-![image.png](image%2014.png)
+![Select Dualstack](image%2014.png)
 
 再次回到 ENI 頁面，再次觀察 NLB 的 ENI ，可以注意到，已經從 Subnet CIDR 中  Assign 一個 IPv6 address 給 NLB ENI 了 (下圖紅框處)
 
-![image.png](image%2015.png)
+![Get IPv6 address](image%2015.png)
 
 ### Step 4: 修改 NLB 的 Security Group 允許 IPv6 流量
 
@@ -137,13 +137,13 @@ keywords:
 - 可以進入 NLB Detail 的頁面中 > Security 頁籤
 - 就可以找到這個 NLB 的 SG (Security Group)
 
-![image.png](image%2016.png)
+![Go to NLB SG](image%2016.png)
 
 進入 Security Group 頁面：
 
 1. 點擊 Edit inbound rules
 
-![image.png](image%2017.png)
+![Click Edit inbound rules](image%2017.png)
 
 配置 Inbound rule 允許 IPv6 流量：
 
@@ -152,7 +152,7 @@ keywords:
 3. **Source:** Anywhere-IPv6
 4. **Description:** Allow all HTTP traffic (IPv6)
 
-![image.png](image%2018.png)
+![Add rule to allow all IPv6 HTTP traffic](image%2018.png)
 
 現在可以測試看看能不能把請求成功打進去 NLB 而且還得到回應， `curl -6` 是 `curl` 工具的一個選項，專門用於指定使用 **IPv6** 進行請求，如果要用 IPv4 進行請求就是用 `-4`
 
@@ -184,11 +184,11 @@ curl -6 http://nlb-from-ipv4-to-dual-stack-a7d193e605191856.elb.us-west-2.amazon
 
 進入 NLB Detail 頁面中，點擊 **Availability Zones** 下方的**連結**，找到 NLB 所在的 Subnet
 
-![image.png](image%2019.png)
+![Go to NLB Subnet](image%2019.png)
 
 進入 VPC Subnets Details 頁面點擊 **Route Table**
 
-![image.png](image%2020.png)
+![Go to subnet route table](image%2020.png)
 
 進入 Route table 頁面：
 
@@ -196,14 +196,14 @@ curl -6 http://nlb-from-ipv4-to-dual-stack-a7d193e605191856.elb.us-west-2.amazon
 2. 展開 **Actions menu**
 3. 點擊 **Edit routes**
 
-![image.png](image%2021.png)
+![Edit routes](image%2021.png)
 
 新增 route:
 
 - **Destination:** `::/0`
 - **Target**: Internet Gateway
 
-![image.png](image%2022.png)
+![Add route](image%2022.png)
 
 改好後，再次發出 HTTP 請求
 
@@ -282,7 +282,7 @@ IPv4 Client -> Dual-stack NLB -> IPv4 Target Group Instance
 
 要找到 EC2 所處的 Subnet，我習慣進入 EC2 頁面，直接找到這台 EC2 所處的 Subnet
 
-![image.png](image%2025.png)
+![Go to EC2 Subnet](image%2025.png)
 
 進入 VPC Subnet 頁面：
 
@@ -290,13 +290,13 @@ IPv4 Client -> Dual-stack NLB -> IPv4 Target Group Instance
 2. 展開 **Actions menu**
 3. 點擊 **Edit IPv6 CIDR**
 
-![image.png](image%2026.png)
+![Assign IPv6 CIDR for EC2 subnet](image%2026.png)
 
 從 VPC 中分配一個 `/64` 的 IPv6 CIDR 子網給他
 
 **注意：**配給這個子網的 CIDR 不要和同 VPC 中的其他 Subnet CIDRs 有 Overlapping!
 
-![image.png](image%2027.png)
+![Assign IPv6 CIDR](image%2027.png)
 
 ### Step2: Assign IPv6 address 給 Instance
 
@@ -307,14 +307,14 @@ IPv4 Client -> Dual-stack NLB -> IPv4 Target Group Instance
 3. 點擊 **Networking**
 4. 點擊 **Manage IP addresses**
 
-![image.png](image%2028.png)
+![Go to Manage IP addresses page](image%2028.png)
 
 Assign IPv6 Address:
 
 1. 展開 **eth0**
 2. 在 IPv6 addresses 的 Section 下，點擊 **Assign new IP address，欄位可以不填寫**，他會從子網的 IPv6 CIDR 中 Auto-assign
 
-![image.png](image%2029.png)
+![Assign IPv6 address to EC2](image%2029.png)
 
 ### Step 3: 建立 IPv6 Instance type target group
 
@@ -334,16 +334,16 @@ Assign IPv6 Address:
 
 其他保持預設，然後按下 Next
 
-![image.png](image%2030.png)
+![Create target group configuration - 1](image%2030.png)
 
-![image.png](image%2031.png)
+![Create target group configuration - 2](image%2031.png)
 
 **Register targets:**
 
 1. **點擊 Unassigned**
 2. **Manage IP addresses**
 
-![image.png](image%2032.png)
+![Go to Manage IP addresses page](image%2032.png)
 
 成功進到 **Manage IP addresses** 頁面：
 
@@ -351,14 +351,14 @@ Assign IPv6 Address:
 2. 勾選 **Enable Assign primary IPv6 IP**
 3. 點擊 **Save**
 
-![image.png](image%2033.png)
+![Enable Assign primary IPv6 IP](image%2033.png)
 
 回到剛才 Target Group 的頁面：
 
 1. 點擊右上角 Refresh icon (如下圖紅框所示)
 2. 成功的話，你會看到表格中 **Primary IPv6 address 欄位從原本的** **Unassigned 變成顯示對應的 IPv6 address**
 
-![image.png](image%2034.png)
+![Primary IPv6 address is available](image%2034.png)
 
 Register targets:
 
@@ -366,7 +366,7 @@ Register targets:
 2. 點擊 **Include as pending below**
 3. 點擊 **Create target group**
 
-![image.png](image%2035.png)
+![Register targets](image%2035.png)
 
 ### Step 4: 修改 NLB Listener 的 Target
 
@@ -379,11 +379,11 @@ Register targets:
 1. 勾選 **Listener**
 2. 點擊 **Edit listener**
 
-![image.png](image%2036.png)
+![Edit listener](image%2036.png)
 
 修改成剛才所創建的 IPv6 Target Group
 
-![image.png](image%2037.png)
+![Change to IPv6 Target Group](image%2037.png)
 
 切換 TG 後，需要等一下下，因為 NLB 還要做 Health Check 需要一點時間
 
@@ -394,7 +394,7 @@ Register targets:
 > NLB Private IPv4 address: `10.0.9.20`
 > NLB IPv6 address: 2600:1f14:2549:300:7935:fbac:a7b4:84d5
 
-![image.png](image%2038.png)
+![The health check client IP address has turned to IPv6](image%2038.png)
 
 到這裡，我們已經成功把 Target Group 升級成 Dual-stack 了！
 
