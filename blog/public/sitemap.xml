@@ -2,13 +2,61 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://shiun.me/blog/tag-based-lambda-warmer-low-cost-high-flexibility/</loc>
-    <lastmod>2024-12-30T22:27:20+08:00</lastmod>
-  </url><url>
     <loc>https://shiun.me/tags/aws/</loc>
-    <lastmod>2024-12-30T22:27:20+08:00</lastmod>
+    <lastmod>2025-01-08T23:36:55+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/categories/aws/</loc>
+    <lastmod>2025-01-08T23:36:55+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/aws-ec2/</loc>
+    <lastmod>2025-01-08T23:36:55+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/aws-elb/</loc>
+    <lastmod>2025-01-08T23:36:55+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/aws-networking/</loc>
+    <lastmod>2025-01-08T23:36:55+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/aws-nlb/</loc>
+    <lastmod>2025-01-08T23:36:55+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/aws-vpc/</loc>
+    <lastmod>2025-01-08T23:36:55+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/blog/</loc>
+    <lastmod>2025-01-08T23:36:55+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/</loc>
+    <lastmod>2025-01-08T23:36:55+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/dual-stack/</loc>
+    <lastmod>2025-01-08T23:36:55+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/ipv6/</loc>
+    <lastmod>2025-01-08T23:36:55+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/migration/</loc>
+    <lastmod>2025-01-08T23:36:55+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/migration/</loc>
+    <lastmod>2025-01-08T23:36:55+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/networking/</loc>
+    <lastmod>2025-01-08T23:36:55+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/networking/</loc>
+    <lastmod>2025-01-08T23:36:55+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/</loc>
+    <lastmod>2025-01-08T23:36:55+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/</loc>
+    <lastmod>2025-01-08T23:36:55+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/blog/upgrading-existing-nlb-ipv4-only-to-dual-stack/</loc>
+    <lastmod>2025-01-08T23:36:55+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/blog/tag-based-lambda-warmer-low-cost-high-flexibility/</loc>
     <lastmod>2024-12-30T22:27:20+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/aws-eventbridge/</loc>
@@ -20,22 +68,10 @@
     <loc>https://shiun.me/tags/aws-lambda/</loc>
     <lastmod>2024-12-30T22:27:20+08:00</lastmod>
   </url><url>
-    <loc>https://shiun.me/blog/</loc>
-    <lastmod>2024-12-30T22:27:20+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/categories/</loc>
-    <lastmod>2024-12-30T22:27:20+08:00</lastmod>
-  </url><url>
     <loc>https://shiun.me/tags/serverless/</loc>
     <lastmod>2024-12-30T22:27:20+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/categories/serverless/</loc>
-    <lastmod>2024-12-30T22:27:20+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/</loc>
-    <lastmod>2024-12-30T22:27:20+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/</loc>
     <lastmod>2024-12-30T22:27:20+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/terraform/</loc>
@@ -83,16 +119,7 @@
     <loc>https://shiun.me/blog/how-to-set-up-a-aws-site-to-site-vpn-with-libreswan/</loc>
     <lastmod>2024-10-22T00:00:14+08:00</lastmod>
   </url><url>
-    <loc>https://shiun.me/tags/aws-vpc/</loc>
-    <lastmod>2024-10-22T00:00:14+08:00</lastmod>
-  </url><url>
     <loc>https://shiun.me/tags/libreswan/</loc>
-    <lastmod>2024-10-22T00:00:14+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/networking/</loc>
-    <lastmod>2024-10-22T00:00:14+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/categories/networking/</loc>
     <lastmod>2024-10-22T00:00:14+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/vpn/</loc>

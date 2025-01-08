@@ -266,6 +266,22 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">如何將現有 NLB IPv4-only 架構升級為 Dual-stack
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>目標 將現有的 IPv4-only NLB 升級為支援 dual-stack 讓 Target Group 從純 IPv4 轉換為支援 IPv6 確保整個架構能同時處理 IPv4 和 IPv6 的流量 我們將逐步完成這個轉換過程，包括配置 VPC、更新 NLB 設置、修改 security groups，以及設定 target groups。每個步驟都會提供詳細的操作說明和技術細節，幫助您順利完成這個升級過程。
+現有架構 現在的架構是一個很基本的 IPv4 NLB(Internet-facing) → Target Group (IPv4 Instance type ) 的架構
+點擊展開以查看詳細內容 VPC NLB
+Details Security Group Target Group
+Instance Security Group ...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-01-08 23:36:55 +0800 CST'>January 8, 2025</span>&nbsp;·&nbsp;6 min</footer>
+  <a class="entry-link" aria-label="post link to 如何將現有 NLB IPv4-only 架構升級為 Dual-stack" href="https://shiun.me/blog/upgrading-existing-nlb-ipv4-only-to-dual-stack/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">[Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer
     </h2>
   </header>
@@ -334,26 +350,6 @@ Aurora Serverless v2 每個 ACU 一小時 0.12 美金 RDS for MySQL - db.t4g.mic
   <footer class="entry-footer"><span title='2024-10-22 00:00:14 +0800 CST'>October 22, 2024</span>&nbsp;·&nbsp;5 min</footer>
   <a class="entry-link" aria-label="post link to AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step)" href="https://shiun.me/blog/how-to-set-up-a-aws-site-to-site-vpn-with-libreswan/"></a>
 </article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">以真實世界寄信來比喻，理解電子郵件寄送流程
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>因為我最近在開發寄信系統，因此理解電子郵件寄送的流程和原理是很重要的，為了方便理解，所以我會用真實世界中我們去郵局寄信來比喻電子郵件的寄送流程，這麼做是為了幫助理解，所以比喻那部分很難做到 100% 完全和技術細節對齊
-用真實世界在郵局寄信，理解電子郵件寄送的流程 圖片取自: 維基百科
-為了更好地理解電子郵件的寄送過程，我們可以把它比作郵局寄信的過程。假設 Alice 給 Bob 寫了一封感謝信，然後她將信件帶到郵局處理寄信手續。接下來，我們來看看具體過程:
-創建信件
-郵局寄信: Alice 寫好感謝信，裝進信封，寫上寄件人和收件人的地址，貼上郵票。 電子郵件: 你在郵件客戶端 (例如: Outlook、Gmail) 或透過 API 建立一封郵件，內容包含寄件人 (例如: alice@example.tw) 、收件人 (例如: bob@demodomain.tw) 、主題、內文及其他可能的附件。 信件寄送
-郵局寄信: Alice 把信帶到郵局，然後找郵局的櫃台人員。 電子郵件: 當你點擊「寄送」後，郵件客戶端會將這封郵件交給寄件人的郵件伺服器，稱為 SMTP 伺服器 (Simple Mail Transfer Protocol) 。 SMTP 伺服器處理
-郵局寄信: 郵局的櫃台人員會檢查地址是否正確，然後進行分類。 電子郵件: 寄件人的 SMTP 伺服器會驗證寄件人的身份，檢查信件格式是否正確，並根據收件人的域名 (例如: demodomain.tw) 查找相應的 MX 記錄 (Mail Exchange) 來確定收件人的郵件伺服器位置。 像如果對方沒有設定 MX Record，寄信過去就會出現以下 ERROR，找不到對應的 MX Record DNS 查詢
-郵局寄信: 郵局櫃台人員會根據地址查找對應郵遞區號。 電子郵件: 寄件人的 SMTP 伺服器會透過 DNS (Domain Name System) 查詢收件人域名的 MX 記錄，以獲取負責接收郵件的伺服器的 IP 位址。 信件傳輸
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-08-08 21:27:44 +0800 CST'>August 8, 2024</span>&nbsp;·&nbsp;1 min</footer>
-  <a class="entry-link" aria-label="post link to 以真實世界寄信來比喻，理解電子郵件寄送流程" href="https://shiun.me/blog/how-does-email-sending-work/"></a>
-</article>
 <footer class="page-footer">
   <nav class="pagination">
     <a class="next" href="https://shiun.me/page/2/">Next&nbsp;&nbsp;»
@@ -363,7 +359,7 @@ Aurora Serverless v2 每個 ACU 一小時 0.12 美金 RDS for MySQL - db.t4g.mic
     </main>
     
 <footer class="footer">
-    <span>&copy; 2024 <a href="https://shiun.me/">Shiun</a></span>
+    <span>&copy; 2025 <a href="https://shiun.me/">Shiun</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

@@ -235,6 +235,26 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">以真實世界寄信來比喻，理解電子郵件寄送流程
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>因為我最近在開發寄信系統，因此理解電子郵件寄送的流程和原理是很重要的，為了方便理解，所以我會用真實世界中我們去郵局寄信來比喻電子郵件的寄送流程，這麼做是為了幫助理解，所以比喻那部分很難做到 100% 完全和技術細節對齊
+用真實世界在郵局寄信，理解電子郵件寄送的流程 圖片取自: 維基百科
+為了更好地理解電子郵件的寄送過程，我們可以把它比作郵局寄信的過程。假設 Alice 給 Bob 寫了一封感謝信，然後她將信件帶到郵局處理寄信手續。接下來，我們來看看具體過程:
+創建信件
+郵局寄信: Alice 寫好感謝信，裝進信封，寫上寄件人和收件人的地址，貼上郵票。 電子郵件: 你在郵件客戶端 (例如: Outlook、Gmail) 或透過 API 建立一封郵件，內容包含寄件人 (例如: alice@example.tw) 、收件人 (例如: bob@demodomain.tw) 、主題、內文及其他可能的附件。 信件寄送
+郵局寄信: Alice 把信帶到郵局，然後找郵局的櫃台人員。 電子郵件: 當你點擊「寄送」後，郵件客戶端會將這封郵件交給寄件人的郵件伺服器，稱為 SMTP 伺服器 (Simple Mail Transfer Protocol) 。 SMTP 伺服器處理
+郵局寄信: 郵局的櫃台人員會檢查地址是否正確，然後進行分類。 電子郵件: 寄件人的 SMTP 伺服器會驗證寄件人的身份，檢查信件格式是否正確，並根據收件人的域名 (例如: demodomain.tw) 查找相應的 MX 記錄 (Mail Exchange) 來確定收件人的郵件伺服器位置。 像如果對方沒有設定 MX Record，寄信過去就會出現以下 ERROR，找不到對應的 MX Record DNS 查詢
+郵局寄信: 郵局櫃台人員會根據地址查找對應郵遞區號。 電子郵件: 寄件人的 SMTP 伺服器會透過 DNS (Domain Name System) 查詢收件人域名的 MX 記錄，以獲取負責接收郵件的伺服器的 IP 位址。 信件傳輸
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-08-08 21:27:44 +0800 CST'>August 8, 2024</span>&nbsp;·&nbsp;1 min</footer>
+  <a class="entry-link" aria-label="post link to 以真實世界寄信來比喻，理解電子郵件寄送流程" href="https://shiun.me/blog/how-does-email-sending-work/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">從 AWS SES 轉寄信件無法正確顯示內嵌圖片談起：MIME 內嵌圖片原理與實踐
     </h2>
   </header>
@@ -312,22 +332,6 @@ import json import logging import boto3 from botocore.exceptions import ClientEr
   <footer class="entry-footer"><span title='2024-07-19 23:04:08 +0800 CST'>July 19, 2024</span>&nbsp;·&nbsp;2 min</footer>
   <a class="entry-link" aria-label="post link to 如何使用 Lambda 處理 AWS Cognito User 首次登入被系統要求強制變更密碼" href="https://shiun.me/blog/aws-cognito-how-to-handle-force-change-password/"></a>
 </article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>在 AWS API Gateway 創建 method 時，我們可以指定他要把請求傳到哪個 AWS 服務或是其他 HTTP Endpoint…等等，而如果你選擇 Lambda，你會看到有一個選項是 Lambda Proxy Integration，那我把它勾選起來會怎樣呢？
-TL;DR 如果有打開 Lambda Proxy Integration，接著我們到那個 Resource 的 Method 頁面看一下，會看到下圖的提示 Proxy integration For proxy integrations, API Gateway automatically passes the backend output to the caller as the complete payload.
-但也許沒有很好理解，所以我們後面會實際打 Code 來示範，但我這邊先稍微解釋一下打開這個功能的影響:
-完整的 HTTP 請求資訊：啟用 Lambda Proxy Integration 後，API Gateway 會將整個 HTTP 請求打包成單一的 event object，並傳遞給 Lambda Function 簡化的處理流程：Lambda Function 接收到的是一個包含了所有請求資訊的 event object，因此不需要再通過模板或轉換就可以直接處理請求。這樣簡化了函數的輸入處理，因為 Lambda Function 已經包含了所有必要的請求資訊 控制 HTTP Response：Lambda Function 需要返回一個特定格式的物件，這個物件包括 Status Code、Response Headers 和 Response Body。由於 Response 是直接由 Lambda Function 生成的，所以開發者可以完全控制 Response 的格式和內容 效能和成本效益：由於請求處理的過程更加直接，減少了中間的處理和轉換步驟，可以提高處理效率，可能也會在某種程度上降低成本 總之，選擇 Lambda Proxy Integration 可以使得與 AWS Lambda 的整合更加緊密、直接和高效。這適合需要精細控制 HTTP 響應的場景，或者希望簡化 API 與 Lambda 之間交互的架構設計
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-06-14 23:41:33 +0800 CST'>June 14, 2024</span>&nbsp;·&nbsp;4 min</footer>
-  <a class="entry-link" aria-label="post link to 深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能" href="https://shiun.me/blog/understanding-lambda-proxy-integration/"></a>
-</article>
 <footer class="page-footer">
   <nav class="pagination">
     <a class="prev" href="https://shiun.me/">
@@ -340,7 +344,7 @@ TL;DR 如果有打開 Lambda Proxy Integration，接著我們到那個 Resource 
     </main>
     
 <footer class="footer">
-    <span>&copy; 2024 <a href="https://shiun.me/">Shiun</a></span>
+    <span>&copy; 2025 <a href="https://shiun.me/">Shiun</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

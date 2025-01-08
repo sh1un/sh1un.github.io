@@ -11,8 +11,15 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Mon, 30 Dec 2024 22:27:20 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 08 Jan 2025 23:36:55 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>如何將現有 NLB IPv4-only 架構升級為 Dual-stack</title>
+      <link>https://shiun.me/blog/upgrading-existing-nlb-ipv4-only-to-dual-stack/</link>
+      <pubDate>Wed, 08 Jan 2025 23:36:55 +0800</pubDate>
+      <guid>https://shiun.me/blog/upgrading-existing-nlb-ipv4-only-to-dual-stack/</guid>
+      <description>本文將透過圖文，詳細地引導您如何將現有的 IPv4 Network Load Balancer (NLB) 架構升級為支援 dual-stack（同時支援 IPv4 和 IPv6）的配置。</description>
+    </item>
     <item>
       <title>[Terraform Module] 一個低成本、高靈活性，輕鬆預熱上百個 Lambda Function 的解決方案：Tag-Based Lambda Warmer</title>
       <link>https://shiun.me/blog/tag-based-lambda-warmer-low-cost-high-flexibility/</link>
