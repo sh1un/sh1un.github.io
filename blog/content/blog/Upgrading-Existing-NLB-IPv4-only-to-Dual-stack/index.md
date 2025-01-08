@@ -38,6 +38,8 @@ keywords:
 
 我們將逐步完成這個轉換過程，包括配置 VPC、更新 NLB 設置、修改 security groups，以及設定 target groups。每個步驟都會提供詳細的操作說明和技術細節，幫助您順利完成這個升級過程。
 
+---
+
 ## 現有架構
 
 現在的架構是一個很基本的 IPv4 NLB(Internet-facing) → Target Group (IPv4 Instance type ) 的架構
@@ -45,8 +47,7 @@ keywords:
 <!-- markdownlint-disable -->
 ![Existing NLB IPv4-only Architecture Diagram.png](Existing-NLB-IPv4-only-Architecture-Diagram.png)
 
-<details>
-<summary>展開查看現有架構詳細內容截圖</summary>
+{{< collapse summary="點擊展開以查看詳細內容" >}}
 
 - VPC
     ![VPC Resource map](image.png)
@@ -64,8 +65,10 @@ keywords:
   - Security Group
       ![Target Group instance SG](image%205.png)
 
-</details>
+{{< /collapse >}}
 <!-- markdownlint-restore -->
+
+---
 
 ## Section 1: NLB IPv4 → Dual-stack
 
@@ -276,6 +279,8 @@ IPv4 Client -> Dual-stack NLB -> IPv4 Target Group Instance
 
   ![NLB IPv6 address: 2600:1f14:2549:300:17c1:6c5d:ba29:ce1](image%2024.png)
 
+---
+
 ## Section2: 讓 Target Group 也變成 Dual-stack
 
 ### Step 1: 分配 IPv6 CIDR 給 Target Group 的 Instance 所處 subnet
@@ -412,7 +417,14 @@ curl -6 http://nlb-from-ipv4-to-dual-stack-a7d193e605191856.elb.us-west-2.amazon
 IPv6 Client -> Dual-stack NLB (Layer 4) -> IPv6 Target Group Instance
 ```
 
-因為 NLB 運作在網路層(Layer 4)，所以它會保持協議的透明傳輸，不會改寫封包的源地址。這意味著 Target Group 中的 Instance 可以直接看到原始的 Client IP address。
+NLB 運作於第 4 層（傳輸層），專門處理傳輸層協議（如 TCP 和 UDP）的流量。由於 NLB 不會對應用層數據進行處理，因此它可以保留封包的原始來源 IP 地址，使後端 Target Group（例如 EC2 Instances）能直接看到 Client 的 IP 地址。
+
+但是要注意，不同的 Target Group 配置會讓保留原始 Client IP 行為略有不同：
+
+1. Target Group 使用實例 ID（Instance ID）：
+NLB 會直接保留原始的 Client IP 地址，無需額外設定。
+2. Target Group 使用 IP 地址（IP Address）：
+如果使用的是 TCP 或 TLS 協議，NLB 預設不會保留 Client IP 地址。在這種情況下，可以啟用 Proxy Protocol v2，以將原始的 Client IP 地址嵌入到傳遞給目標的封包中。
 
 以下是 Target Instance 上 httpd 的 access log，可以看到記錄的是客戶端的 IPv6 地址 `2407:4b00:1c02:77d9:8041:f560:157a:c42c` (這就是我電腦的 IPv6 address):
 
@@ -436,9 +448,12 @@ curl -4 http://nlb-from-ipv4-to-dual-stack-a7d193e605191856.elb.us-west-2.amazon
 
 這時候就需要 Proxy Protocol 的幫助了！
 
-由於不是本文重點，要怎麼配置，請見我的 Notion 筆記： [配置 Nginx 支持 Proxy Protocol v2](https://www.notion.so/Nginx-Proxy-Protocol-v2-173ea7e0d9d0802f892ce2b62c8fcd9f?pvs=21)
+由於這部分不是本文重點，要怎麼在配置 Proxy Protocol 來讓你的 Server 支援 Proxy Protocol 可以參考我的 Notion 筆記，但我這個筆記中是以 Nginx 為示範，跟本文使用 Httpd 不一樣唷：
+- 連結：[配置 Nginx 支持 Proxy Protocol v2](https://www.notion.so/Nginx-Proxy-Protocol-v2-173ea7e0d9d0802f892ce2b62c8fcd9f?pvs=21)
 
 > 若之後有時間我會重新整理 Notion 筆記中的 Proxy Protocol 的配置，再上傳到部落格
+
+---
 
 ## Resources
 
