@@ -11,8 +11,15 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Tue, 22 Oct 2024 00:00:14 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 08 Jan 2025 23:36:55 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/tags/aws-vpc/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>如何將現有 NLB IPv4-only 架構升級為 Dual-stack</title>
+      <link>https://shiun.me/blog/upgrading-existing-nlb-ipv4-only-to-dual-stack/</link>
+      <pubDate>Wed, 08 Jan 2025 23:36:55 +0800</pubDate>
+      <guid>https://shiun.me/blog/upgrading-existing-nlb-ipv4-only-to-dual-stack/</guid>
+      <description>本文將透過圖文，詳細地引導您如何將現有的 IPv4 Network Load Balancer (NLB) 架構升級為支援 dual-stack（同時支援 IPv4 和 IPv6）的配置。</description>
+    </item>
     <item>
       <title>AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step)</title>
       <link>https://shiun.me/blog/how-to-set-up-a-aws-site-to-site-vpn-with-libreswan/</link>

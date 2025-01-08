@@ -235,6 +235,22 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>在 AWS API Gateway 創建 method 時，我們可以指定他要把請求傳到哪個 AWS 服務或是其他 HTTP Endpoint…等等，而如果你選擇 Lambda，你會看到有一個選項是 Lambda Proxy Integration，那我把它勾選起來會怎樣呢？
+TL;DR 如果有打開 Lambda Proxy Integration，接著我們到那個 Resource 的 Method 頁面看一下，會看到下圖的提示 Proxy integration For proxy integrations, API Gateway automatically passes the backend output to the caller as the complete payload.
+但也許沒有很好理解，所以我們後面會實際打 Code 來示範，但我這邊先稍微解釋一下打開這個功能的影響:
+完整的 HTTP 請求資訊：啟用 Lambda Proxy Integration 後，API Gateway 會將整個 HTTP 請求打包成單一的 event object，並傳遞給 Lambda Function 簡化的處理流程：Lambda Function 接收到的是一個包含了所有請求資訊的 event object，因此不需要再通過模板或轉換就可以直接處理請求。這樣簡化了函數的輸入處理，因為 Lambda Function 已經包含了所有必要的請求資訊 控制 HTTP Response：Lambda Function 需要返回一個特定格式的物件，這個物件包括 Status Code、Response Headers 和 Response Body。由於 Response 是直接由 Lambda Function 生成的，所以開發者可以完全控制 Response 的格式和內容 效能和成本效益：由於請求處理的過程更加直接，減少了中間的處理和轉換步驟，可以提高處理效率，可能也會在某種程度上降低成本 總之，選擇 Lambda Proxy Integration 可以使得與 AWS Lambda 的整合更加緊密、直接和高效。這適合需要精細控制 HTTP 響應的場景，或者希望簡化 API 與 Lambda 之間交互的架構設計
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-06-14 23:41:33 +0800 CST'>June 14, 2024</span>&nbsp;·&nbsp;4 min</footer>
+  <a class="entry-link" aria-label="post link to 深度解析 AWS API Gateway 的 Lambda Proxy Integration 功能" href="https://shiun.me/blog/understanding-lambda-proxy-integration/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">要導入 IaC？用 Terraform Import 導入現有資源
     </h2>
   </header>
@@ -300,25 +316,6 @@ Windows 安裝 Windows 安裝相當簡單，只要去官方文檔裡面下載 MS
   <footer class="entry-footer"><span title='2024-04-28 04:27:23 +0800 CST'>April 28, 2024</span>&nbsp;·&nbsp;3 min</footer>
   <a class="entry-link" aria-label="post link to Serverless Framework 101 - 輕鬆開發並快速部署你的 AWS Lambda" href="https://shiun.me/blog/serverless-framework-101/"></a>
 </article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">AWS Internet Gateway vs NAT Gateway 及使用心得分享
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>在準備 SAA 的過程中，我覺得最難的部分就是網路，這篇文章主要先介紹一下 IGW 和 NAT Gateway 的差異，接著介紹一些使用心得。
-另外分享一下活動，最近我們大使推出了一個「證照陪跑計畫」，可以透過這個活動拿到 50% 折價券、AWS 贈品、考照學習資源以及加入 DC 社群，一直招募到 2024/04/28，有興趣的讀者可以來報名！(報名表單連結)
-Internet Gateway (IGW) IGW 是一種允許 VPC 與 Internet 之間通訊的 VPC 組件。它能讓 VPC 內的資源如 EC2 Instance 直接訪問 Internet，同時也能讓 Internet 上的使用者訪問 VPC 內的資源。
-主要功能包括：
-雙向通訊支持：允許配有 Public IP 的 Instance 訪問 Internet，同時也能接收來自 Internet 的數據。 高度的可靠性和擴展性：確保無需用戶干預即可維持服務的持續可用。 NAT Gateway NAT Gateway 是一種網路地址轉換服務，允許 Private Subnet 中的 Instance 連接到 VPC 外部的服務，同時阻止外部服務主動連接這些實例。這種設計特別適合需要訪問 Internet 但不需要從 Internet 接受直接訪問的敏感或保密環境。
-NAT Gateway 價錢:
-NAT Gateway 收費 = NAT Gateway 開啟時間 USD 0.062 per Hour &#43; 經過 NAT 資料處理費用 USD 0.062 per GB &#43; (Optional) 跨 AZ 傳輸費用 0.02 per GB (發送&#43;接收) 總而言之很貴，最新價錢請參考 AWS 官方
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-04-21 01:04:16 +0800 CST'>April 21, 2024</span>&nbsp;·&nbsp;1 min</footer>
-  <a class="entry-link" aria-label="post link to AWS Internet Gateway vs NAT Gateway 及使用心得分享" href="https://shiun.me/blog/internet-gateway-vs-nat-gateway/"></a>
-</article>
 <footer class="page-footer">
   <nav class="pagination">
     <a class="prev" href="https://shiun.me/page/2/">
@@ -331,7 +328,7 @@ NAT Gateway 收費 = NAT Gateway 開啟時間 USD 0.062 per Hour &#43; 經過 NA
     </main>
     
 <footer class="footer">
-    <span>&copy; 2024 <a href="https://shiun.me/">Shiun</a></span>
+    <span>&copy; 2025 <a href="https://shiun.me/">Shiun</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

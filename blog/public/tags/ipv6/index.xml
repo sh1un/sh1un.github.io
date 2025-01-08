@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>IPv6 on Shiun</title>
+    <link>https://shiun.me/tags/ipv6/</link>
+    <description>Recent content in IPv6 on Shiun</description>
+    <image>
+      <title>Shiun</title>
+      <url>https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea</url>
+      <link>https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-tw</language>
+    <lastBuildDate>Wed, 08 Jan 2025 23:36:55 +0800</lastBuildDate>
+    <atom:link href="https://shiun.me/tags/ipv6/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>如何將現有 NLB IPv4-only 架構升級為 Dual-stack</title>
+      <link>https://shiun.me/blog/upgrading-existing-nlb-ipv4-only-to-dual-stack/</link>
+      <pubDate>Wed, 08 Jan 2025 23:36:55 +0800</pubDate>
+      <guid>https://shiun.me/blog/upgrading-existing-nlb-ipv4-only-to-dual-stack/</guid>
+      <description>本文將透過圖文，詳細地引導您如何將現有的 IPv4 Network Load Balancer (NLB) 架構升級為支援 dual-stack（同時支援 IPv4 和 IPv6）的配置。</description>
+    </item>
+  </channel>
+</rss>
