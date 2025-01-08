@@ -449,7 +449,8 @@ curl -4 http://nlb-from-ipv4-to-dual-stack-a7d193e605191856.elb.us-west-2.amazon
 這時候就需要 Proxy Protocol 的幫助了！
 
 由於這部分不是本文重點，要怎麼在配置 Proxy Protocol 來讓你的 Server 支援 Proxy Protocol 可以參考我的 Notion 筆記，但我這個筆記中是以 Nginx 為示範，跟本文使用 Httpd 不一樣唷：
-- 連結：[配置 Nginx 支持 Proxy Protocol v2](https://www.notion.so/Nginx-Proxy-Protocol-v2-173ea7e0d9d0802f892ce2b62c8fcd9f?pvs=21)
+
+- 連結：[配置 Nginx 支持 Proxy Protocol v2](https://shiun.notion.site/Dual-stack-network-design-in-AWS-173ea7e0d9d080988482c722081d37dc?pvs=97#173ea7e0d9d0802f892ce2b62c8fcd9f)
 
 > 若之後有時間我會重新整理 Notion 筆記中的 Proxy Protocol 的配置，再上傳到部落格
 
