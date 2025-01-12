@@ -266,6 +266,24 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>在前一篇教學中 如何將現有 NLB IPv4-only 架構升級為 Dual-stack，我們已經配置好一個支援 Dual-stack 的 NLB 了。
+現在假設有一個需求：「客戶需要調用我們的 API，且他們也使用 AWS。」有沒有辦法不經過 Internet，而是直接透過 AWS 的骨幹網路 (Backbone)，將流量送到我們的 NLB？同時避免使用 VPC Peering 或 Transit Gateway，確保網路不完全打通，以降低潛在風險，例如資料洩漏或不必要的安全隱患。
+答案就是 PrivateLink
+什麼是 PrivateLink？ AWS PrivateLink 是一種安全的網路技術，允許服務提供者 (Service Provider) 將他們的服務透過 VPC Endpoint 暴露給使用者 (Service Consumer)，而不需要將流量經過公網 (Internet)。它能確保所有流量都在 AWS 的骨幹網路內部傳輸，提供高安全性、低延遲的解決方案。
+PrivateLink 的核心特點:
+避免暴露服務到公網： Service Provider 的服務不需要有 Public IP，Consumer 可以透過 Private IP 訪問這些服務。 簡化網路架構： 無需設定 VPC Peering、Transit Gateway，所以不用擔心整個網路打通的安全風險。 跨帳號支持： Service Provider 和 Consumer 可以位於不同 AWS 帳號，甚至不同 AWS 組織。 多 Region 支持： PrivateLink 現在也支援跨區域的流量傳輸 (需額外配置)。(Reference) 可以自定義的 Private DNS name： Consumer 可以直接使用 Service Provider 提供的 Private DNS Name 調用服務。 Terminology Service Consumer: 使用服務的一方。Consumer 會在自己的 VPC 中建立 VPC Interface Endpoint 來連接到 Provider 的 Endpoint service。Consumer 必須等待 Provider 接受連接請求後，才能開始使用服務。透過這種方式，Consumer 可以安全地存取 Provider 的服務，而無需經過公有網路。 Endpoint: VPC Interface Endpoint (VPCE) 是一個彈性網路介面，具有私有 IP 位址。它作為進入 AWS 服務的進入點，讓 VPC 中的資源可以私密地存取這些服務。在 PrivateLink 架構中，這是 Consumer 端建立的元件。 Service Provider: 提供服務的一方。Provider 需要建立 Endpoint service 並將其與 NLB 或是 GWLB 關聯，然後可以選擇性地允許哪些 AWS 帳戶可以連接到此服務。Provider 負責接受或拒絕來自 Consumer 的連接請求。 Endpoint service: Endpoint service 是由 Service Provider 建立的服務，可以與 Network Load Balancer (NLB) 或是 Gateway Load Balancer (GWLB) 關聯。這個服務允許其他 AWS 帳戶 (Consumer) 通過 VPC Interface Endpoint 連接到 Provider 的服務。 Section 1: 配置 PrivateLink Step 1: [Provider] 創建 Endpoint service 在 Section 1 - Step 1，我們要扮演 Service Provider，我們是提供 Service 的人。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-01-12 23:41:42 +0800 CST'>January 12, 2025</span>&nbsp;·&nbsp;7 min</footer>
+  <a class="entry-link" aria-label="post link to AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作" href="https://shiun.me/blog/aws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">如何將現有 NLB IPv4-only 架構升級為 Dual-stack
     </h2>
   </header>
@@ -333,22 +351,6 @@ Aurora Serverless v2 每個 ACU 一小時 0.12 美金 RDS for MySQL - db.t4g.mic
   </div>
   <footer class="entry-footer"><span title='2024-11-17 13:33:51 +0800 CST'>November 17, 2024</span>&nbsp;·&nbsp;4 min</footer>
   <a class="entry-link" aria-label="post link to 一起回顧我的 AWS Educate 雲端大使成長之旅" href="https://shiun.me/blog/my-growth-journey-as-an-aws-educate-cloud-ambassador/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step)
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>最近正在準備 AWS ANS 證照剛好學到 AWS Site-to-Site VPN，也因此實作練習對我來說很重要所以打算寫這篇文章，一方面記錄實作過程一方面留著可以作為教學文章供他人參考
-這篇文章將教學如何在 AWS 上建立 Site-to-Site VPN，我們會使用 Libreswan 來配置 VPN Server，這樣就可以在 AWS VPC 和 Data Center (本文示範會在 N. Virginia Region 中建立 VPC 來模擬 Data Center) 之間建立一個安全的 VPN Tunnel，讓兩者可以互相通信
-一、創建 VPC (Oregon Region) 首先我們先創建架構圖右邊 AWS 的 VPC，因此我切換到 Oregon Region，並且依照下圖配置 VPC 以及 Subnet
-二、配置 Route Table (Oregon Region) 然後創建 Route Table，並和上一步創建的 Subnet 建立 Association
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-10-22 00:00:14 +0800 CST'>October 22, 2024</span>&nbsp;·&nbsp;5 min</footer>
-  <a class="entry-link" aria-label="post link to AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step)" href="https://shiun.me/blog/how-to-set-up-a-aws-site-to-site-vpn-with-libreswan/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

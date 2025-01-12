@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>AWS PrivateLink on Shiun</title>
+    <link>https://shiun.me/tags/aws-privatelink/</link>
+    <description>Recent content in AWS PrivateLink on Shiun</description>
+    <image>
+      <title>Shiun</title>
+      <url>https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea</url>
+      <link>https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-tw</language>
+    <lastBuildDate>Sun, 12 Jan 2025 23:41:42 +0800</lastBuildDate>
+    <atom:link href="https://shiun.me/tags/aws-privatelink/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作</title>
+      <link>https://shiun.me/blog/aws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration/</link>
+      <pubDate>Sun, 12 Jan 2025 23:41:42 +0800</pubDate>
+      <guid>https://shiun.me/blog/aws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration/</guid>
+      <description>完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS 實現更好的可用性。</description>
+    </item>
+  </channel>
+</rss>

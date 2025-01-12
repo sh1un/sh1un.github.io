@@ -222,6 +222,24 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>在前一篇教學中 如何將現有 NLB IPv4-only 架構升級為 Dual-stack，我們已經配置好一個支援 Dual-stack 的 NLB 了。
+現在假設有一個需求：「客戶需要調用我們的 API，且他們也使用 AWS。」有沒有辦法不經過 Internet，而是直接透過 AWS 的骨幹網路 (Backbone)，將流量送到我們的 NLB？同時避免使用 VPC Peering 或 Transit Gateway，確保網路不完全打通，以降低潛在風險，例如資料洩漏或不必要的安全隱患。
+答案就是 PrivateLink
+什麼是 PrivateLink？ AWS PrivateLink 是一種安全的網路技術，允許服務提供者 (Service Provider) 將他們的服務透過 VPC Endpoint 暴露給使用者 (Service Consumer)，而不需要將流量經過公網 (Internet)。它能確保所有流量都在 AWS 的骨幹網路內部傳輸，提供高安全性、低延遲的解決方案。
+PrivateLink 的核心特點:
+避免暴露服務到公網： Service Provider 的服務不需要有 Public IP，Consumer 可以透過 Private IP 訪問這些服務。 簡化網路架構： 無需設定 VPC Peering、Transit Gateway，所以不用擔心整個網路打通的安全風險。 跨帳號支持： Service Provider 和 Consumer 可以位於不同 AWS 帳號，甚至不同 AWS 組織。 多 Region 支持： PrivateLink 現在也支援跨區域的流量傳輸 (需額外配置)。(Reference) 可以自定義的 Private DNS name： Consumer 可以直接使用 Service Provider 提供的 Private DNS Name 調用服務。 Terminology Service Consumer: 使用服務的一方。Consumer 會在自己的 VPC 中建立 VPC Interface Endpoint 來連接到 Provider 的 Endpoint service。Consumer 必須等待 Provider 接受連接請求後，才能開始使用服務。透過這種方式，Consumer 可以安全地存取 Provider 的服務，而無需經過公有網路。 Endpoint: VPC Interface Endpoint (VPCE) 是一個彈性網路介面，具有私有 IP 位址。它作為進入 AWS 服務的進入點，讓 VPC 中的資源可以私密地存取這些服務。在 PrivateLink 架構中，這是 Consumer 端建立的元件。 Service Provider: 提供服務的一方。Provider 需要建立 Endpoint service 並將其與 NLB 或是 GWLB 關聯，然後可以選擇性地允許哪些 AWS 帳戶可以連接到此服務。Provider 負責接受或拒絕來自 Consumer 的連接請求。 Endpoint service: Endpoint service 是由 Service Provider 建立的服務，可以與 Network Load Balancer (NLB) 或是 Gateway Load Balancer (GWLB) 關聯。這個服務允許其他 AWS 帳戶 (Consumer) 通過 VPC Interface Endpoint 連接到 Provider 的服務。 Section 1: 配置 PrivateLink Step 1: [Provider] 創建 Endpoint service 在 Section 1 - Step 1，我們要扮演 Service Provider，我們是提供 Service 的人。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-01-12 23:41:42 +0800 CST'>January 12, 2025</span>&nbsp;·&nbsp;7 min</footer>
+  <a class="entry-link" aria-label="post link to AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作" href="https://shiun.me/blog/aws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">如何將現有 NLB IPv4-only 架構升級為 Dual-stack
     </h2>
   </header>
@@ -289,22 +307,6 @@ Tag-Based Lambda Warmer 介紹 Tag-Based Lambda Warmer 的核心理念非常簡�
   </div>
   <footer class="entry-footer"><span title='2024-10-22 00:00:14 +0800 CST'>October 22, 2024</span>&nbsp;·&nbsp;5 min</footer>
   <a class="entry-link" aria-label="post link to AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step)" href="https://shiun.me/blog/how-to-set-up-a-aws-site-to-site-vpn-with-libreswan/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">2024 伊雲谷實習計畫 - 雲端工程師實習心得
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>大家好，我是 Shiun，今天想和大家分享我在 eCloudValley MSP 部門擔任雲端工程師實習生的經歷。這段實習讓我學到了很多實用的雲端技術，同時也在工作中遇到了許多有趣的挑戰。 實習工作內容 在 eCloudValley 的實習期間，我主要負責以下幾項工作：
-學習使用公有雲，包括 AWS 和 Azure。 開發公司內部的 GenAI 應用。 與同期且同部門實習生共同開發專案。 定期與 Mentor 開會。 參與最終展演。 撰寫系統文件。 實習期間大事紀 專案大改方向 在 eCloudValley 實習期間，我們的專案經歷了一次重大轉變。起初，我們的任務是開發一個 AI Bot 開單助理，目的是幫助客戶在雲端遇到問題時能夠迅速獲得支援。這個專案的初步構想是：
-客戶向 AI 助理求助，並向 AI 助理提供必要資訊，例如： EC2 SG Inbound Rule, 健康檢查狀態… 等等 如果客戶提供的資訊不夠明確，AI 助理要明確地告知客戶還需提供哪些資訊。 AI 助理彙總客戶問題，轉化為技術人員易於理解的語言。 將資訊轉化後，開 ticket 到開單系統。 然而，在實作過程中，我們發現這個 AI 助理的效果不如預期，且後續優化存在技術瓶頸。客戶問題過於多樣化、且問題幾乎都很具情境，不是那種有標準解答或是標準 SOP 就能解決的問題，所以 AI 助理難以處理，導致準確率低，最終還是需要人工介入，反而增加了工作量。
-因此，我們在 4 月底決定將專案轉變為一個「會議錄影機器人」。這個機器人會被邀請到 LINE 群組中，默默記錄每一條訊息以及圖片 (圖片透過 Claude 3 Sonnet 取得 Caption)。TAM 只需在群組中輸入特殊指令或貼圖即可控制錄影，最終在前端頁面查看記錄並由 LLM 總結，創建 Ticket 到 MSP 部門的 Ticket System。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-07-20 23:06:18 +0800 CST'>July 20, 2024</span>&nbsp;·&nbsp;1 min</footer>
-  <a class="entry-link" aria-label="post link to 2024 伊雲谷實習計畫 - 雲端工程師實習心得" href="https://shiun.me/blog/2024-ecloudvalley-internship/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

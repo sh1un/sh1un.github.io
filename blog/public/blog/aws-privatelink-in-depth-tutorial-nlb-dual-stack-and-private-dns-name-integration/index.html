@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
+<meta name="robots" content="index, follow" />
+<title>
+  AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作 | Shiun
+</title>
+<meta
+  name="keywords"
+  content="AWS PrivateLink, AWS NLB, AWS Dual-stack, Private DNS name, AWS 跨帳號存取, AWS IPv6, AWS 網路安全, AWS 服務端點, VPC Endpoint, Endpoint Service, AWS Cross-Account Access, AWS Network Security, AWS VPC, AWS Service Endpoints, AWS Infrastructure Security, AWS Network Architecture, 私有連結, 跨帳號API調用, 網路負載平衡器, 私有DNS設定"
+/> <meta name="description" content="完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS 實現更好的可用性。"> <meta name="author" content=""> <link rel="canonical" href="https://shiun.me/blog/aws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration/">
+<link
+  crossorigin="anonymous"
+  href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css"
+  integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A="
+  rel="preload stylesheet"
+  as="style"
+/> <link rel="icon" href="https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"> <link
+rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://shiun.me/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://shiun.me/apple-touch-icon.png"> <link rel="mask-icon" href="https://shiun.me/safari-pinned-tab.svg"> <meta name="theme-color" content="#2e2e33"> <meta name="msapplication-TileColor" content="#2e2e33"> <link rel="alternate" hreflang="en" href="https://shiun.me/blog/aws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration/" />
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script>
+
+
+<meta property="og:url" content="https://shiun.me/blog/aws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration/">
+  <meta property="og:site_name" content="Shiun">
+  <meta property="og:title" content="AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作">
+  <meta property="og:description" content="完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS 實現更好的可用性。">
+  <meta property="og:locale" content="zh_tw">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="blog">
+    <meta property="article:published_time" content="2025-01-12T23:41:42+08:00">
+    <meta property="article:modified_time" content="2025-01-12T23:41:42+08:00">
+    <meta property="article:tag" content="AWS">
+    <meta property="article:tag" content="AWS PrivateLink">
+    <meta property="article:tag" content="IPv6">
+    <meta property="article:tag" content="Dual-Stack">
+    <meta property="article:tag" content="NLB">
+    <meta property="article:tag" content="Private DNS Name">
+    <meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+  <meta name="twitter:title" content="AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作">
+  <meta name="twitter:description" content="完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS 實現更好的可用性。">
+
+
+<noscript>
+  <style>
+    #theme-toggle,
+    .top-link {
+      display: none;
+    }
+  </style>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --theme: rgb(29, 30, 32);
+        --entry: rgb(46, 46, 51);
+        --primary: rgb(218, 218, 219);
+        --secondary: rgb(155, 156, 157);
+        --tertiary: rgb(65, 66, 68);
+        --content: rgb(196, 196, 197);
+        --code-block-bg: rgb(46, 46, 51);
+        --code-bg: rgb(55, 56, 62);
+        --border: rgb(51, 51, 51);
+      }
+
+      .list {
+        background: var(--theme);
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-track {
+        background: 0 0;
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-thumb {
+        border-color: var(--theme);
+      }
+    }
+  </style>
+</noscript>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script><meta property="og:title" content="AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作" />
+<meta property="og:description" content="完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS 實現更好的可用性。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/aws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2025-01-12T23:41:42+08:00" />
+<meta property="article:modified_time" content="2025-01-12T23:41:42+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/>
+
+<meta name="twitter:title" content="AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作"/>
+<meta name="twitter:description" content="完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS 實現更好的可用性。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Blogs",
+      "item": "https://shiun.me/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作",
+      "item": "https://shiun.me/blog/aws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作",
+  "name": "AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作",
+  "description": "完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS 實現更好的可用性。",
+  "keywords": [
+    "AWS PrivateLink", "AWS NLB", "AWS Dual-stack", "Private DNS name", "AWS 跨帳號存取", "AWS IPv6", "AWS 網路安全", "AWS 服務端點", "VPC Endpoint", "Endpoint Service", "AWS Cross-Account Access", "AWS Network Security", "AWS VPC", "AWS Service Endpoints", "AWS Infrastructure Security", "AWS Network Architecture", "私有連結", "跨帳號API調用", "網路負載平衡器", "私有DNS設定"
+  ],
+  "articleBody": "在前一篇教學中 如何將現有 NLB IPv4-only 架構升級為 Dual-stack，我們已經配置好一個支援 Dual-stack 的 NLB 了。\n現在假設有一個需求：「客戶需要調用我們的 API，且他們也使用 AWS。」有沒有辦法不經過 Internet，而是直接透過 AWS 的骨幹網路 (Backbone)，將流量送到我們的 NLB？同時避免使用 VPC Peering 或 Transit Gateway，確保網路不完全打通，以降低潛在風險，例如資料洩漏或不必要的安全隱患。\n答案就是 PrivateLink\n什麼是 PrivateLink？ AWS PrivateLink 是一種安全的網路技術，允許服務提供者 (Service Provider) 將他們的服務透過 VPC Endpoint 暴露給使用者 (Service Consumer)，而不需要將流量經過公網 (Internet)。它能確保所有流量都在 AWS 的骨幹網路內部傳輸，提供高安全性、低延遲的解決方案。\nPrivateLink 的核心特點:\n避免暴露服務到公網： Service Provider 的服務不需要有 Public IP，Consumer 可以透過 Private IP 訪問這些服務。 簡化網路架構： 無需設定 VPC Peering、Transit Gateway，所以不用擔心整個網路打通的安全風險。 跨帳號支持： Service Provider 和 Consumer 可以位於不同 AWS 帳號，甚至不同 AWS 組織。 多 Region 支持： PrivateLink 現在也支援跨區域的流量傳輸 (需額外配置)。(Reference) 可以自定義的 Private DNS name： Consumer 可以直接使用 Service Provider 提供的 Private DNS Name 調用服務。 Terminology Service Consumer: 使用服務的一方。Consumer 會在自己的 VPC 中建立 VPC Interface Endpoint 來連接到 Provider 的 Endpoint service。Consumer 必須等待 Provider 接受連接請求後，才能開始使用服務。透過這種方式，Consumer 可以安全地存取 Provider 的服務，而無需經過公有網路。 Endpoint: VPC Interface Endpoint (VPCE) 是一個彈性網路介面，具有私有 IP 位址。它作為進入 AWS 服務的進入點，讓 VPC 中的資源可以私密地存取這些服務。在 PrivateLink 架構中，這是 Consumer 端建立的元件。 Service Provider: 提供服務的一方。Provider 需要建立 Endpoint service 並將其與 NLB 或是 GWLB 關聯，然後可以選擇性地允許哪些 AWS 帳戶可以連接到此服務。Provider 負責接受或拒絕來自 Consumer 的連接請求。 Endpoint service: Endpoint service 是由 Service Provider 建立的服務，可以與 Network Load Balancer (NLB) 或是 Gateway Load Balancer (GWLB) 關聯。這個服務允許其他 AWS 帳戶 (Consumer) 通過 VPC Interface Endpoint 連接到 Provider 的服務。 Section 1: 配置 PrivateLink Step 1: [Provider] 創建 Endpoint service 在 Section 1 - Step 1，我們要扮演 Service Provider，我們是提供 Service 的人。\n進入 VPC 頁面 \u003e 左側欄 Endpoint services:\n點擊 Create endpoint service 進入 Create endpoint service 頁面後，請依照以下內容進行配置：\nLoad balancer type: Network Available load balancers: 選擇你的 NLB 其他部分可以保持預設\n創建好後，複製 Service name\nStep 2: [Consumer] 創建 VPC Interface Endpoint (VPCE) 現在我們的身份切換至 Consumer\n身為 Consumer，我們需要建立一個 VPC Interface Endpoint (VPCE)，透過 VPCE 存取到 Service Provider 的服務。\n進入 VPC 頁面 \u003e 左側欄 Endpoints:\n點擊 Create endpoint 創建 VPC Interface Endpoint，請依照以下內容進行配置：\nType: Endpoint services that use NLBs and GWLBs Service name: 貼上剛才在 Service Provider 那邊所複製的 Service name 創建好 VPC Interface Endpoint 之後，身為 Consumer，其實還不能馬上存取 Service，必須等待 Provider 接受你的連線請求才可以使用。\nStep 3: [Provider] 接受 Connection Request 身份切回 Service Provider\n回到 VPC 頁面 \u003e 左側欄 Endpoint services:\n勾選 Endpoint service 進入 Endpoint connections 頁籤 勾選 Endpoint connection 展開 Actions menu 點擊 Accept endpoint connection request Step 4: [Consumer] 測試是否可以透過 VPC Interface Endpoint 調用到 NLB 身份切回 Consumer\n剛才 Provider 已經接受連線了，回到 VPC \u003e 左側欄 Endpoint 頁面，檢查一下目前 Endpoint 的 Status：\n他會停在 Pending 狀態一下下，大概 1~2 分鐘，等到變成 Available 就 OK 囉！如下圖紅框處所示：\n現在 Endpoint Status 已經是 Available 狀態，要測試是否能透過 VPC Interface Endpoint 調用到 Service Provider 的 NLB，首先要先複製 VPC Interface Endpoint 的 DNS name\n你會注意到 DNS names 提供了兩個 Domain name，下面沒有被紅框框起來的是 Zonal DNS name，使用 Zonal DNS name 可以保證你的流量一定打到你要的 AZ 關於 AZ 這方面有一個注意事項，可以參考我的 Notion 筆記: 你知道嗎？此 AZ 非彼 AZ\n我現在在 Consumer AWS 帳號，透過一台跳板機 SSH 連線到 Private subnet 裡面的一台 Instance\n成功連線後，輸入以下指令來存取 VPCE，請務必注意： curl 後面實際值換成你剛才複製的 VPC Interface Endpoint DNS name：\n$ curl vpce-0d3d9cfb73e4becfd-iiv45fgg.vpce-svc-0ceb593b3ba202634.us-west-2.vpce.amazonaws.com Hello World from ip-10-0-138-176.us-west-2.compute.internal 注意： 如果發現沒有得到任何 Response，請記得檢查 Security Group 設定，確保 VPC Interface Endpoint 的 SG Inbound rule 允許 EC2 流量進入，詳細請見：Troubleshooting - 配置 VPC Interface Endpoint 的 SG。\n透過上面的輸出，這樣就達成「完全不透過 Internet 就打流量到 NLB」的架構囉！流量都是在 AWS Backbone 網路中內傳輸。\n注意： VPC Interface Endpoint 和 我連線進去的 EC2 Instance 都放在 Private subnet，我也沒配置 NAT 或是 EIGW，所以他們是不可能有辦法連到網路的\n以下簡單證明沒有連網能力，我先 ping google.com 再 curl VPC Interface Endpoint\n恭喜！我們已經成功配置好 PrivateLink 囉！\nSection 2: Dual-stack 在 Section 2，將帶大家實現 Dual-stack PrivateLink，讓 Consumer 以及 Provider，同時都可以支持 IPv4 和 IPv6\nStep 1: [Provider] 為 Endpoint Service 開啟 IPv6 Support 目前身份是 Service Provider\n因為當初創建 Endpoint Service 時，沒勾選 IPv6 support，可以觀察下圖的 Supported IP address type 中僅顯示 IPv4 ，所以用 IPv6 流量打過去會無法解析：\n以下範例是以 Consumer 身份連線進去 Private Instance，利用 curl -6 調用 VPC Interface Endpoint 所得到的輸出：\n$curl -6 vpce-0d3d9cfb73e4becfd-iiv45fgg.vpce-svc-0ceb593b3ba202634.us-west-2.vpce.amazonaws.com curl: (6) Could not resolve host: vpce-0d3d9cfb73e4becfd-iiv45fgg.vpce-svc-0ceb593b3ba202634.us-west-2.vpce.amazonaws.com OK，上面只是做個範例，讓大家知道現在真的無法用 IPv6 Client 去存取 Endpoint，讓我們再次回到 Provider AWS 帳號，進入 VPC 頁面 \u003e 左側欄 Endpoint services:\n選取 Endpoint service 展開 Actions menu 點擊 Modify supported IP address types 在 Supported IP address types 下方選項把 IPv6 也勾選起來：\nStep 2: [Consumer] 使 VPC Interface Endpoint 支持 Dual-stack 目前身份是 Consumer\n接下來我們也要確保 Consumer 這裡的 VPC Interface Endpoint 也支持 Dual-stack，因此要記住！並不是 Provider 將 Supported IP address types 下的 IPv4, IPv6 都啟用後 Consumer 這裡就可以什麼事都不用做就可以用 IPv6 Client 去調用喔，畢竟在 Consumer 這裡，面對的是自己的 “VPC Interface Endpoint”\n進入 VPC \u003e 左側欄 Endpoints\n選取 Endpoint 展開 Actions menu 點擊 Modify endpoint settings 進入 Modify endpoint settings 頁面：\nIP address type: Dualstack DNS options: Dualstack Save 之後 Endpoint 會進入 Pending 狀態，要等 1~2 分鐘直到它變成 Available 狀態\n當 Endpoint 狀態變成 Available 後，SSH 連線 EC2 Instance 再來測試一次吧：\n$ curl -6 vpce-0d3d9cfb73e4becfd-iiv45fgg.vpce-svc-0ceb593b3ba202634.us-west-2.vpce.amazonaws.com Hello World from ip-10-0-138-176.us-west-2.compute.internal 補充資訊：我這邊剛好沒 Clear CLI，所以可以看到設定成 Dualstack 的前後變化，一開始還無法解析成功，經過上面的重新設定，就成功使用 IPv6 Client 去打流量到 VPC Interface Endpoint 碰到 NLB 唷 恭喜，我們這樣就完成 Dual-stack PrivateLink!\nSection 3: Private DNS name Private DNS name 是一個很方便的功能，如果你是 Service Provider，想要配置 Private DNS Name 你必須擁有域名，例如: Private DNS name 設定為 example.com 的話，經過 DNS 驗證之後，Consumer 端之後就可以直接用 example.com 來存取這個 Endpoint Service\n官方文件： Manage DNS names for VPC endpoint services - Amazon Virtual Private Cloud\n因為我自己有域名，這裡我就用我自己的域名 (shiun.me) 來示範\nStep 1: [Provider] Endpoint Service 設定 Private DNS name 進入 VPC \u003e 左側欄 Endpoint services:\n選取 Endpoint service 展開 Actions menu 點擊 Modify private DNS name 配置 Private DNS name:\n勾選 Associate a private DNS name with the service 輸入 Private DNS name: 我輸入 demoprivatelink.shiun.me (請依照你自己擁有的域名自由修改這邊的值) Step 2: [Provider] 域名驗證 創建好之後，Domain verification status 會顯示 Pending verification， 這時候我就要根據指示創建一個 TXT Record 證明這個 shiun.me 域名歸你所管，我們可以從 Endpoint service detail 找到 創建 Record 時所需要設定的值，如下圖紅框所示\n所以我打開我的 DNS 服務配置 TXT Record\n注意： 下面截圖的畫面，你不見得會跟我一樣 也許你是用 Route53 也許你是用其他域名註冊商本身自己提供的 DNS 服務\n創建完 TXT Record 之後，可能要稍待幾分鐘 (例如 5 mins)，等待 DNS Propagation。\n我等了大概 5 mins，回到 VPC 頁面 \u003e 左側欄 Endpoint services:\n選取 Endpoint Service 展開 Actions menu 點擊 Verify domain ownership for private DNS name 這時候再等一下下，約一分鐘，重新整理一下頁面，就會看到 Domain verification status 變成 Verified，如果發現還沒 Verified的話，請你：\n再次檢查 DNS Record 是否有配置錯誤 (Type, value… 等) 再次稍等一下下，可以用 dig TXT 來檢查看看 Answer 是否配置正確 重新 Verify domain ownership for private DNS name Step 3: [Consumer] VPC Interface Endpoint 啟用 Private DNS name 目前身份是 Consumer\n同理，身為 Consumer 這方，VPC Interface Endpoint 這裡也需要啟用 Private DNS name 的支持，可以看到下圖紅框處，Private DNS name enabled 顯示 No，表示目前還尚未啟用此功能\n進入 VPC \u003e 左側欄 Endpoints:\n選取 Endpoint 展開 Actions menu 點擊 Modify private DNS name 在 Modify private DNS name settings section 中，勾選 Enable for this endpoint\nSave 之後，會變成 Pending 狀態\n直到它變成 Available 後，我們再次 SSH 連線到 Private Subnet 的 EC2 Instance\ncurl -4 範例輸出：\n$ curl -4 demoprivatelink.shiun.me Hello World from ip-10-0-138-176.us-west-2.compute.internal curl -6 範例輸出：\n$ curl -6 demoprivatelink.shiun.me Hello World from ip-10-0-138-176.us-west-2.compute.internal 下圖為 Private Instance 使用 curl 指令分別用 IPv4 和 IPv6 Client 調用 Private DNS name 的執行結果截圖：\n從上面的結果可以看到，我們成功使用 Private DNS name 來存取 Service Provider 的 NLB 囉\n這裡還可以做一個小實驗，我用自己的筆電打開 Terminal (不是 AWS 上 Consumer VPC 裡面的 EC2 instance 唷)，調用 curl 看看:\n$ curl -4 demoprivatelink.shiun.me curl: (6) Could not resolve host: demoprivatelink.shiun.me $ curl -6 demoprivatelink.shiun.me curl: (6) Could not resolve host: demoprivatelink.shiun.me 下圖為我在自己筆電上執行的結果截圖： 我用自己筆電執行的結果是想告訴讀者，PrivateLink 很安全又好用！我們在 AWS 環境外面是真的沒辦法調用到 Endpoint service 唷\n補充 - 透過 PrivateLink 訪問 NLB，那 Service Provider 看得到 Client 原始 IP 地址嗎？ 首先，身為 Consumer 是透過 VPC Interface Endpoint 去訪問到 NLB 的，我已經找到 VPC Interface Endpoint 的 IP 地址如下:\nIPv4: 10.0.133.54 IPv6: 2600:1f14:3231:3002:d93:b5b3:d78c:2e0a 下圖紅框處為 Consumer 那邊的 VPC Interface Endpoint IPv4 和 IPv6 地址： 現在我們就來打流量看看吧\n在 Consumer 這方，我總共輸入了以下指令，也得到相應的 Response:\n[ec2-user@ip-10-0-137-213 ~]$ curl -4 vpce-0d3d9cfb73e4becfd-iiv45fgg.vpce-svc-0ceb593b3ba202634.us-west-2.vpce.amazonaws.com Hello World from ip-10-0-138-176.us-west-2.compute.internal [ec2-user@ip-10-0-137-213 ~]$ curl -6 vpce-0d3d9cfb73e4becfd-iiv45fgg.vpce-svc-0ceb593b3ba202634.us-west-2.vpce.amazonaws.com Hello World from ip-10-0-138-176.us-west-2.compute.internal [ec2-user@ip-10-0-137-213 ~]$ curl -4 demoprivatelink.shiun.me Hello World from ip-10-0-138-176.us-west-2.compute.internal [ec2-user@ip-10-0-137-213 ~]$ curl -6 demoprivatelink.shiun.me Hello World from ip-10-0-138-176.us-west-2.compute.internal 回到 Service Provider 那邊，我已經有去找到 NLB ENI，其 IPv6 地址為: 2600:1f14:2549:300:17c1:6c5d:ba29:ce1\n我在 Provider 這邊，透過跳板機 SSH 連線到 NLB 背後的 Target Instance 來觀察 Httpd access logs:\n2600:1f14:2549:300:17c1:6c5d:ba29:ce1 - - [08/Jan/2025:04:31:12 +0000] \"GET / HTTP/1.1\" 200 69 \"-\" \"curl/8.5.0\" 2600:1f14:2549:300:17c1:6c5d:ba29:ce1 - - [08/Jan/2025:04:31:12 +0000] \"GET / HTTP/1.0\" 200 69 \"-\" \"curl/7.88.1\" 2600:1f14:2549:300:17c1:6c5d:ba29:ce1 - - [08/Jan/2025:04:31:13 +0000] \"GET / HTTP/1.1\" 200 69 \"-\" \"curl/8.5.0\" 2600:1f14:2549:300:7935:fbac:a7b4:84d5 - - [08/Jan/2025:04:31:16 +0000] \"GET / HTTP/1.1\" 200 69 \"-\" \"ELB-HealthChecker/2.0\" 2600:1f14:2549:300:17c1:6c5d:ba29:ce1 - - [08/Jan/2025:04:31:18 +0000] \"GET / HTTP/1.1\" 200 69 \"-\" \"curl/8.5.0\" 2600:1f14:2549:300:17c1:6c5d:ba29:ce1 - - [08/Jan/2025:04:31:24 +0000] \"GET / HTTP/1.1\" 200 69 \"-\" \"curl/8.5.0\" 可以注意到來源地址都是 NLB 的 IPv6 address！\n也就是說，Provider 看不到真實來源 IP 地址！\n那怎麼辦？我就是有一些需求需要看到真實來源 IP 地址… 那請繼續往下看，我們會需要 Proxy Protocol 的幫助！！！\n那如果我現在配置了 Proxy protocol 呢？ 關於配置 Httpd Proxy Protocol 支持，這裡先省略，不是本文重點，總之我已經開啟 Proxy Protocol 支持了\n於是我再次回到 Consumer 的 EC2 Instance 對 VPC Interface Endpoint 發出請求\n[ec2-user@ip-10-0-137-213 ~]$ curl -4 vpce-0d3d9cfb73e4becfd-iiv45fgg.vpce-svc-0ceb593b3ba202634.us-west-2.vpce.amazonaws.com Hello World from ip-10-0-138-176.us-west-2.compute.internal [ec2-user@ip-10-0-137-213 ~]$ curl -6 vpce-0d3d9cfb73e4becfd-iiv45fgg.vpce-svc-0ceb593b3ba202634.us-west-2.vpce.amazonaws.com Hello World from ip-10-0-138-176.us-west-2.compute.internal [ec2-user@ip-10-0-137-213 ~]$ curl -4 demoprivatelink.shiun.me Hello World from ip-10-0-138-176.us-west-2.compute.internal [ec2-user@ip-10-0-137-213 ~]$ curl -6 demoprivatelink.shiun.me Hello World from ip-10-0-138-176.us-west-2.compute.internal 回到 Service Provider 那邊，觀察 NLB Target instance 中的 Httpd access logs:\n10.0.137.213 - - [08/Jan/2025:04:37:43 +0000] \"GET / HTTP/1.1\" 200 69 \"-\" \"curl/8.5.0\" 2600:1f14:3231:3002:5b88:e457:66c1:43ad - - [08/Jan/2025:04:37:46 +0000] \"GET / HTTP/1.1\" 200 69 \"-\" \"curl/8.5.0\" 10.0.137.213 - - [08/Jan/2025:04:37:50 +0000] \"GET / HTTP/1.1\" 200 69 \"-\" \"curl/8.5.0\" 2600:1f14:3231:3002:5b88:e457:66c1:43ad - - [08/Jan/2025:04:37:52 +0000] \"GET / HTTP/1.1\" 200 69 \"-\" \"curl/8.5.0\" 下圖為 Provider 那邊的 NLB Target instance 截圖畫面：\n根據上述的各個輸出結果，可以觀察到：\n10.0.137.213 確實是 Consumer Private Instance 的 Private IPv4 address\n2600:1f14:3231:3002:5b88:e457:66c1:43ad 也確實是 Consumer Private Instance 的 IPv6 address\n請見下圖，這是 Consumer 那邊的 Private instance，紅框處就是該 Instance 的 IP 地址\n所以如果有啟用 Proxy Protocol 的話，是可以看到原始來源 IP 的喔！！\nTroubleshooting - [Consumer] 配置 VPC Interface Endpoint 的 SG 如果你沒收到回應，你可以檢查一下 VPC Interface Endpoint 的 SG 是否配置正確，我只有配置一個 Inbound rule 允許 EC2 SG 的流量打進來，至於 Outbound rule 就不需要配置，因為 SG 是 Stateful\nResources 如何將現有 NLB IPv4-only 架構升級為 Dual-stack - Shiun AWS PrivateLink 現在支援跨區域連線功能 - AWS 你知道嗎？此 AZ 非彼 AZ - Shiun Notion Site Manage DNS names for VPC endpoint services - Amazon Virtual Private Cloud AWS PrivateLink Pricing – AWS ",
+  "wordCount" : "1431",
+  "inLanguage": "en",
+  "datePublished": "2025-01-12T23:41:42+08:00",
+  "dateModified": "2025-01-12T23:41:42+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://shiun.me/blog/aws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Shiun",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://shiun.me/" accesskey="h" title="Shiun (Alt + H)">Shiun</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://shiun.me/blog/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.notion.site/Shiun-s-Learning-Journal-ded4cd4a3efd47b2805f2f99dee8f9a1?pvs=4" title="Notion">
+                    <span>Notion</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.linkedin.com/in/shiunchiu" title="About me">
+                    <span>About me</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://shiun.me/">Home</a>&nbsp;»&nbsp;<a href="https://shiun.me/blog/">Blogs</a></div>
+    <h1 class="post-title entry-hint-parent">
+      AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作
+    </h1>
+    <div class="post-description">
+      完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS 實現更好的可用性。
+    </div>
+    <div class="post-meta"><span title='2025-01-12 23:41:42 +0800 CST'>January 12, 2025</span>&nbsp;·&nbsp;7 min
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e4%bb%80%e9%ba%bc%e6%98%af-privatelink" aria-label="什麼是 PrivateLink？">什麼是 PrivateLink？</a><ul>
+                        
+                <li>
+                    <a href="#terminology" aria-label="Terminology">Terminology</a></li></ul>
+                </li>
+                <li>
+                    <a href="#section-1-%e9%85%8d%e7%bd%ae-privatelink" aria-label="Section 1: 配置 PrivateLink">Section 1: 配置 PrivateLink</a><ul>
+                        
+                <li>
+                    <a href="#step-1-provider-%e5%89%b5%e5%bb%ba-endpoint-service" aria-label="Step 1: [Provider] 創建 Endpoint service">Step 1: [Provider] 創建 Endpoint service</a></li>
+                <li>
+                    <a href="#step-2-consumer-%e5%89%b5%e5%bb%ba-vpc-interface-endpoint-vpce" aria-label="Step 2: [Consumer] 創建 VPC Interface Endpoint (VPCE)">Step 2: [Consumer] 創建 VPC Interface Endpoint (VPCE)</a></li>
+                <li>
+                    <a href="#step-3-provider-%e6%8e%a5%e5%8f%97-connection-request" aria-label="Step 3: [Provider] 接受 Connection Request">Step 3: [Provider] 接受 Connection Request</a></li>
+                <li>
+                    <a href="#step-4-consumer-%e6%b8%ac%e8%a9%a6%e6%98%af%e5%90%a6%e5%8f%af%e4%bb%a5%e9%80%8f%e9%81%8e-vpc-interface-endpoint-%e8%aa%bf%e7%94%a8%e5%88%b0-nlb" aria-label="Step 4: [Consumer] 測試是否可以透過 VPC Interface Endpoint 調用到 NLB">Step 4: [Consumer] 測試是否可以透過 VPC Interface Endpoint 調用到 NLB</a></li></ul>
+                </li>
+                <li>
+                    <a href="#section-2-dual-stack" aria-label="Section 2: Dual-stack">Section 2: Dual-stack</a><ul>
+                        
+                <li>
+                    <a href="#step-1-provider-%e7%82%ba-endpoint-service-%e9%96%8b%e5%95%9f-ipv6-support" aria-label="Step 1: [Provider] 為 Endpoint Service 開啟 IPv6 Support">Step 1: [Provider] 為 Endpoint Service 開啟 IPv6 Support</a></li>
+                <li>
+                    <a href="#step-2-consumer-%e4%bd%bf-vpc-interface-endpoint-%e6%94%af%e6%8c%81-dual-stack" aria-label="Step 2: [Consumer] 使 VPC Interface Endpoint 支持 Dual-stack">Step 2: [Consumer] 使 VPC Interface Endpoint 支持 Dual-stack</a></li></ul>
+                </li>
+                <li>
+                    <a href="#section-3--private-dns-name" aria-label="Section 3:  Private DNS name">Section 3:  Private DNS name</a><ul>
+                        
+                <li>
+                    <a href="#step-1-provider-endpoint-service-%e8%a8%ad%e5%ae%9a-private-dns-name" aria-label="Step 1: [Provider] Endpoint Service 設定 Private DNS name">Step 1: [Provider] Endpoint Service 設定 Private DNS name</a></li>
+                <li>
+                    <a href="#step-2-provider-%e5%9f%9f%e5%90%8d%e9%a9%97%e8%ad%89" aria-label="Step 2: [Provider] 域名驗證">Step 2: [Provider] 域名驗證</a></li>
+                <li>
+                    <a href="#step-3-consumer-vpc-interface-endpoint-%e5%95%9f%e7%94%a8-private-dns-name" aria-label="Step 3: [Consumer] VPC Interface Endpoint 啟用 Private DNS name">Step 3: [Consumer] VPC Interface Endpoint 啟用 Private DNS name</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e8%a3%9c%e5%85%85---%e9%80%8f%e9%81%8e-privatelink-%e8%a8%aa%e5%95%8f-nlb%e9%82%a3-service-provider-%e7%9c%8b%e5%be%97%e5%88%b0-client-%e5%8e%9f%e5%a7%8b-ip-%e5%9c%b0%e5%9d%80%e5%97%8e" aria-label="補充 - 透過 PrivateLink 訪問 NLB，那 Service Provider 看得到 Client 原始 IP 地址嗎？">補充 - 透過 PrivateLink 訪問 NLB，那 Service Provider 看得到 Client 原始 IP 地址嗎？</a><ul>
+                        
+                <li>
+                    <a href="#%e9%82%a3%e5%a6%82%e6%9e%9c%e6%88%91%e7%8f%be%e5%9c%a8%e9%85%8d%e7%bd%ae%e4%ba%86-proxy-protocol-%e5%91%a2" aria-label="那如果我現在配置了 Proxy protocol 呢？">那如果我現在配置了 Proxy protocol 呢？</a></li></ul>
+                </li>
+                <li>
+                    <a href="#troubleshooting---consumer-%e9%85%8d%e7%bd%ae-vpc-interface-endpoint-%e7%9a%84-sg" aria-label="Troubleshooting - [Consumer] 配置 VPC Interface Endpoint 的 SG">Troubleshooting - [Consumer] 配置 VPC Interface Endpoint 的 SG</a></li>
+                <li>
+                    <a href="#resources" aria-label="Resources">Resources</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>在前一篇教學中 <a href="https://shiun.me/blog/upgrading-existing-nlb-ipv4-only-to-dual-stack/"><strong>如何將現有 NLB IPv4-only 架構升級為 Dual-stack</strong></a>，我們已經配置好一個支援 Dual-stack 的 NLB 了。</p>
+<p>現在假設有一個需求：「客戶需要調用我們的 API，且他們也使用 AWS。」有沒有辦法不經過 Internet，而是直接透過 AWS 的骨幹網路 (Backbone)，將流量送到我們的 NLB？同時避免使用 VPC Peering 或 Transit Gateway，確保網路不完全打通，以降低潛在風險，例如資料洩漏或不必要的安全隱患。</p>
+<p>答案就是 <strong>PrivateLink</strong></p>
+<p><img loading="lazy" src="image.png" alt="Private Link Architecture Diagram: https://docs.aws.amazon.com/whitepapers/latest/aws-vpc-connectivity-options/aws-privatelink.html"  />
+</p>
+<h2 id="什麼是-privatelink">什麼是 PrivateLink？<a hidden class="anchor" aria-hidden="true" href="#什麼是-privatelink">#</a></h2>
+<p>AWS PrivateLink 是一種安全的網路技術，允許服務提供者 (Service Provider) 將他們的服務透過 VPC Endpoint 暴露給使用者 (Service Consumer)，而不需要將流量經過公網 (Internet)。它能確保所有流量都在 AWS 的骨幹網路內部傳輸，提供高安全性、低延遲的解決方案。</p>
+<p><strong>PrivateLink 的核心特點</strong>:</p>
+<ol>
+<li><strong>避免暴露服務到公網：</strong>
+Service Provider 的服務不需要有 Public IP，Consumer 可以透過 Private IP 訪問這些服務。</li>
+<li><strong>簡化網路架構：</strong>
+無需設定 VPC Peering、Transit Gateway，所以不用擔心整個網路打通的安全風險。</li>
+<li><strong>跨帳號支持：</strong>
+Service Provider 和 Consumer 可以位於不同 AWS 帳號，甚至不同 AWS 組織。</li>
+<li><strong>多 Region 支持：</strong>
+PrivateLink 現在也支援跨區域的流量傳輸 (需額外配置)。(<a href="https://aws.amazon.com/tw/about-aws/whats-new/2024/11/aws-privatelink-across-region-connectivity/">Reference</a>)</li>
+<li><strong>可以自定義的 Private DNS name</strong>：
+Consumer 可以直接使用 Service Provider 提供的 Private DNS Name 調用服務。</li>
+</ol>
+<h3 id="terminology">Terminology<a hidden class="anchor" aria-hidden="true" href="#terminology">#</a></h3>
+<ul>
+<li><strong>Service Consumer</strong>:
+使用服務的一方。Consumer 會在自己的 VPC 中建立 VPC Interface Endpoint 來連接到 Provider 的 Endpoint service。Consumer 必須等待 Provider 接受連接請求後，才能開始使用服務。透過這種方式，<strong>Consumer 可以安全地存取 Provider 的服務，而無需經過公有網路。</strong>
+<ul>
+<li><strong>Endpoint</strong>:
+VPC Interface Endpoint (VPCE) 是一個彈性網路介面，具有私有 IP 位址。它作為進入 AWS 服務的進入點，讓 VPC 中的資源可以私密地存取這些服務。在 PrivateLink 架構中，<strong>這是 Consumer 端建立的元件。</strong></li>
+</ul>
+</li>
+<li><strong>Service Provider</strong>:
+提供服務的一方。Provider 需要建立 Endpoint service 並將其與 NLB 或是 GWLB 關聯，然後可以選擇性地允許哪些 AWS 帳戶可以連接到此服務。Provider 負責接受或拒絕來自 Consumer 的連接請求。
+<ul>
+<li><strong>Endpoint service</strong>:
+Endpoint service <strong>是由 Service Provider 建立的服務</strong>，可以與 Network Load Balancer (NLB) 或是 Gateway Load Balancer (GWLB) 關聯。這個服務允許其他 AWS 帳戶 (Consumer) 通過 VPC Interface Endpoint 連接到 Provider 的服務。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="section-1-配置-privatelink">Section 1: 配置 PrivateLink<a hidden class="anchor" aria-hidden="true" href="#section-1-配置-privatelink">#</a></h2>
+<h3 id="step-1-provider-創建-endpoint-service">Step 1: [Provider] 創建 Endpoint service<a hidden class="anchor" aria-hidden="true" href="#step-1-provider-創建-endpoint-service">#</a></h3>
+<p>在 Section 1 - Step 1，我們要扮演 <strong>Service Provider</strong>，<strong>我們是提供 Service 的人</strong>。</p>
+<p><strong>進入 VPC 頁面 &gt; 左側欄 Endpoint services:</strong></p>
+<ol>
+<li>點擊 <strong>Create endpoint service</strong></li>
+</ol>
+<p><img loading="lazy" src="image%201.png" alt="[Provider] Create endpoint service"  />
+</p>
+<p>進入 Create endpoint service 頁面後，請依照以下內容進行配置：</p>
+<ol>
+<li><strong>Load balancer type:</strong> Network</li>
+<li><strong>Available load balancers:</strong> 選擇你的 NLB</li>
+</ol>
+<p>其他部分可以保持預設</p>
+<p><img loading="lazy" src="715d637f-6b78-49cf-8ef2-b48e1cb53492.png" alt="[Provider] Create Endpoint service configuration"  />
+</p>
+<p>創建好後，複製 <strong>Service name</strong></p>
+<p><img loading="lazy" src="image%202.png" alt="[Provider] Copy service name"  />
+</p>
+<h3 id="step-2-consumer-創建-vpc-interface-endpoint-vpce">Step 2: [Consumer] 創建 VPC Interface Endpoint (VPCE)<a hidden class="anchor" aria-hidden="true" href="#step-2-consumer-創建-vpc-interface-endpoint-vpce">#</a></h3>
+<p>現在我們的身份切換至 <strong>Consumer</strong></p>
+<p>身為 Consumer，我們需要建立一個 <strong>VPC Interface Endpoint (VPCE)</strong>，透過 VPCE 存取到 Service Provider 的服務。</p>
+<p>進入 VPC 頁面 &gt; 左側欄 Endpoints:</p>
+<ol>
+<li>點擊 <strong>Create endpoint</strong></li>
+</ol>
+<p><img loading="lazy" src="image%203.png" alt="[Consumer] Create endpoint"  />
+</p>
+<p>創建 VPC Interface Endpoint，請依照以下內容進行配置：</p>
+<ul>
+<li><strong>Type:</strong> Endpoint services that use NLBs and GWLBs</li>
+<li><strong>Service name:</strong> 貼上剛才在 Service Provider 那邊所複製的 Service name</li>
+</ul>
+<p><img loading="lazy" src="image%204.png" alt="[Consumer] Create VPC Interface Endpoint configuration"  />
+</p>
+<p>創建好 VPC Interface Endpoint 之後，身為 Consumer，<strong>其實還不能馬上存取 Service，必須等待 Provider 接受你的連線請求才可以使用。</strong></p>
+<h3 id="step-3-provider-接受-connection-request">Step 3: [Provider] 接受 Connection Request<a hidden class="anchor" aria-hidden="true" href="#step-3-provider-接受-connection-request">#</a></h3>
+<p>身份切回 <strong>Service Provider</strong></p>
+<p>回到 VPC 頁面 &gt; 左側欄 Endpoint services:</p>
+<ol>
+<li>勾選 <strong>Endpoint service</strong></li>
+<li>進入 <strong>Endpoint connections</strong> 頁籤</li>
+<li>勾選 <strong>Endpoint connection</strong></li>
+<li>展開 <strong>Actions menu</strong></li>
+<li>點擊 <strong>Accept endpoint connection request</strong></li>
+</ol>
+<p><img loading="lazy" src="image%205.png" alt="[Provider] Accept endpoint connection request"  />
+</p>
+<h3 id="step-4-consumer-測試是否可以透過-vpc-interface-endpoint-調用到-nlb">Step 4: [Consumer] 測試是否可以透過 VPC Interface Endpoint 調用到 NLB<a hidden class="anchor" aria-hidden="true" href="#step-4-consumer-測試是否可以透過-vpc-interface-endpoint-調用到-nlb">#</a></h3>
+<p>身份切回 <strong>Consumer</strong></p>
+<p>剛才 <strong>Provider</strong> 已經接受連線了，回到 VPC &gt; 左側欄 Endpoint 頁面，檢查一下目前 Endpoint 的 Status：</p>
+<ul>
+<li>
+<p>他會停在 <strong>Pending</strong> 狀態一下下，大概 1~2 分鐘，等到變成 <strong>Available</strong> 就 OK 囉！如下圖紅框處所示：</p>
+<p><img loading="lazy" src="image%206.png" alt="[Consumer] Waiting for endpoint status to be available"  />
+</p>
+</li>
+</ul>
+<p>現在 Endpoint Status 已經是 <strong>Available</strong> 狀態，要測試是否能透過 VPC Interface Endpoint 調用到 Service Provider 的 NLB，首先要先複製 <strong>VPC Interface Endpoint 的 DNS name</strong></p>
+<p><img loading="lazy" src="image%207.png" alt="[Consumer] Copy VPC Interface Endpoint DNS name"  />
+</p>
+<blockquote>
+<p>你會注意到 DNS names 提供了兩個 Domain name，下面沒有被紅框框起來的是 <strong>Zonal DNS name</strong>，使用 Zonal DNS name 可以保證你的流量一定打到你要的 AZ
+關於 AZ 這方面有一個注意事項，可以參考我的 Notion 筆記: <a href="https://www.notion.so/shiun/AZ-AZ-95d15fb85b1a4eb2a3cc76e5b3e7bee1">你知道嗎？此 AZ 非彼 AZ</a></p>
+</blockquote>
+<p>我現在在 <strong>Consumer</strong> AWS 帳號，透過一台跳板機 SSH 連線到 Private subnet 裡面的一台 Instance</p>
+<p>成功連線後，輸入以下指令來存取 VPCE，請務必注意： <strong><code>curl</code> 後面實際值換成你剛才複製的 VPC Interface Endpoint DNS name：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ curl vpce-0d3d9cfb73e4becfd-iiv45fgg.vpce-svc-0ceb593b3ba202634.us-west-2.vpce.amazonaws.com
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;h1&gt;Hello World from ip-10-0-138-176.us-west-2.compute.internal&lt;/h1&gt;
+</span></span></code></pre></div><blockquote>
+<p><strong>注意</strong>： 如果發現沒有得到任何 Response，請記得檢查 Security Group 設定，確保 VPC Interface Endpoint 的 SG Inbound rule 允許 EC2 流量進入，詳細請見：<a href="#troubleshooting---consumer-%E9%85%8D%E7%BD%AE-vpc-interface-endpoint-%E7%9A%84-sg">Troubleshooting - 配置 VPC Interface Endpoint 的 SG</a>。</p>
+</blockquote>
+<p>透過上面的輸出，這樣就達成「<strong>完全不透過 Internet 就打流量到 NLB</strong>」的架構囉！流量都是在 AWS Backbone 網路中內傳輸。</p>
+<blockquote>
+<p><strong>注意：</strong> VPC Interface Endpoint 和 我連線進去的 EC2 Instance 都放在 Private subnet，<strong>我也沒配置 NAT 或是 EIGW</strong>，所以他們是不可能有辦法連到網路的</p>
+</blockquote>
+<p>以下簡單證明沒有連網能力，我先 <code>ping google.com</code> 再 <code>curl</code> VPC Interface Endpoint</p>
+<p><img loading="lazy" src="image%208.png" alt="[Consumer] This consumer instance doesn’t have internet connectivity"  />
+</p>
+<p>恭喜！我們已經成功配置好 PrivateLink 囉！</p>
+<hr>
+<h2 id="section-2-dual-stack">Section 2: Dual-stack<a hidden class="anchor" aria-hidden="true" href="#section-2-dual-stack">#</a></h2>
+<p>在 Section 2，將帶大家實現 Dual-stack PrivateLink，讓 Consumer 以及 Provider，同時都可以支持 IPv4 和 IPv6</p>
+<h3 id="step-1-provider-為-endpoint-service-開啟-ipv6-support">Step 1: [Provider] 為 Endpoint Service 開啟 IPv6 Support<a hidden class="anchor" aria-hidden="true" href="#step-1-provider-為-endpoint-service-開啟-ipv6-support">#</a></h3>
+<p>目前身份是 <strong>Service Provider</strong></p>
+<p>因為當初創建 Endpoint Service 時，沒勾選 IPv6 support，可以觀察下圖的 <strong>Supported IP address type 中僅顯示 IPv4</strong> ，所以用 <strong>IPv6 流量打過去會無法解析</strong>：</p>
+<p><img loading="lazy" src="image%209.png" alt="[Provider] This Endpoint service does not support IPv6 address type"  />
+</p>
+<p>以下範例是以 <strong>Consumer</strong> 身份連線進去 Private Instance，利用 <code>curl -6</code> 調用 VPC Interface Endpoint 所得到的輸出：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$curl -6  vpce-0d3d9cfb73e4becfd-iiv45fgg.vpce-svc-0ceb593b3ba202634.us-west-2.vpce.amazonaws.com
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>curl: <span style="color:#f92672">(</span>6<span style="color:#f92672">)</span> Could not resolve host: vpce-0d3d9cfb73e4becfd-iiv45fgg.vpce-svc-0ceb593b3ba202634.us-west-2.vpce.amazonaws.com
+</span></span></code></pre></div><p>OK，上面只是做個範例，讓大家知道現在真的無法用 IPv6 Client 去存取 Endpoint，讓我們再次回到 Provider AWS 帳號，進入 VPC 頁面 &gt; 左側欄 Endpoint services:</p>
+<ol>
+<li>選取 <strong>Endpoint service</strong></li>
+<li>展開 <strong>Actions menu</strong></li>
+<li>點擊 <strong>Modify supported IP address types</strong></li>
+</ol>
+<p><img loading="lazy" src="image%2010.png" alt="[Provider] Modify supported IP address types"  />
+</p>
+<p>在 Supported IP address types 下方選項把 <strong>IPv6</strong> 也勾選起來：</p>
+<p><img loading="lazy" src="image%2011.png" alt="[Provider] Enable IPv6 address type"  />
+</p>
+<h3 id="step-2-consumer-使-vpc-interface-endpoint-支持-dual-stack">Step 2: [Consumer] 使 VPC Interface Endpoint 支持 Dual-stack<a hidden class="anchor" aria-hidden="true" href="#step-2-consumer-使-vpc-interface-endpoint-支持-dual-stack">#</a></h3>
+<p>目前身份是 <strong>Consumer</strong></p>
+<p>接下來我們也要確保 Consumer 這裡的 VPC Interface Endpoint 也支持 Dual-stack，因此要記住！並不是 Provider 將 Supported IP address types 下的 IPv4, IPv6 都啟用後 Consumer 這裡就可以什麼事都不用做就可以用 IPv6 Client 去調用喔，畢竟在 Consumer 這裡，面對的是自己的 “<strong>VPC Interface Endpoint</strong>”</p>
+<p>進入 VPC &gt; 左側欄 Endpoints</p>
+<ol>
+<li>選取 <strong>Endpoint</strong></li>
+<li>展開 <strong>Actions menu</strong></li>
+<li>點擊 <strong>Modify endpoint settings</strong></li>
+</ol>
+<p><img loading="lazy" src="image%2012.png" alt="[Consumer] Modify endpoint settings"  />
+</p>
+<p>進入 Modify endpoint settings 頁面：</p>
+<ul>
+<li><strong>IP address type:</strong> Dualstack</li>
+<li><strong>DNS options:</strong> Dualstack</li>
+</ul>
+<p><img loading="lazy" src="image%2013.png" alt="[Consumer] Enable dual-stack support"  />
+</p>
+<p>Save 之後 Endpoint 會進入 <strong>Pending</strong> 狀態，要等 1~2 分鐘直到它變成 <strong>Available</strong> 狀態</p>
+<p>當 Endpoint 狀態變成 <strong>Available</strong> 後，SSH 連線 EC2 Instance 再來測試一次吧：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ curl -6  vpce-0d3d9cfb73e4becfd-iiv45fgg.vpce-svc-0ceb593b3ba202634.us-west-2.vpce.amazonaws.com
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;h1&gt;Hello World from ip-10-0-138-176.us-west-2.compute.internal&lt;/h1&gt;
+</span></span></code></pre></div><blockquote>
+<p>補充資訊：我這邊剛好沒 Clear CLI，所以可以看到設定成 Dualstack 的前後變化，一開始還無法解析成功，經過上面的重新設定，就成功使用 IPv6 Client 去打流量到 VPC Interface Endpoint 碰到 NLB 唷
+<img loading="lazy" src="image%2014.png" alt="image.png"  />
+</p>
+</blockquote>
+<p>恭喜，我們這樣就完成 Dual-stack PrivateLink!</p>
+<hr>
+<h2 id="section-3--private-dns-name">Section 3:  Private DNS name<a hidden class="anchor" aria-hidden="true" href="#section-3--private-dns-name">#</a></h2>
+<p>Private DNS name 是一個很方便的功能，如果你是 Service Provider，想要配置 Private DNS Name 你必須擁有<strong>域名</strong>，例如: Private DNS name 設定為 <a href="http://example.com/">example.com</a> 的話，經過 DNS 驗證之後，Consumer 端之後就可以直接用 <a href="http://example.com/">example.com</a> 來存取這個 Endpoint Service</p>
+<blockquote>
+<p><strong>官方文件：</strong> <a href="https://docs.aws.amazon.com/vpc/latest/privatelink/manage-dns-names.html">Manage DNS names for VPC endpoint services - Amazon Virtual Private Cloud</a></p>
+</blockquote>
+<p>因為我自己有域名，這裡我就用我自己的域名 (shiun.me) 來示範</p>
+<h3 id="step-1-provider-endpoint-service-設定-private-dns-name">Step 1: [Provider] Endpoint Service 設定 Private DNS name<a hidden class="anchor" aria-hidden="true" href="#step-1-provider-endpoint-service-設定-private-dns-name">#</a></h3>
+<p><img loading="lazy" src="image%2015.png" alt="[Provider] The endpoint service does not support Private DNS name"  />
+</p>
+<p>進入 VPC &gt; 左側欄 Endpoint services:</p>
+<ol>
+<li>選取 <strong>Endpoint service</strong></li>
+<li>展開 <strong>Actions menu</strong></li>
+<li>點擊 <strong>Modify private DNS name</strong></li>
+</ol>
+<p><img loading="lazy" src="image%2016.png" alt="[Provider] Modify private DNS name"  />
+</p>
+<p>配置 Private DNS name:</p>
+<ol>
+<li>勾選 <strong>Associate a private DNS name with the service</strong></li>
+<li>輸入 <strong>Private DNS name:</strong> 我輸入 <code>demoprivatelink.shiun.me</code> (請依照你自己擁有的域名自由修改這邊的值)</li>
+</ol>
+<p><img loading="lazy" src="image%2017.png" alt="[Provider] Set up Private DNS name"  />
+</p>
+<h3 id="step-2-provider-域名驗證">Step 2: [Provider] 域名驗證<a hidden class="anchor" aria-hidden="true" href="#step-2-provider-域名驗證">#</a></h3>
+<p>創建好之後，<strong>Domain verification status</strong> 會顯示 Pending verification， 這時候我就要根據指示創建一個 TXT Record 證明這個 <a href="http://shiun.me">shiun.me</a> 域名歸你所管，我們可以從 <strong>Endpoint service detail</strong> 找到 創建 <strong>Record 時</strong>所需要設定的值，如下圖紅框所示</p>
+<p><img loading="lazy" src="image%2018.png" alt="[Provider] DNS verification details"  />
+</p>
+<p>所以我打開我的 DNS 服務配置 TXT Record</p>
+<blockquote>
+<p><strong>注意：</strong> 下面截圖的畫面，你不見得會跟我一樣
+也許你是用 Route53 也許你是用其他域名註冊商本身自己提供的 DNS 服務</p>
+</blockquote>
+<p><img loading="lazy" src="image%2019.png" alt="[Provider] Create a TXT Record for DNS verification"  />
+</p>
+<p>創建完 TXT Record 之後，可能要稍待幾分鐘 (例如 5 mins)，等待 DNS Propagation。</p>
+<p>我等了大概 5 mins，回到 VPC 頁面 &gt; 左側欄 Endpoint services:</p>
+<ol>
+<li>選取 <strong>Endpoint Service</strong></li>
+<li>展開 <strong>Actions menu</strong></li>
+<li>點擊 <strong>Verify domain ownership for private DNS name</strong></li>
+</ol>
+<p><img loading="lazy" src="image%2020.png" alt="[Provider] Verify domain ownership for private DNS name"  />
+</p>
+<p>這時候再等一下下，約一分鐘，重新整理一下頁面，就會看到 <strong>Domain verification status 變成 Verified，如果發現還沒 Verified的話，請你：</strong></p>
+<ol>
+<li>再次檢查 <strong>DNS Record 是否有配置錯誤</strong> (Type, value… 等)</li>
+<li>再次稍等一下下，可以用 <code>dig TXT &lt;domain&gt;</code> 來檢查看看 Answer 是否配置正確</li>
+<li>重新 <strong>Verify domain ownership for private DNS name</strong></li>
+</ol>
+<p><img loading="lazy" src="image%2021.png" alt="[Provider] Checking the Domain Verification status shows it is verified"  />
+</p>
+<h3 id="step-3-consumer-vpc-interface-endpoint-啟用-private-dns-name">Step 3: [Consumer] VPC Interface Endpoint 啟用 Private DNS name<a hidden class="anchor" aria-hidden="true" href="#step-3-consumer-vpc-interface-endpoint-啟用-private-dns-name">#</a></h3>
+<p>目前身份是 <strong>Consumer</strong></p>
+<p>同理，身為 Consumer 這方，VPC Interface Endpoint 這裡也需要<strong>啟用 Private DNS name 的支持</strong>，可以看到下圖紅框處，<strong>Private DNS name enabled</strong> 顯示 <strong>No</strong>，表示目前還尚未啟用此功能</p>
+<p><img loading="lazy" src="image%2022.png" alt="[Consumer] The VPC Interface endpoint does not support Private DNS name"  />
+</p>
+<p>進入 VPC &gt; 左側欄 Endpoints:</p>
+<ol>
+<li>選取 <strong>Endpoint</strong></li>
+<li>展開 <strong>Actions menu</strong></li>
+<li>點擊 <strong>Modify private DNS name</strong></li>
+</ol>
+<p><img loading="lazy" src="image%2023.png" alt="[Consumer] Modify private DNS name"  />
+</p>
+<p>在 <strong>Modify private DNS name settings</strong> section 中，勾選 <strong>Enable for this endpoint</strong></p>
+<p><img loading="lazy" src="image%2024.png" alt="[Consumer] Enable private DNS name for this endpoint"  />
+</p>
+<p>Save 之後，會變成 <strong>Pending</strong> 狀態</p>
+<p>直到它變成 <strong>Available</strong> 後，我們再次 SSH 連線到 Private Subnet 的 EC2 Instance</p>
+<p><code>curl -4</code> 範例輸出：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ curl -4 demoprivatelink.shiun.me
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;h1&gt;Hello World from ip-10-0-138-176.us-west-2.compute.internal&lt;/h1&gt;
+</span></span></code></pre></div><p><code>curl -6</code> 範例輸出：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ curl -6 demoprivatelink.shiun.me
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;h1&gt;Hello World from ip-10-0-138-176.us-west-2.compute.internal&lt;/h1&gt;
+</span></span></code></pre></div><p>下圖為 Private Instance 使用 <code>curl</code> 指令分別用 IPv4 和 IPv6 Client 調用 Private DNS name 的執行結果截圖：</p>
+<p><img loading="lazy" src="4e1afe75-3cef-46b2-a2b8-7b6152f88d6e.png" alt="[Consumer] The responses from curl -4 and curl -6 were observed in the consumer&rsquo;s private instance"  />
+</p>
+<p>從上面的結果可以看到，我們成功使用 Private DNS name 來存取 Service Provider 的 NLB 囉</p>
+<p>這裡還可以做一個小實驗，我用自己的筆電打開 Terminal (不是 AWS 上 Consumer VPC 裡面的 EC2 instance 唷)，調用 <code>curl</code> 看看:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ curl -4 demoprivatelink.shiun.me
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>curl: <span style="color:#f92672">(</span>6<span style="color:#f92672">)</span> Could not resolve host: demoprivatelink.shiun.me
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ curl -6 demoprivatelink.shiun.me
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>curl: <span style="color:#f92672">(</span>6<span style="color:#f92672">)</span> Could not resolve host: demoprivatelink.shiun.me
+</span></span></code></pre></div><p>下圖為我在自己筆電上執行的結果截圖：
+<img loading="lazy" src="image%2025.png" alt="My Macbook curl -4 and curl -6 responses"  />
+</p>
+<p>我用自己筆電執行的結果是想告訴讀者，PrivateLink 很安全又好用！我們在 AWS 環境外面是真的沒辦法調用到 Endpoint service 唷</p>
+<hr>
+<h2 id="補充---透過-privatelink-訪問-nlb那-service-provider-看得到-client-原始-ip-地址嗎">補充 - 透過 PrivateLink 訪問 NLB，那 Service Provider 看得到 Client 原始 IP 地址嗎？<a hidden class="anchor" aria-hidden="true" href="#補充---透過-privatelink-訪問-nlb那-service-provider-看得到-client-原始-ip-地址嗎">#</a></h2>
+<p>首先，<strong>身為 Consumer</strong> 是透過 VPC Interface Endpoint 去訪問到 NLB 的，我已經找到 VPC Interface Endpoint 的 IP 地址如下:</p>
+<ul>
+<li><strong>IPv4:</strong> <code>10.0.133.54</code></li>
+<li><strong>IPv6:</strong> <code>2600:1f14:3231:3002:d93:b5b3:d78c:2e0a</code></li>
+</ul>
+<p>下圖紅框處為 Consumer 那邊的 VPC Interface Endpoint IPv4 和 IPv6 地址：
+<img loading="lazy" src="image%2026.png" alt="[Consumer] VPC Interface Endpoint IPv4 and IPv6 addresses"  />
+</p>
+<p>現在我們就來打流量看看吧</p>
+<p><strong>在 Consumer 這方</strong>，我總共輸入了以下指令，也得到相應的 Response:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>ec2-user@ip-10-0-137-213 ~<span style="color:#f92672">]</span>$ curl -4  vpce-0d3d9cfb73e4becfd-iiv45fgg.vpce-svc-0ceb593b3ba202634.us-west-2.vpce.amazonaws.com
+</span></span><span style="display:flex;"><span>&lt;h1&gt;Hello World from ip-10-0-138-176.us-west-2.compute.internal&lt;/h1&gt;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>ec2-user@ip-10-0-137-213 ~<span style="color:#f92672">]</span>$ curl -6  vpce-0d3d9cfb73e4becfd-iiv45fgg.vpce-svc-0ceb593b3ba202634.us-west-2.vpce.amazonaws.com
+</span></span><span style="display:flex;"><span>&lt;h1&gt;Hello World from ip-10-0-138-176.us-west-2.compute.internal&lt;/h1&gt;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>ec2-user@ip-10-0-137-213 ~<span style="color:#f92672">]</span>$ curl -4 demoprivatelink.shiun.me
+</span></span><span style="display:flex;"><span>&lt;h1&gt;Hello World from ip-10-0-138-176.us-west-2.compute.internal&lt;/h1&gt;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>ec2-user@ip-10-0-137-213 ~<span style="color:#f92672">]</span>$ curl -6 demoprivatelink.shiun.me
+</span></span><span style="display:flex;"><span>&lt;h1&gt;Hello World from ip-10-0-138-176.us-west-2.compute.internal&lt;/h1&gt;
+</span></span></code></pre></div><p><strong>回到 Service Provider 那邊</strong>，我已經有去找到 NLB ENI，其 IPv6 地址為: <code>2600:1f14:2549:300:17c1:6c5d:ba29:ce1</code></p>
+<p>我在 Provider 這邊，透過跳板機 SSH 連線到 NLB 背後的 Target Instance 來觀察 Httpd access logs:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>2600:1f14:2549:300:17c1:6c5d:ba29:ce1 - - <span style="color:#f92672">[</span>08/Jan/2025:04:31:12 +0000<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET / HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> <span style="color:#ae81ff">69</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#e6db74">&#34;curl/8.5.0&#34;</span>
+</span></span><span style="display:flex;"><span>2600:1f14:2549:300:17c1:6c5d:ba29:ce1 - - <span style="color:#f92672">[</span>08/Jan/2025:04:31:12 +0000<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET / HTTP/1.0&#34;</span> <span style="color:#ae81ff">200</span> <span style="color:#ae81ff">69</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#e6db74">&#34;curl/7.88.1&#34;</span>
+</span></span><span style="display:flex;"><span>2600:1f14:2549:300:17c1:6c5d:ba29:ce1 - - <span style="color:#f92672">[</span>08/Jan/2025:04:31:13 +0000<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET / HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> <span style="color:#ae81ff">69</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#e6db74">&#34;curl/8.5.0&#34;</span>
+</span></span><span style="display:flex;"><span>2600:1f14:2549:300:7935:fbac:a7b4:84d5 - - <span style="color:#f92672">[</span>08/Jan/2025:04:31:16 +0000<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET / HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> <span style="color:#ae81ff">69</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#e6db74">&#34;ELB-HealthChecker/2.0&#34;</span>
+</span></span><span style="display:flex;"><span>2600:1f14:2549:300:17c1:6c5d:ba29:ce1 - - <span style="color:#f92672">[</span>08/Jan/2025:04:31:18 +0000<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET / HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> <span style="color:#ae81ff">69</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#e6db74">&#34;curl/8.5.0&#34;</span>
+</span></span><span style="display:flex;"><span>2600:1f14:2549:300:17c1:6c5d:ba29:ce1 - - <span style="color:#f92672">[</span>08/Jan/2025:04:31:24 +0000<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET / HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> <span style="color:#ae81ff">69</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#e6db74">&#34;curl/8.5.0&#34;</span>
+</span></span></code></pre></div><p><strong>可以注意到來源地址都是 NLB 的 IPv6 address！</strong></p>
+<p><strong>也就是說，Provider 看不到真實來源 IP 地址！</strong></p>
+<p>那怎麼辦？我就是有一些需求需要看到真實來源 IP 地址… <strong>那請繼續往下看，我們會需要 Proxy Protocol 的幫助！！！</strong></p>
+<h3 id="那如果我現在配置了-proxy-protocol-呢">那如果我現在配置了 Proxy protocol 呢？<a hidden class="anchor" aria-hidden="true" href="#那如果我現在配置了-proxy-protocol-呢">#</a></h3>
+<p>關於配置 Httpd Proxy Protocol 支持，這裡先省略，不是本文重點，總之我已經開啟 Proxy Protocol  支持了</p>
+<p>於是我再次<strong>回到 Consumer</strong> 的 EC2 Instance 對 VPC Interface Endpoint 發出請求</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>ec2-user@ip-10-0-137-213 ~<span style="color:#f92672">]</span>$ curl -4  vpce-0d3d9cfb73e4becfd-iiv45fgg.vpce-svc-0ceb593b3ba202634.us-west-2.vpce.amazonaws.com
+</span></span><span style="display:flex;"><span>&lt;h1&gt;Hello World from ip-10-0-138-176.us-west-2.compute.internal&lt;/h1&gt;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>ec2-user@ip-10-0-137-213 ~<span style="color:#f92672">]</span>$ curl -6  vpce-0d3d9cfb73e4becfd-iiv45fgg.vpce-svc-0ceb593b3ba202634.us-west-2.vpce.amazonaws.com
+</span></span><span style="display:flex;"><span>&lt;h1&gt;Hello World from ip-10-0-138-176.us-west-2.compute.internal&lt;/h1&gt;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>ec2-user@ip-10-0-137-213 ~<span style="color:#f92672">]</span>$ curl -4 demoprivatelink.shiun.me
+</span></span><span style="display:flex;"><span>&lt;h1&gt;Hello World from ip-10-0-138-176.us-west-2.compute.internal&lt;/h1&gt;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>ec2-user@ip-10-0-137-213 ~<span style="color:#f92672">]</span>$ curl -6 demoprivatelink.shiun.me
+</span></span><span style="display:flex;"><span>&lt;h1&gt;Hello World from ip-10-0-138-176.us-west-2.compute.internal&lt;/h1&gt;
+</span></span></code></pre></div><p><strong>回到 Service Provider 那邊</strong>，觀察 NLB Target instance 中的 Httpd access logs:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>10.0.137.213 - - <span style="color:#f92672">[</span>08/Jan/2025:04:37:43 +0000<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET / HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> <span style="color:#ae81ff">69</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#e6db74">&#34;curl/8.5.0&#34;</span>
+</span></span><span style="display:flex;"><span>2600:1f14:3231:3002:5b88:e457:66c1:43ad - - <span style="color:#f92672">[</span>08/Jan/2025:04:37:46 +0000<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET / HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> <span style="color:#ae81ff">69</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#e6db74">&#34;curl/8.5.0&#34;</span>
+</span></span><span style="display:flex;"><span>10.0.137.213 - - <span style="color:#f92672">[</span>08/Jan/2025:04:37:50 +0000<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET / HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> <span style="color:#ae81ff">69</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#e6db74">&#34;curl/8.5.0&#34;</span>
+</span></span><span style="display:flex;"><span>2600:1f14:3231:3002:5b88:e457:66c1:43ad - - <span style="color:#f92672">[</span>08/Jan/2025:04:37:52 +0000<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET / HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> <span style="color:#ae81ff">69</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#e6db74">&#34;curl/8.5.0&#34;</span>
+</span></span></code></pre></div><p>下圖為 Provider 那邊的 NLB Target instance 截圖畫面：</p>
+<p><img loading="lazy" src="image%2027.png" alt="[Provider] The Httpd access log from the Target instance"  />
+</p>
+<p>根據上述的各個輸出結果，可以觀察到：</p>
+<ul>
+<li>
+<p><code>10.0.137.213</code> 確實是 Consumer Private Instance 的 Private IPv4 address</p>
+</li>
+<li>
+<p><code>2600:1f14:3231:3002:5b88:e457:66c1:43ad</code> 也確實是 Consumer Private Instance 的 IPv6 address</p>
+</li>
+<li>
+<p>請見下圖，這是 Consumer 那邊的 Private instance，紅框處就是該 Instance 的 IP 地址</p>
+<p><img loading="lazy" src="image%2028.png" alt="[Consumer] Here are the IPv4 and IPv6 addresses for the consumer’s private instance."  />
+</p>
+</li>
+</ul>
+<p><strong>所以如果有啟用 Proxy Protocol 的話，是可以看到原始來源 IP 的喔！！</strong></p>
+<hr>
+<h2 id="troubleshooting---consumer-配置-vpc-interface-endpoint-的-sg">Troubleshooting - [Consumer] 配置 VPC Interface Endpoint 的 SG<a hidden class="anchor" aria-hidden="true" href="#troubleshooting---consumer-配置-vpc-interface-endpoint-的-sg">#</a></h2>
+<p>如果你沒收到回應，你可以檢查一下 VPC Interface Endpoint 的 SG 是否配置正確，我只有配置一個 Inbound rule 允許 EC2 SG 的流量打進來，至於 Outbound rule 就不需要配置，因為 SG 是 Stateful</p>
+<p><img loading="lazy" src="image%2029.png" alt="[Consumer] VPC Interface Endpoint Security Group inbound rules"  />
+</p>
+<hr>
+<h2 id="resources">Resources<a hidden class="anchor" aria-hidden="true" href="#resources">#</a></h2>
+<ul>
+<li><a href="https://shiun.me/blog/upgrading-existing-nlb-ipv4-only-to-dual-stack/">如何將現有 NLB IPv4-only 架構升級為 Dual-stack - Shiun</a></li>
+<li><a href="https://aws.amazon.com/tw/about-aws/whats-new/2024/11/aws-privatelink-across-region-connectivity/?utm_source=chatgpt.com">AWS PrivateLink 現在支援跨區域連線功能 - AWS</a></li>
+<li><a href="https://www.notion.so/shiun/AZ-AZ-95d15fb85b1a4eb2a3cc76e5b3e7bee1">你知道嗎？此 AZ 非彼 AZ - Shiun Notion Site</a></li>
+<li><a href="https://docs.aws.amazon.com/vpc/latest/privatelink/manage-dns-names.html">Manage DNS names for VPC endpoint services - Amazon Virtual Private Cloud</a></li>
+<li><a href="https://aws.amazon.com/privatelink/pricing/">AWS PrivateLink Pricing – AWS</a></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://shiun.me/tags/aws/">AWS</a></li>
+      <li><a href="https://shiun.me/tags/aws-privatelink/">AWS PrivateLink</a></li>
+      <li><a href="https://shiun.me/tags/ipv6/">IPv6</a></li>
+      <li><a href="https://shiun.me/tags/dual-stack/">Dual-Stack</a></li>
+      <li><a href="https://shiun.me/tags/nlb/">NLB</a></li>
+      <li><a href="https://shiun.me/tags/private-dns-name/">Private DNS Name</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://shiun.me/blog/upgrading-existing-nlb-ipv4-only-to-dual-stack/">
+    <span class="title">Next »</span>
+    <br>
+    <span>如何將現有 NLB IPv4-only 架構升級為 Dual-stack</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作 on x"
+            href="https://x.com/intent/tweet/?text=AWS%20PrivateLink%20%e6%b7%b1%e5%85%a5%e6%95%99%e5%ad%b8%ef%bc%9aNLB%e3%80%81Dual-stack%20%e8%88%87%20Private%20DNS%20name%20%e6%95%b4%e5%90%88%e5%af%a6%e4%bd%9c&amp;url=https%3a%2f%2fshiun.me%2fblog%2faws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration%2f&amp;hashtags=AWS%2cAWSPrivateLink%2cIPv6%2cDual-stack%2cNLB%2cPrivateDNSname">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作 on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fshiun.me%2fblog%2faws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration%2f&amp;title=AWS%20PrivateLink%20%e6%b7%b1%e5%85%a5%e6%95%99%e5%ad%b8%ef%bc%9aNLB%e3%80%81Dual-stack%20%e8%88%87%20Private%20DNS%20name%20%e6%95%b4%e5%90%88%e5%af%a6%e4%bd%9c&amp;summary=AWS%20PrivateLink%20%e6%b7%b1%e5%85%a5%e6%95%99%e5%ad%b8%ef%bc%9aNLB%e3%80%81Dual-stack%20%e8%88%87%20Private%20DNS%20name%20%e6%95%b4%e5%90%88%e5%af%a6%e4%bd%9c&amp;source=https%3a%2f%2fshiun.me%2fblog%2faws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作 on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fshiun.me%2fblog%2faws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作 on telegram"
+            href="https://telegram.me/share/url?text=AWS%20PrivateLink%20%e6%b7%b1%e5%85%a5%e6%95%99%e5%ad%b8%ef%bc%9aNLB%e3%80%81Dual-stack%20%e8%88%87%20Private%20DNS%20name%20%e6%95%b4%e5%90%88%e5%af%a6%e4%bd%9c&amp;url=https%3a%2f%2fshiun.me%2fblog%2faws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer><div class="disqus markdown"><div id="disqus_thread"></div>
+<script>
+  
+
+  
+
+  (function () {
+    
+    var d = document,
+      s = d.createElement("script");
+    s.src = "https://shiun-me.disqus.com/embed.js";
+    s.setAttribute("data-timestamp", +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript
+  >Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript"
+    >comments powered by Disqus.</a
+  ></noscript
+>
+</div>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2025 <a href="https://shiun.me/">Shiun</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
