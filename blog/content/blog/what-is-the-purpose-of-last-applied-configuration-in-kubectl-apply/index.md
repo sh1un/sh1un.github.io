@@ -19,19 +19,22 @@ keywords:
 - Kubernetes 學習筆記
 - Kubernetes 常見問題
 ---
+![Cover Image - kubectl apply, What is the purpose of last applied configuration](Blog%20Cover%20-%20kubectl%20apply%20last%20applied%20configuration.png)
+
 在 [我的 Notion Kubernetes 學習筆記 - Jan 13, 2025](https://shiun.notion.site/CKA-Kubernetes-Core-Concepts-16fea7e0d9d0806d968dff51830ccbbe?pvs=97#179ea7e0d9d080a39194c6c2e8b895e4)  中，我透過 CKA 的課程學習到 `kubectl apply` 背後的原理，而我知道 `kubectl apply` 背後有三個東西來決定它如何變更資源：
 
 - **Configuration file**：配置文件，代表使用者的最新意圖。
 - **Last applied configuration**：上次使用 `kubectl apply` 時記錄的配置，用於追蹤變更。
 - **Live configuration**：目前 Kubernetes 叢集中的實際配置狀態。
 
+以下引用 Kubernetes 官方文件的說明：
 > When `kubectl apply` updates the live configuration for an object, it does so by sending a patch request to the API server. The patch defines updates scoped to specific fields of the live object configuration. The `kubectl apply` command calculates this patch request using the configuration file, the live configuration, and the `last-applied-configuration` annotation stored in the live configuration.
 
 我在學習時就很納悶也很疑惑：為什麼不直接比較 **Configuration file** 和 **Live configuration** 就好？反正 **Configuration file** 寫什麼就是絕對真理，**Live configuration** 照著聲明的期望配置去實現就好，為何這中間還需要多一個 **Last applied configuration**？
 
 ---
 
-### TL;DR
+## TL;DR
 
 **Last Applied Configuration** 是 `kubectl apply` 判斷變更意圖的關鍵：
 
@@ -43,13 +46,13 @@ keywords:
 1. **尊重用戶的變更意圖**：保證新配置與 **Live Configuration** 的同步。
 2. **避免誤刪其他系統或用戶配置的值**：確保 Live Configuration 的穩定性和完整性。
 
-建議可以搜尋關鍵字：Three-way merge，就能理解背後的意涵
+建議可以搜尋關鍵字：**Three-way merge**，就能理解背後的意涵
 
 ---
 
-### 為什麼需要三個資料來源？
+## 為什麼需要三個資料來源？
 
-> 關鍵字：Three-way merge
+> 關鍵字：**Three-way merge**
 
 為了解開我對這裡的迷惑，當初我問了很多次 ChatGPT 4o ，但他給的解釋我都不是很滿意。
 
@@ -72,6 +75,8 @@ Alegandro 在 Udemy 問與答中的解釋 `kubectl apply` 如何處理變更：
     - 如果值在 **Last applied configuration** 中，表示用戶有意刪除該值，應從 Live Configuration 中清除。
     - 如果值不在 **Last applied configuration** 中，表示該值是其他方式新增的，應予以保留。
 
+
+以下為原始引文：
 > Alegandro:
 >
 > The values of the configuration file are always going to "win" over the live configuration.
@@ -94,7 +99,7 @@ Alegandro 在 Udemy 問與答中的解釋 `kubectl apply` 如何處理變更：
 
 ---
 
-### 總結
+## 總結
 
 **為什麼需要 Last Applied Configuration，**核心思想就是**尊重變更意圖，正確處理欄位的更新和刪除：**
 
@@ -103,7 +108,7 @@ Alegandro 在 Udemy 問與答中的解釋 `kubectl apply` 如何處理變更：
 
 ---
 
-## Resources
+## 相關連結
 
 - [[CKA] Kubernetes 學習筆記 - Core Concepts - Shiun Notion Site](https://shiun.notion.site/CKA-Kubernetes-Core-Concepts-16fea7e0d9d0806d968dff51830ccbbe?pvs=97#179ea7e0d9d080a39194c6c2e8b895e4)
 - [Declarative Management of Kubernetes Objects Using Configuration Files](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/declarative-config/)
