@@ -11,8 +11,29 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Sun, 12 Jan 2025 23:41:42 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 14 Jan 2025 23:14:17 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CKA</title>
+      <link>https://shiun.me/tags/cka/</link>
+      <pubDate>Tue, 14 Jan 2025 23:14:17 +0800</pubDate>
+      <guid>https://shiun.me/tags/cka/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Kubectl Apply</title>
+      <link>https://shiun.me/tags/kubectl-apply/</link>
+      <pubDate>Tue, 14 Jan 2025 23:14:17 +0800</pubDate>
+      <guid>https://shiun.me/tags/kubectl-apply/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Kubernetes</title>
+      <link>https://shiun.me/tags/kubernetes/</link>
+      <pubDate>Tue, 14 Jan 2025 23:14:17 +0800</pubDate>
+      <guid>https://shiun.me/tags/kubernetes/</guid>
+      <description></description>
+    </item>
     <item>
       <title>AWS</title>
       <link>https://shiun.me/tags/aws/</link>

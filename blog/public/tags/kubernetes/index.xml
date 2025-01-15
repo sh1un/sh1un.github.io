@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kubernetes on Shiun</title>
+    <link>https://shiun.me/tags/kubernetes/</link>
+    <description>Recent content in Kubernetes on Shiun</description>
+    <image>
+      <title>Shiun</title>
+      <url>https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea</url>
+      <link>https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-tw</language>
+    <lastBuildDate>Tue, 14 Jan 2025 23:14:17 +0800</lastBuildDate>
+    <atom:link href="https://shiun.me/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Kubernetes 常見問題：kubectl apply 的 Last applied configuration 用途是什麼？</title>
+      <link>https://shiun.me/blog/what-is-the-purpose-of-last-applied-configuration-in-kubectl-apply/</link>
+      <pubDate>Tue, 14 Jan 2025 23:14:17 +0800</pubDate>
+      <guid>https://shiun.me/blog/what-is-the-purpose-of-last-applied-configuration-in-kubectl-apply/</guid>
+      <description>在 Kubernetes 中，kubectl apply 背後有三個東西來決定它如何變更資源：Configuration file、Last applied configuration、Live configuration。為什麼不直接比較 Configuration file 和 Live configuration 就好？為什麼需要 Last applied configuration？</description>
+    </item>
+  </channel>
+</rss>
