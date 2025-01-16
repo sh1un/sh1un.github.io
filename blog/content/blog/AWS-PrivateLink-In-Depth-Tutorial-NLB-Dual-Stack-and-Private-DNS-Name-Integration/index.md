@@ -2,7 +2,7 @@
 title: 'AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作'
 date: 2025-01-12T23:41:42+08:00
 draft: false
-description: "完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS 實現更好的可用性。"
+description: "完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS name 實現更好的可用性。"
 tags: ["AWS", "AWS PrivateLink", "IPv6", "Dual-stack", "NLB", "Private DNS name"]
 categories: ["AWS", "Networking"]
 keywords:
