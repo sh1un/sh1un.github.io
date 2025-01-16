@@ -18,14 +18,14 @@
       <link>https://shiun.me/blog/aws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration/</link>
       <pubDate>Sun, 12 Jan 2025 23:41:42 +0800</pubDate>
       <guid>https://shiun.me/blog/aws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration/</guid>
-      <description>完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS 實現更好的可用性。</description>
+      <description>完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS name 實現更好的可用性。</description>
     </item>
     <item>
       <title>如何將現有 NLB IPv4-only 架構升級為 Dual-stack</title>
       <link>https://shiun.me/blog/upgrading-existing-nlb-ipv4-only-to-dual-stack/</link>
       <pubDate>Wed, 08 Jan 2025 23:36:55 +0800</pubDate>
       <guid>https://shiun.me/blog/upgrading-existing-nlb-ipv4-only-to-dual-stack/</guid>
-      <description>本文將透過圖文，詳細地引導您如何將現有的 IPv4 Network Load Balancer (NLB) 架構升級為支援 dual-stack（同時支援 IPv4 和 IPv6）的配置。</description>
+      <description>本文將透過圖文，詳細地引導您如何將現有的 IPv4 Network Load Balancer (NLB) 架構升級為支援 Dual-stack（同時支援 IPv4 和 IPv6）的配置。</description>
     </item>
     <item>
       <title>AWS Site-to-Site VPN with Libreswan 建置教學 (Step-by-Step)</title>

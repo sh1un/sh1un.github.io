@@ -14,7 +14,7 @@
 <meta
   name="keywords"
   content="AWS PrivateLink, AWS NLB, AWS Dual-stack, Private DNS name, AWS 跨帳號存取, AWS IPv6, AWS 網路安全, AWS 服務端點, VPC Endpoint, Endpoint Service, AWS Cross-Account Access, AWS Network Security, AWS VPC, AWS Service Endpoints, AWS Infrastructure Security, AWS Network Architecture, 私有連結, 跨帳號API調用, 網路負載平衡器, 私有DNS設定"
-/> <meta name="description" content="完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS 實現更好的可用性。"> <meta name="author" content=""> <link rel="canonical" href="https://shiun.me/blog/aws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration/">
+/> <meta name="description" content="完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS name 實現更好的可用性。"> <meta name="author" content=""> <link rel="canonical" href="https://shiun.me/blog/aws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration/">
 <link
   crossorigin="anonymous"
   href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css"
@@ -46,7 +46,7 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 <meta property="og:url" content="https://shiun.me/blog/aws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration/">
   <meta property="og:site_name" content="Shiun">
   <meta property="og:title" content="AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作">
-  <meta property="og:description" content="完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS 實現更好的可用性。">
+  <meta property="og:description" content="完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS name 實現更好的可用性。">
   <meta property="og:locale" content="zh_tw">
   <meta property="og:type" content="article">
     <meta property="article:section" content="blog">
@@ -66,7 +66,7 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
   <meta name="twitter:title" content="AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作">
-  <meta name="twitter:description" content="完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS 實現更好的可用性。">
+  <meta name="twitter:description" content="完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS name 實現更好的可用性。">
 
 
 <noscript>
@@ -118,7 +118,7 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
           gtag('config', 'G-RZR8D4ERKG');
         }
       </script><meta property="og:title" content="AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作" />
-<meta property="og:description" content="完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS 實現更好的可用性。" />
+<meta property="og:description" content="完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS name 實現更好的可用性。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://shiun.me/blog/aws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="article:section" content="blog" />
 <meta property="article:published_time" content="2025-01-12T23:41:42+08:00" />
@@ -128,7 +128,7 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/>
 
 <meta name="twitter:title" content="AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作"/>
-<meta name="twitter:description" content="完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS 實現更好的可用性。"/>
+<meta name="twitter:description" content="完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS name 實現更好的可用性。"/>
 
 
 <script type="application/ld+json">
@@ -157,7 +157,7 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
   "@type": "BlogPosting",
   "headline": "AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作",
   "name": "AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作",
-  "description": "完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS 實現更好的可用性。",
+  "description": "完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS name 實現更好的可用性。",
   "keywords": [
     "AWS PrivateLink", "AWS NLB", "AWS Dual-stack", "Private DNS name", "AWS 跨帳號存取", "AWS IPv6", "AWS 網路安全", "AWS 服務端點", "VPC Endpoint", "Endpoint Service", "AWS Cross-Account Access", "AWS Network Security", "AWS VPC", "AWS Service Endpoints", "AWS Infrastructure Security", "AWS Network Architecture", "私有連結", "跨帳號API調用", "網路負載平衡器", "私有DNS設定"
   ],
@@ -278,7 +278,7 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
       AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作
     </h1>
     <div class="post-description">
-      完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS 實現更好的可用性。
+      完整圖解 AWS Dual-stack PrivateLink 設定流程，從 Provider 到 Consumer 的配置細節一次搞懂。結合 NLB 與 IPv6，打造安全可靠的跨帳號服務存取架構，並整合 Private DNS name 實現更好的可用性。
     </div>
     <div class="post-meta"><span title='2025-01-12 23:41:42 +0800 CST'>January 12, 2025</span>&nbsp;·&nbsp;7 min
 
