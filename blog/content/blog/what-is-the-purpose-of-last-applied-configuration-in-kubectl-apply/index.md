@@ -1,7 +1,7 @@
 ---
 title: 'Kubernetes 常見問題：kubectl apply 的 Last applied configuration 用途是什麼？'
 date: 2025-01-14T23:14:17+08:00
-draft: falst
+draft: false
 description: "在 Kubernetes 中，kubectl apply 背後有三個東西來決定它如何變更資源：Configuration file、Last applied configuration、Live configuration。為什麼不直接比較 Configuration file 和 Live configuration 就好？為什麼需要 Last applied configuration？"
 tags: ["Kubernetes", "kubectl apply", "CKA"]
 categories: ["Kubernetes"]
