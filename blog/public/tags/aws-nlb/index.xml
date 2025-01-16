@@ -18,7 +18,7 @@
       <link>https://shiun.me/blog/upgrading-existing-nlb-ipv4-only-to-dual-stack/</link>
       <pubDate>Wed, 08 Jan 2025 23:36:55 +0800</pubDate>
       <guid>https://shiun.me/blog/upgrading-existing-nlb-ipv4-only-to-dual-stack/</guid>
-      <description>本文將透過圖文，詳細地引導您如何將現有的 IPv4 Network Load Balancer (NLB) 架構升級為支援 dual-stack（同時支援 IPv4 和 IPv6）的配置。</description>
+      <description>本文將透過圖文，詳細地引導您如何將現有的 IPv4 Network Load Balancer (NLB) 架構升級為支援 Dual-stack（同時支援 IPv4 和 IPv6）的配置。</description>
     </item>
   </channel>
 </rss>

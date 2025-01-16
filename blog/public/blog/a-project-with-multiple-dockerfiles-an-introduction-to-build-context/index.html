@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
+<meta name="robots" content="index, follow" />
+<title>
+  一個專案需要多個 Dockerfile - 淺談建構上下文 (build context) | Shiun
+</title>
+<meta
+  name="keywords"
+  content="Docker, E2E, Blog, Build, Build Context, Dockerfile"
+/> <meta name="description" content="最近在寫 E2E 測試遇到一個問題，因 E2E 專案中，除了專案本身的 Docker Image 需要 Build 之外，還有多個測試環境的 Image 也要 Build，這造成了我在這個專案上需要創建多個 Dockerfile"> <meta name="author" content=""> <link rel="canonical" href="https://shiun.me/blog/a-project-with-multiple-dockerfiles-an-introduction-to-build-context/">
+<link
+  crossorigin="anonymous"
+  href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css"
+  integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A="
+  rel="preload stylesheet"
+  as="style"
+/> <link rel="icon" href="https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"> <link
+rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://shiun.me/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://shiun.me/apple-touch-icon.png"> <link rel="mask-icon" href="https://shiun.me/safari-pinned-tab.svg"> <meta name="theme-color" content="#2e2e33"> <meta name="msapplication-TileColor" content="#2e2e33"> <link rel="alternate" hreflang="en" href="https://shiun.me/blog/a-project-with-multiple-dockerfiles-an-introduction-to-build-context/" />
+
+
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script>
+
+
+<meta property="og:url" content="https://shiun.me/blog/a-project-with-multiple-dockerfiles-an-introduction-to-build-context/">
+  <meta property="og:site_name" content="Shiun">
+  <meta property="og:title" content="一個專案需要多個 Dockerfile - 淺談建構上下文 (build context)">
+  <meta property="og:description" content="最近在寫 E2E 測試遇到一個問題，因 E2E 專案中，除了專案本身的 Docker Image 需要 Build 之外，還有多個測試環境的 Image 也要 Build，這造成了我在這個專案上需要創建多個 Dockerfile">
+  <meta property="og:locale" content="zh_tw">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="blog">
+    <meta property="article:published_time" content="2024-01-20T18:54:37+08:00">
+    <meta property="article:modified_time" content="2024-01-20T18:54:37+08:00">
+    <meta property="article:tag" content="Docker">
+    <meta property="article:tag" content="E2E">
+    <meta property="article:tag" content="Build Context">
+    <meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+
+
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea">
+  <meta name="twitter:title" content="一個專案需要多個 Dockerfile - 淺談建構上下文 (build context)">
+  <meta name="twitter:description" content="最近在寫 E2E 測試遇到一個問題，因 E2E 專案中，除了專案本身的 Docker Image 需要 Build 之外，還有多個測試環境的 Image 也要 Build，這造成了我在這個專案上需要創建多個 Dockerfile">
+
+
+<noscript>
+  <style>
+    #theme-toggle,
+    .top-link {
+      display: none;
+    }
+  </style>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --theme: rgb(29, 30, 32);
+        --entry: rgb(46, 46, 51);
+        --primary: rgb(218, 218, 219);
+        --secondary: rgb(155, 156, 157);
+        --tertiary: rgb(65, 66, 68);
+        --content: rgb(196, 196, 197);
+        --code-block-bg: rgb(46, 46, 51);
+        --code-bg: rgb(55, 56, 62);
+        --border: rgb(51, 51, 51);
+      }
+
+      .list {
+        background: var(--theme);
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-track {
+        background: 0 0;
+      }
+
+      .list:not(.dark)::-webkit-scrollbar-thumb {
+        border-color: var(--theme);
+      }
+    }
+  </style>
+</noscript>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZR8D4ERKG"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-RZR8D4ERKG');
+        }
+      </script><meta property="og:title" content="一個專案需要多個 Dockerfile - 淺談建構上下文 (build context)" />
+<meta property="og:description" content="最近在寫 E2E 測試遇到一個問題，因 E2E 專案中，除了專案本身的 Docker Image 需要 Build 之外，還有多個測試環境的 Image 也要 Build，這造成了我在這個專案上需要創建多個 Dockerfile" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shiun.me/blog/a-project-with-multiple-dockerfiles-an-introduction-to-build-context/" /><meta property="og:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2024-01-20T18:54:37+08:00" />
+<meta property="article:modified_time" content="2024-01-20T18:54:37+08:00" /><meta property="og:site_name" content="Shiun&#39;s Blog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://github.com/sh1un/sh1un.github.io/assets/85695943/42e903b9-06db-4cd8-b937-590a3cb26aea"/>
+
+<meta name="twitter:title" content="一個專案需要多個 Dockerfile - 淺談建構上下文 (build context)"/>
+<meta name="twitter:description" content="最近在寫 E2E 測試遇到一個問題，因 E2E 專案中，除了專案本身的 Docker Image 需要 Build 之外，還有多個測試環境的 Image 也要 Build，這造成了我在這個專案上需要創建多個 Dockerfile"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Blogs",
+      "item": "https://shiun.me/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "一個專案需要多個 Dockerfile - 淺談建構上下文 (build context)",
+      "item": "https://shiun.me/blog/a-project-with-multiple-dockerfiles-an-introduction-to-build-context/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "一個專案需要多個 Dockerfile - 淺談建構上下文 (build context)",
+  "name": "一個專案需要多個 Dockerfile - 淺談建構上下文 (build context)",
+  "description": "最近在寫 E2E 測試遇到一個問題，因 E2E 專案中，除了專案本身的 Docker Image 需要 Build 之外，還有多個測試環境的 Image 也要 Build，這造成了我在這個專案上需要創建多個 Dockerfile",
+  "keywords": [
+    "Docker", "E2E", "Blog", "Build", "Build Context", "Dockerfile"
+  ],
+  "articleBody": "最近在寫 E2E 測試遇到一個問題，因 E2E 專案中，除了專案本身的 Docker Image 需要 Build 之外，還有多個測試環境的 Image 也要 Build，這造成了我在這個專案上需要創建多個 Dockerfile\n發生了什麼問題? 我一開始的錯誤處理方式 菜鳥時期的我，以為 Dockerfile 就是一定得命名為\"Dockerfile\"，這導致了我沒辦法在專案根目錄下創建三個 Dockerfile，因為會導致命名衝突\n那我想出了什麼處理方式？相當簡單，很菜的我，一開始便自然地根據不同環境在專案下創建了不同的目錄，然後在目錄底下存放各自的 Dockerfile 就很類似這種感覺：\nE2Eproject/ ├── testenvironment1/ │ └── Dockerfile ├── testenvironment2/ │ └── Dockerfile ├── requirements.txt └── Dockerfile 接著便接著發生下一個問題 — 錯誤的建構上下文 以其中一個測試環境內的 Dockerfile 為範例，當時我的寫法如下，請特別注意 COPY ../ /usr/src/app/ 這行\n# Use the official Python base image from the DockerHub. FROM python:3.12 # Set the working directory within the container. WORKDIR /usr/src/app # Set the PYTHONPATH environment variable. This is where Python looks for modules. # It's set to the work directory to allow local modules to be found. ENV PYTHONPATH /usr/src/app # Copy the contents of the current host directory into the container's work directory. COPY ../ /usr/src/app/ # Install the project dependencies specified in the requirements.txt file. # The --no-cache-dir option is used to disable the cache and reduce the layer size. RUN pip install --no-cache-dir -r ../requirements.txt # 略 ... RUN chmod +x /usr/src/app/start-tests.sh # The command to run the application. CMD [\"sh\", \"/usr/src/app/start-headless-tests.sh\"] 注意：本文的 Dockerfile 例子主要用於展示建構上下文的概念。在實際開發中，建議採用層級快取（layer caching）的最佳實踐，也就是先複製並安裝 requirements.txt，再複製其他檔案。有關 Build cache 的資訊請查閱 Docker 官方文檔。\n會注意到，我使用了 ../，會這麼寫是因為專案根目錄(或是說打包所需的檔案)都在此 Dockerfile 所處目錄的上一層 接著就是很自然的輸入下方指令，然後就出現 ERROR 了：\n$ cd testenvironment1 $ docker build -t e2e-project-testenv:v1 . Dockerfile:16 -------------------- 14 | # Install the project dependencies specified in the requirements.txt file. 15 | # The --no-cache-dir option is used to disable the cache and reduce the layer size. 16 | \u003e\u003e\u003e RUN pip install --no-cache-dir -r ../requirements.txt 17 | 18 | # Install additional dependencies for HTML report generation -------------------- ERROR: failed to solve: process \"/bin/sh -c pip install --no-cache-dir -r ../requirements.txt\" did not complete successfully: exit code: 1 Service 'E2E-project' failed to build : Build failed TL;DR Docker 建構上下文就是告訴 Docker 從哪個目錄開始打包檔案，例如：你在執行指令 docker build . 這個 “.” 就是建構上下文，Docker 會將這個目錄及其子目錄下的所有檔案作為建構上下文打包成 tar 檔案\nDockerfile 與 build image 的上下文目錄不必強關聯在一起\n我們在指令中指定一個目錄作為上下文，然後也透過 -f 參數指定使用哪個建構檔案，並且名稱可以自己任意命名\ndocker build -t e2e-project-testenv:v1 -f testenvironment1/Dockerfile /myapp 先來了解什麼是 Docker 建構上下文 推薦文章：深入理解 docker build 中的建構上下文\n什麼是 Docker 建構上下文(build context) 首先，讓我們簡單回顧一下 Docker 的基本概念。Docker 允許您打包應用程式和所需環境到一個稱為 “鏡像”(image) 的容器中。這個鏡像可以在任何安裝了 Docker 的系統上運行。\nDocker 建構上下文的概念：\n當您使用 docker build 命令建立 Docker 鏡像時，Docker 會將指定路徑下的檔案和目錄打包成一個 tar 檔案。 這個 tar 檔案被稱為 “建構上下文”(build context)。 為什麼需要建構上下文：\nDocker 的鏡像是在 Docker 伺服器（通常是遠端伺服器）上建構的。 為了建構鏡像，Docker 伺服器需要訪問到所有必要的檔案，比如原始碼、配置檔案等。 因此，客戶端（您的電腦）會把這些檔案打包成 tar 檔案，然後上傳給伺服器。 Dockerfile 和建構上下文：\nDockerfile 是一個包含了建構鏡像所需步驟的文本檔案。 在 Dockerfile 中，您可以引用建構上下文中的檔案。比如，您可以複製建構上下文中的檔案到鏡像裡，或者執行建構上下文中的腳本。 總結來說，Docker 建構上下文是 Docker 客戶端將建構鏡像所需的檔案打包並傳輸給 Docker 伺服器的過程。這確保了 Docker 伺服器有所有必要的檔案來建構鏡像。\n為何我一開始的處理方式會出現 ERROR? 關鍵就出在：\n當我們執行 docker build -t e2e-project-testenv:v1 .，Docker 客戶端會先將後面的指定路徑(.) 打包成一個 tar 檔案，傳送給 Docker 伺服器端，接著才會根據 Dockerfile 中所定義的腳本進行構建 什麼意思呢？\n我當時執行指令 cd testenvironment1 接著執行 docker build -t e2e-project-testenv:v1 . 事實上就是把 testenvironment1 這個目錄以及其子目錄下的所有檔案打包好，傳送至 Docker Daemon Docker 在 Build 的時候只能取用上下文的檔案，requirements.txt 位於這個目錄的上層(即 E2Eproject 目錄中)，因此它不會被包含在建構上下文中，也就無法在 Dockerfile 中被訪問。 更優雅的處理方式 如果建構鏡像時沒有明確指定 Dockerfile，那麼 Docker Client 默認在建構鏡像時指定的上下文路徑下找名字為 Dockerfile 的建構檔案\n但事實上，Dockerfile 與 build image 的上下文目錄不必強關聯在一起 我們在指令中指定一個目錄作為上下文 然後也透過 -f 參數指定使用哪個建構檔案 並且名稱可以自己任意命名！ 並且名稱可以自己任意命名！！ 並且名稱可以自己任意命名！！！ 這完完全全解惑了我當初菜鳥所以為的「 Dockerfile 就是一定得命名為\"Dockerfile\"」\n例如：\n$ cd E2Eproject $ docker build -t e2e-project-testenv:v1 -f testenvironment1/Dockerfile . 參考資料 Docker-学习系列25-Dockerfile-中的-COPY-与-ADD-命令.html\n深入理解 docker build 中的建構上下文\n",
+  "wordCount" : "442",
+  "inLanguage": "en",
+  "datePublished": "2024-01-20T18:54:37+08:00",
+  "dateModified": "2024-01-20T18:54:37+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://shiun.me/blog/a-project-with-multiple-dockerfiles-an-introduction-to-build-context/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Shiun",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://github.com/sh1un/sh1un.github.io/assets/85695943/12a1e84f-ed17-4e38-8165-f67783c7f047"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://shiun.me/" accesskey="h" title="Shiun (Alt + H)">Shiun</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://shiun.me/blog/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.me/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://shiun.notion.site/Shiun-s-Learning-Journal-ded4cd4a3efd47b2805f2f99dee8f9a1?pvs=4" title="Notion">
+                    <span>Notion</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.linkedin.com/in/shiunchiu" title="About me">
+                    <span>About me</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://shiun.me/">Home</a>&nbsp;»&nbsp;<a href="https://shiun.me/blog/">Blogs</a></div>
+    <h1 class="post-title entry-hint-parent">
+      一個專案需要多個 Dockerfile - 淺談建構上下文 (build context)
+    </h1>
+    <div class="post-description">
+      最近在寫 E2E 測試遇到一個問題，因 E2E 專案中，除了專案本身的 Docker Image 需要 Build 之外，還有多個測試環境的 Image 也要 Build，這造成了我在這個專案上需要創建多個 Dockerfile
+    </div>
+    <div class="post-meta"><span title='2024-01-20 18:54:37 +0800 CST'>January 20, 2024</span>&nbsp;·&nbsp;3 min
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e7%99%bc%e7%94%9f%e4%ba%86%e4%bb%80%e9%ba%bc%e5%95%8f%e9%a1%8c-%e6%88%91%e4%b8%80%e9%96%8b%e5%a7%8b%e7%9a%84%e9%8c%af%e8%aa%a4%e8%99%95%e7%90%86%e6%96%b9%e5%bc%8f" aria-label="發生了什麼問題? 我一開始的錯誤處理方式">發生了什麼問題? 我一開始的錯誤處理方式</a></li>
+                <li>
+                    <a href="#tldr" aria-label="TL;DR">TL;DR</a></li>
+                <li>
+                    <a href="#%e5%85%88%e4%be%86%e4%ba%86%e8%a7%a3%e4%bb%80%e9%ba%bc%e6%98%af-docker-%e5%bb%ba%e6%a7%8b%e4%b8%8a%e4%b8%8b%e6%96%87" aria-label="先來了解什麼是 Docker 建構上下文">先來了解什麼是 Docker 建構上下文</a><ul>
+                        
+                <li>
+                    <a href="#%e4%bb%80%e9%ba%bc%e6%98%af-docker-%e5%bb%ba%e6%a7%8b%e4%b8%8a%e4%b8%8b%e6%96%87build-context" aria-label="什麼是 Docker 建構上下文(build context)">什麼是 Docker 建構上下文(build context)</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e7%82%ba%e4%bd%95%e6%88%91%e4%b8%80%e9%96%8b%e5%a7%8b%e7%9a%84%e8%99%95%e7%90%86%e6%96%b9%e5%bc%8f%e6%9c%83%e5%87%ba%e7%8f%be-error" aria-label="為何我一開始的處理方式會出現 ERROR?">為何我一開始的處理方式會出現 ERROR?</a></li>
+                <li>
+                    <a href="#%e6%9b%b4%e5%84%aa%e9%9b%85%e7%9a%84%e8%99%95%e7%90%86%e6%96%b9%e5%bc%8f" aria-label="更優雅的處理方式">更優雅的處理方式</a></li>
+                <li>
+                    <a href="#%e5%8f%83%e8%80%83%e8%b3%87%e6%96%99" aria-label="參考資料">參考資料</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>最近在寫 E2E 測試遇到一個問題，因 E2E 專案中，除了專案本身的 Docker Image 需要 Build 之外，還有多個測試環境的 Image 也要 Build，這造成了我在這個專案上需要創建多個 Dockerfile</p>
+<h2 id="發生了什麼問題-我一開始的錯誤處理方式">發生了什麼問題? 我一開始的錯誤處理方式<a hidden class="anchor" aria-hidden="true" href="#發生了什麼問題-我一開始的錯誤處理方式">#</a></h2>
+<p>菜鳥時期的我，以為 Dockerfile 就是一定得命名為&quot;Dockerfile&quot;，這導致了我沒辦法在專案根目錄下創建三個 Dockerfile，因為會導致命名衝突</p>
+<p>那我想出了什麼處理方式？相當簡單，很菜的我，一開始便自然地根據不同環境在專案下創建了不同的目錄，然後在目錄底下存放各自的 Dockerfile
+就很類似這種感覺：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>E2Eproject/
+</span></span><span style="display:flex;"><span>├── testenvironment1/
+</span></span><span style="display:flex;"><span>│   └── Dockerfile
+</span></span><span style="display:flex;"><span>├── testenvironment2/
+</span></span><span style="display:flex;"><span>│   └── Dockerfile
+</span></span><span style="display:flex;"><span>├── requirements.txt
+</span></span><span style="display:flex;"><span>└── Dockerfile
+</span></span></code></pre></div><p>接著便接著發生下一個問題 — 錯誤的建構上下文
+以其中一個測試環境內的 Dockerfile 為範例，當時我的寫法如下，請特別注意 <code>COPY ../ /usr/src/app/</code> 這行</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Dockerfile" data-lang="Dockerfile"><span style="display:flex;"><span><span style="color:#75715e"># Use the official Python base image from the DockerHub.</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> python:3.12</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># Set the working directory within the container.</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">WORKDIR</span><span style="color:#e6db74"> /usr/src/app</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># Set the PYTHONPATH environment variable. This is where Python looks for modules.</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># It&#39;s set to the work directory to allow local modules to be found.</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ENV</span> PYTHONPATH /usr/src/app<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># Copy the contents of the current host directory into the container&#39;s work directory.</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> ../ /usr/src/app/<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># Install the project dependencies specified in the requirements.txt file.</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># The --no-cache-dir option is used to disable the cache and reduce the layer size.</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> pip install --no-cache-dir -r ../requirements.txt<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># 略 ...</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> chmod +x /usr/src/app/start-tests.sh<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># The command to run the application.</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">CMD</span> [<span style="color:#e6db74">&#34;sh&#34;</span>, <span style="color:#e6db74">&#34;/usr/src/app/start-headless-tests.sh&#34;</span>]<span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><blockquote>
+<p>注意：本文的 Dockerfile 例子主要用於展示建構上下文的概念。在實際開發中，建議採用層級快取（layer caching）的最佳實踐，也就是先複製並安裝 requirements.txt，再複製其他檔案。有關 Build cache 的資訊請查閱 <a href="https://docs.docker.com/build/building/best-practices/#leverage-build-cache">Docker 官方文檔</a>。</p>
+</blockquote>
+<p>會注意到，我使用了 <code>../</code>，會這麼寫是因為專案根目錄(或是說打包所需的檔案)都在此 Dockerfile 所處目錄的上一層
+接著就是很自然的輸入下方指令，然後就出現 ERROR 了：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cd testenvironment1
+</span></span><span style="display:flex;"><span>$ docker build -t e2e-project-testenv:v1 .
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Dockerfile:16
+</span></span><span style="display:flex;"><span>--------------------
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">14</span> |     <span style="color:#75715e"># Install the project dependencies specified in the requirements.txt file.</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">15</span> |     <span style="color:#75715e"># The --no-cache-dir option is used to disable the cache and reduce the layer size.</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">16</span> | &gt;&gt;&gt; RUN pip install --no-cache-dir -r ../requirements.txt
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">17</span> |     
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">18</span> |     <span style="color:#75715e"># Install additional dependencies for HTML report generation</span>
+</span></span><span style="display:flex;"><span>--------------------
+</span></span><span style="display:flex;"><span>ERROR: failed to solve: process <span style="color:#e6db74">&#34;/bin/sh -c pip install --no-cache-dir -r ../requirements.txt&#34;</span> did not complete successfully: exit code: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>Service <span style="color:#e6db74">&#39;E2E-project&#39;</span> failed to build : Build failed
+</span></span></code></pre></div><h2 id="tldr">TL;DR<a hidden class="anchor" aria-hidden="true" href="#tldr">#</a></h2>
+<ul>
+<li>
+<p>Docker 建構上下文就是告訴 Docker 從哪個目錄開始打包檔案，例如：你在執行指令 <code>docker build .</code> 這個 &ldquo;.&rdquo; 就是建構上下文，Docker 會將這個目錄及其子目錄下的所有檔案作為建構上下文打包成 tar 檔案</p>
+</li>
+<li>
+<p>Dockerfile 與 build image 的上下文目錄不必強關聯在一起</p>
+</li>
+<li>
+<p>我們在指令中指定一個目錄作為上下文，然後也透過 <code>-f</code> 參數指定使用哪個建構檔案，並且名稱可以自己任意命名</p>
+<ul>
+<li><code>docker build -t e2e-project-testenv:v1 -f testenvironment1/Dockerfile /myapp</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="先來了解什麼是-docker-建構上下文">先來了解什麼是 Docker 建構上下文<a hidden class="anchor" aria-hidden="true" href="#先來了解什麼是-docker-建構上下文">#</a></h2>
+<blockquote>
+<p>推薦文章：<a href="https://www.cnblogs.com/FengZeng666/p/16367833.html">深入理解 docker build 中的建構上下文</a></p>
+</blockquote>
+<h3 id="什麼是-docker-建構上下文build-context">什麼是 Docker 建構上下文(build context)<a hidden class="anchor" aria-hidden="true" href="#什麼是-docker-建構上下文build-context">#</a></h3>
+<p>首先，讓我們簡單回顧一下 Docker 的基本概念。Docker 允許您打包應用程式和所需環境到一個稱為 &ldquo;鏡像&rdquo;(image) 的容器中。這個鏡像可以在任何安裝了 Docker 的系統上運行。</p>
+<ol>
+<li>
+<p><strong>Docker 建構上下文的概念</strong>：</p>
+<ul>
+<li>當您使用 <code>docker build</code> 命令建立 Docker 鏡像時，Docker 會將指定路徑下的檔案和目錄打包成一個 tar 檔案。</li>
+<li>這個 tar 檔案被稱為 &ldquo;建構上下文&rdquo;(build context)。</li>
+</ul>
+</li>
+<li>
+<p><strong>為什麼需要建構上下文</strong>：</p>
+<ul>
+<li>Docker 的鏡像是在 Docker 伺服器（通常是遠端伺服器）上建構的。</li>
+<li>為了建構鏡像，Docker 伺服器需要訪問到所有必要的檔案，比如原始碼、配置檔案等。</li>
+<li>因此，客戶端（您的電腦）會把這些檔案打包成 tar 檔案，然後上傳給伺服器。</li>
+</ul>
+</li>
+<li>
+<p><strong>Dockerfile 和建構上下文</strong>：</p>
+<ul>
+<li>Dockerfile 是一個包含了建構鏡像所需步驟的文本檔案。</li>
+<li>在 Dockerfile 中，您可以引用建構上下文中的檔案。比如，您可以複製建構上下文中的檔案到鏡像裡，或者執行建構上下文中的腳本。</li>
+</ul>
+</li>
+</ol>
+<p>總結來說，Docker 建構上下文是 Docker 客戶端將建構鏡像所需的檔案打包並傳輸給 Docker 伺服器的過程。這確保了 Docker 伺服器有所有必要的檔案來建構鏡像。</p>
+<h2 id="為何我一開始的處理方式會出現-error">為何我一開始的處理方式會出現 ERROR?<a hidden class="anchor" aria-hidden="true" href="#為何我一開始的處理方式會出現-error">#</a></h2>
+<p>關鍵就出在：</p>
+<ul>
+<li>當我們執行 <code>docker build -t e2e-project-testenv:v1 .</code>，Docker 客戶端會先將後面的指定路徑(.) 打包成一個 tar 檔案，傳送給 Docker 伺服器端，接著才會根據 Dockerfile 中所定義的腳本進行構建</li>
+</ul>
+<p>什麼意思呢？</p>
+<ul>
+<li>我當時執行指令 <code>cd testenvironment1</code> 接著執行 <code>docker build -t e2e-project-testenv:v1 .</code></li>
+<li>事實上就是把 testenvironment1 這個目錄以及其子目錄下的所有檔案打包好，傳送至 Docker Daemon
+Docker 在 Build 的時候只能取用上下文的檔案，requirements.txt 位於這個目錄的上層(即 E2Eproject 目錄中)，因此它不會被包含在建構上下文中，也就無法在 Dockerfile 中被訪問。</li>
+</ul>
+<h2 id="更優雅的處理方式">更優雅的處理方式<a hidden class="anchor" aria-hidden="true" href="#更優雅的處理方式">#</a></h2>
+<p>如果建構鏡像時沒有明確指定 Dockerfile，那麼 Docker Client 默認在建構鏡像時指定的上下文路徑下找名字為 Dockerfile 的建構檔案</p>
+<p>但事實上，Dockerfile 與 build image 的上下文目錄不必強關聯在一起
+我們在指令中指定一個目錄作為上下文
+然後也透過 <code>-f</code> 參數指定使用哪個建構檔案
+並且名稱可以自己任意命名！
+並且名稱可以自己任意命名！！
+並且名稱可以自己任意命名！！！
+這完完全全解惑了我當初菜鳥所以為的「 Dockerfile 就是一定得命名為&quot;Dockerfile&quot;」</p>
+<p>例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cd E2Eproject
+</span></span><span style="display:flex;"><span>$ docker build -t e2e-project-testenv:v1 -f testenvironment1/Dockerfile .
+</span></span></code></pre></div><h2 id="參考資料">參考資料<a hidden class="anchor" aria-hidden="true" href="#參考資料">#</a></h2>
+<ul>
+<li>
+<p><a href="https://blog.mafeifan.com/DevOps/Docker/Docker-%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%9725-Dockerfile-%E4%B8%AD%E7%9A%84-COPY-%E4%B8%8E-ADD-%E5%91%BD%E4%BB%A4.html">Docker-学习系列25-Dockerfile-中的-COPY-与-ADD-命令.html</a></p>
+</li>
+<li>
+<p><a href="https://www.cnblogs.com/FengZeng666/p/16367833.html">深入理解 docker build 中的建構上下文</a></p>
+</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://shiun.me/tags/docker/">Docker</a></li>
+      <li><a href="https://shiun.me/tags/e2e/">E2E</a></li>
+      <li><a href="https://shiun.me/tags/build-context/">Build Context</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://shiun.me/blog/aws-educate-6th-cloud-ambassador-resume-and-interview-preparation/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>如何成為 AWS Educate 雲端大使？履歷準備、面試技巧大公開</span>
+  </a>
+  <a class="next" href="https://shiun.me/blog/my-first/">
+    <span class="title">Next »</span>
+    <br>
+    <span>這個網站的第一篇文章 - 關於我 以及架站的動機</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 一個專案需要多個 Dockerfile - 淺談建構上下文 (build context) on x"
+            href="https://x.com/intent/tweet/?text=%e4%b8%80%e5%80%8b%e5%b0%88%e6%a1%88%e9%9c%80%e8%a6%81%e5%a4%9a%e5%80%8b%20Dockerfile%20-%20%e6%b7%ba%e8%ab%87%e5%bb%ba%e6%a7%8b%e4%b8%8a%e4%b8%8b%e6%96%87%20%28build%20context%29&amp;url=https%3a%2f%2fshiun.me%2fblog%2fa-project-with-multiple-dockerfiles-an-introduction-to-build-context%2f&amp;hashtags=Docker%2cE2E%2cBuildContext">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 一個專案需要多個 Dockerfile - 淺談建構上下文 (build context) on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fshiun.me%2fblog%2fa-project-with-multiple-dockerfiles-an-introduction-to-build-context%2f&amp;title=%e4%b8%80%e5%80%8b%e5%b0%88%e6%a1%88%e9%9c%80%e8%a6%81%e5%a4%9a%e5%80%8b%20Dockerfile%20-%20%e6%b7%ba%e8%ab%87%e5%bb%ba%e6%a7%8b%e4%b8%8a%e4%b8%8b%e6%96%87%20%28build%20context%29&amp;summary=%e4%b8%80%e5%80%8b%e5%b0%88%e6%a1%88%e9%9c%80%e8%a6%81%e5%a4%9a%e5%80%8b%20Dockerfile%20-%20%e6%b7%ba%e8%ab%87%e5%bb%ba%e6%a7%8b%e4%b8%8a%e4%b8%8b%e6%96%87%20%28build%20context%29&amp;source=https%3a%2f%2fshiun.me%2fblog%2fa-project-with-multiple-dockerfiles-an-introduction-to-build-context%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 一個專案需要多個 Dockerfile - 淺談建構上下文 (build context) on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fshiun.me%2fblog%2fa-project-with-multiple-dockerfiles-an-introduction-to-build-context%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 一個專案需要多個 Dockerfile - 淺談建構上下文 (build context) on telegram"
+            href="https://telegram.me/share/url?text=%e4%b8%80%e5%80%8b%e5%b0%88%e6%a1%88%e9%9c%80%e8%a6%81%e5%a4%9a%e5%80%8b%20Dockerfile%20-%20%e6%b7%ba%e8%ab%87%e5%bb%ba%e6%a7%8b%e4%b8%8a%e4%b8%8b%e6%96%87%20%28build%20context%29&amp;url=https%3a%2f%2fshiun.me%2fblog%2fa-project-with-multiple-dockerfiles-an-introduction-to-build-context%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer><div class="disqus markdown"><div id="disqus_thread"></div>
+<script>
+  
+
+  
+
+  (function () {
+    
+    var d = document,
+      s = d.createElement("script");
+    s.src = "https://shiun-me.disqus.com/embed.js";
+    s.setAttribute("data-timestamp", +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript
+  >Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript"
+    >comments powered by Disqus.</a
+  ></noscript
+>
+</div>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2025 <a href="https://shiun.me/">Shiun</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

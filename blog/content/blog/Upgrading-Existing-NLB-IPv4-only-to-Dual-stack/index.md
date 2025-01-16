@@ -2,7 +2,7 @@
 title: '如何將現有 NLB IPv4-only 架構升級為 Dual-stack'
 date: 2025-01-08T23:36:55+08:00
 draft: false
-description: "本文將透過圖文，詳細地引導您如何將現有的 IPv4 Network Load Balancer (NLB) 架構升級為支援 dual-stack（同時支援 IPv4 和 IPv6）的配置。"
+description: "本文將透過圖文，詳細地引導您如何將現有的 IPv4 Network Load Balancer (NLB) 架構升級為支援 Dual-stack（同時支援 IPv4 和 IPv6）的配置。"
 tags: ["AWS", "AWS Networking", "AWS ELB", "AWS NLB", "Dual-stack", "IPv6", "AWS VPC", "AWS EC2", "Migration", "Networking"]
 categories: ["AWS", "Networking", "Migration"]
 keywords:
@@ -32,11 +32,11 @@ keywords:
 
 ## 目標
 
-- 將現有的 IPv4-only NLB 升級為支援 dual-stack
+- 將現有的 IPv4-only NLB 升級為支援 Dual-stack
 - 讓 Target Group 從純 IPv4 轉換為支援 IPv6
 - 確保整個架構能同時處理 IPv4 和 IPv6 的流量
 
-我們將逐步完成這個轉換過程，包括配置 VPC、更新 NLB 設置、修改 security groups，以及設定 target groups。每個步驟都會提供詳細的操作說明和技術細節，幫助您順利完成這個升級過程。
+我們將逐步完成這個轉換過程，包括配置 VPC、更新 NLB 設置、修改 Security Groups，以及設定 Target Groups。每個步驟都會提供詳細的操作說明和技術細節，幫助您順利完成這個升級過程。
 
 ---
 
@@ -274,8 +274,9 @@ IPv4 Client -> Dual-stack NLB -> IPv4 Target Group Instance
 
   ![NLB IPv6 address: 2600:1f14:2549:300:17c1:6c5d:ba29:ce1, My IPv6 address: [**2407:4b00:1c02:77d9:8041:f560:157a:c42c**](https://whatismyipaddress.com/ip/2407:4b00:1c02:77d9:8041:f560:157a:c42c)](image%2023.png)
 
-  > NLB IPv6 address: 2600:1f14:2549:300:17c1:6c5d:ba29:ce1
-  > My IPv6 address: 2407:4b00:1c02:77d9:8041:f560:157a:c42c
+  > NLB IPv6 address: `2600:1f14:2549:300:17c1:6c5d:ba29:ce1`
+  >
+  > My IPv6 address: `2407:4b00:1c02:77d9:8041:f560:157a:c42c`
 
   ![NLB IPv6 address: 2600:1f14:2549:300:17c1:6c5d:ba29:ce1](image%2024.png)
 
@@ -299,7 +300,7 @@ IPv4 Client -> Dual-stack NLB -> IPv4 Target Group Instance
 
 從 VPC 中分配一個 `/64` 的 IPv6 CIDR 子網給他
 
-**注意：**配給這個子網的 CIDR 不要和同 VPC 中的其他 Subnet CIDRs 有 Overlapping!
+**注意：** 配給這個子網的 CIDR 不要和同 VPC 中的其他 Subnet CIDRs 有 Overlapping!
 
 ![Assign IPv6 CIDR](image%2027.png)
 
