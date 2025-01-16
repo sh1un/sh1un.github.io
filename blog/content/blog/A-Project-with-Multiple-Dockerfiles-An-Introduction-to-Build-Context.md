@@ -12,6 +12,8 @@ keywords:
 - Build
 - Build Context
 - Dockerfile
+aliases:
+  - /blog/a-project-with-multiple-dockerfiles---an-introduction-to-build-context
 ---
 
 最近在寫 E2E 測試遇到一個問題，因 E2E 專案中，除了專案本身的 Docker Image 需要 Build 之外，還有多個測試環境的 Image 也要 Build，這造成了我在這個專案上需要創建多個 Dockerfile
@@ -87,7 +89,7 @@ Service 'E2E-project' failed to build : Build failed
 
 ## TL;DR
 
-- Docker 建構上下文就是告訴 Docker 從哪個目錄開始打包檔案，例如：你在執行指令 `docker built .` 這個 "." 就是建構上下文，Docker 會將這個目錄及其子目錄下的所有檔案作為建構上下文打包成 tar 檔案
+- Docker 建構上下文就是告訴 Docker 從哪個目錄開始打包檔案，例如：你在執行指令 `docker build .` 這個 "." 就是建構上下文，Docker 會將這個目錄及其子目錄下的所有檔案作為建構上下文打包成 tar 檔案
 
 - Dockerfile 與 build image 的上下文目錄不必強關聯在一起
 - 我們在指令中指定一個目錄作為上下文，然後也透過 `-f` 參數指定使用哪個建構檔案，並且名稱可以自己任意命名
