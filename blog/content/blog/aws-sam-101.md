@@ -176,7 +176,7 @@ $ tree
 │      event.json
 │
 ├─hello_world
-│      app.py # 你的 Lanbda Function 寫在這
+│      app.py # 你的 Lambda Function 寫在這
 │      requirements.txt
 │      __init__.py
 │
