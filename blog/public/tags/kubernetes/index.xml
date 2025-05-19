@@ -11,8 +11,15 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Tue, 14 Jan 2025 23:14:17 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 19 May 2025 20:09:29 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Expose Your ALB by EKS</title>
+      <link>https://shiun.me/blog/how-to-expose-your-alb-by-eks/</link>
+      <pubDate>Mon, 19 May 2025 20:09:29 +0800</pubDate>
+      <guid>https://shiun.me/blog/how-to-expose-your-alb-by-eks/</guid>
+      <description>如何使用 ALB 暴露你的 EKS</description>
+    </item>
     <item>
       <title>Kubernetes 常見問題：kubectl apply 的 Last applied configuration 用途是什麼？</title>
       <link>https://shiun.me/blog/what-is-the-purpose-of-last-applied-configuration-in-kubectl-apply/</link>

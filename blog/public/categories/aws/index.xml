@@ -11,8 +11,15 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Sun, 12 Jan 2025 23:41:42 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 19 May 2025 20:09:29 +0800</lastBuildDate>
     <atom:link href="https://shiun.me/categories/aws/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Expose Your ALB by EKS</title>
+      <link>https://shiun.me/blog/how-to-expose-your-alb-by-eks/</link>
+      <pubDate>Mon, 19 May 2025 20:09:29 +0800</pubDate>
+      <guid>https://shiun.me/blog/how-to-expose-your-alb-by-eks/</guid>
+      <description>如何使用 ALB 暴露你的 EKS</description>
+    </item>
     <item>
       <title>AWS PrivateLink 深入教學：NLB、Dual-stack 與 Private DNS name 整合實作</title>
       <link>https://shiun.me/blog/aws-privatelink-in-depth-tutorial-nlb-dual-stack-and-private-dns-name-integration/</link>
