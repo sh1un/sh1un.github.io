@@ -235,25 +235,6 @@ rel="icon" type="image/png" sizes="16x16" href="https://shiun.me/favicon-16x16.p
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p> 比賽簡介 這場比賽是 DIGITIMES 主辦，AWS 作為技術支援，總共邀請六個企業來命題，分為黑客組和創意交流組（簡單來說就是技術和非技術組），而黑客組在這場比賽必須使用 AWS 相關的服務和模型依照企業命題打造出 LLM Application 比賽前 賽前工作坊 在比賽前，比賽主辦方有舉辦多場賽前工作坊，讓我們熟悉 AI 技術，而我只要有空都有去參加，我把我在的工作坊的學習筆記都寫在我的 Notion 日誌
-2024/04/27 - 基礎 AI 工作坊 2024/04/28 - 基礎 AI 工作坊 2024/05/05 - 進階 AI 工作坊 (這場有 GameDay) 2024/05/07 - Gogoro 企業數據工作坊 其實 AI 這領域真的不是我的專長領域，我自己會開始開發 GenAI 應用是從加入伊雲谷後開始的，在伊雲谷執手的專案就是一個 LLM Application，加上 GenAI 話題真的是時下最火熱的話題，活在這時代，開發的日常要不碰到 AI 真的蠻難的
-而賽前工作坊的主講者們真的人都很好，講解的也都很清楚，特別感謝 Roger 和 Ginny 在工作坊的教導，以及 Scott 在 GameDay 當天賽後的支援，在賽前工作坊也和現場的人交流，認識了不少技術高手！
-比賽還沒開始，但光是前面的工作坊就覺得這次的參賽體驗真的很棒，賽前能跟這些技術大神學習，真的是一次難得的機會。
-比賽題目公布 在報名時是要填寫競賽主題的志願序的，我們當初投的第一個志願是「智慧應用」第二為「智慧移動 - Gogoro」，最終我們被安排在智慧移動的組別。
-而我們這組的題目如下: 官方提供的數據就是 Gogoro 官網上的車主手冊: https://support.gogoro.com/tw/manual/collections/236738689176894/
-基本上這個命題絕對逃不過 “RAG”
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-05-21 22:32:41 +0800 CST'>May 21, 2024</span>&nbsp;·&nbsp;3 min</footer>
-  <a class="entry-link" aria-label="post link to 學生時期的最後一場比賽: 2024 GenAI Hackathon 比賽紀錄" href="https://shiun.me/blog/2024-aws-genai-hackathon/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
     <h2 class="entry-hint-parent">AWS SAM 101 - 文長圖多！從安裝到部署你的 AWS Lambda
     </h2>
   </header>
@@ -319,6 +300,22 @@ NAT Gateway 收費 = NAT Gateway 開啟時間 USD 0.062 per Hour &#43; 經過 NA
   </div>
   <footer class="entry-footer"><span title='2024-04-06 23:45:32 +0800 CST'>April 6, 2024</span>&nbsp;·&nbsp;2 min</footer>
   <a class="entry-link" aria-label="post link to 如何使用 AWS EventBridge Scheduler 及 Lambda 自動排程調整 AWS Aurora Serverless V2 ACU" href="https://shiun.me/blog/how-to-schedule-aurora-serverless-v2-acu-adjustments-using-aws-lambda-and-eventbridge-scheduler/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Docker 初學常見問題 - CMD vs ENTRYPOINT 兩者的差異與範例
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>前言 很多人在初學 Docker 時，通常都會知道 CMD 和 ENTRYPOINT 基本上可以互換，但又覺得很疑惑既然兩個指令能互換為什麼要提供兩個指令給我們用? 但其實這兩者是有一些差異的，今天這篇文章就是來帶你了解 Dockerfile 中的 CMD 和 ENTRYPOINT
+CMD vs ENTRYPOINT 我這邊準備了兩個 Dockerfile，分別使用了 CMD 和 ENTRYPOINT
+FROM ubuntu:22.04 CMD [ &#34;echo&#34;, &#34;Hello from CMD&#34; ] FROM ubuntu:22.04 ENTRYPOINT [ &#34;echo&#34;, &#34;Hello from ENTRYPOINT&#34; ] 接著 build 了兩個 docker image，分別取名為 docker-cmd, docker-entrypoint
+$ docker images REPOSITORY TAG IMAGE ID CREATED SIZE docker-entrypoint latest fa8ea026cc54 12 days ago 77.9MB docker-cmd latest bd73abaca1f4 12 days ago 77.9MB CMD 會被覆寫、ENTRYPOINT 則不會 理應來說我用 docker-cmd 這個 image 啟動一個容器，會打印出 Hello from CMD，執行結果確實也是如此:
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-02-07 20:43:51 +0800 CST'>February 7, 2024</span>&nbsp;·&nbsp;2 min</footer>
+  <a class="entry-link" aria-label="post link to Docker 初學常見問題 - CMD vs ENTRYPOINT 兩者的差異與範例" href="https://shiun.me/blog/dockerfile-cmd-vs-entrypoint/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

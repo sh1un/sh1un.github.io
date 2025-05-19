@@ -2,32 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://shiun.me/tags/aws/</loc>
-    <lastmod>2025-05-19T20:09:29+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/categories/aws/</loc>
-    <lastmod>2025-05-19T20:09:29+08:00</lastmod>
-  </url><url>
     <loc>https://shiun.me/blog/</loc>
-    <lastmod>2025-05-19T20:09:29+08:00</lastmod>
+    <lastmod>2025-01-14T23:14:17+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/categories/</loc>
-    <lastmod>2025-05-19T20:09:29+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/blog/how-to-expose-your-alb-by-eks/</loc>
-    <lastmod>2025-05-19T20:09:29+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/kubernetes/</loc>
-    <lastmod>2025-05-19T20:09:29+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/categories/kubernetes/</loc>
-    <lastmod>2025-05-19T20:09:29+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/</loc>
-    <lastmod>2025-05-19T20:09:29+08:00</lastmod>
-  </url><url>
-    <loc>https://shiun.me/tags/</loc>
-    <lastmod>2025-05-19T20:09:29+08:00</lastmod>
+    <lastmod>2025-01-14T23:14:17+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/cka/</loc>
     <lastmod>2025-01-14T23:14:17+08:00</lastmod>
@@ -35,8 +14,26 @@
     <loc>https://shiun.me/tags/kubectl-apply/</loc>
     <lastmod>2025-01-14T23:14:17+08:00</lastmod>
   </url><url>
+    <loc>https://shiun.me/tags/kubernetes/</loc>
+    <lastmod>2025-01-14T23:14:17+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/kubernetes/</loc>
+    <lastmod>2025-01-14T23:14:17+08:00</lastmod>
+  </url><url>
     <loc>https://shiun.me/blog/what-is-the-purpose-of-last-applied-configuration-in-kubectl-apply/</loc>
     <lastmod>2025-01-14T23:14:17+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/</loc>
+    <lastmod>2025-01-14T23:14:17+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/</loc>
+    <lastmod>2025-01-14T23:14:17+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/tags/aws/</loc>
+    <lastmod>2025-01-12T23:41:42+08:00</lastmod>
+  </url><url>
+    <loc>https://shiun.me/categories/aws/</loc>
+    <lastmod>2025-01-12T23:41:42+08:00</lastmod>
   </url><url>
     <loc>https://shiun.me/tags/aws-privatelink/</loc>
     <lastmod>2025-01-12T23:41:42+08:00</lastmod>
