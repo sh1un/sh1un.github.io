@@ -273,7 +273,7 @@ Q3～Q4，我參與 **SHOPLINE 2025 雙十一** 的系統備戰與當晚 shift�
 
 其實這次參賽的決定非常臨時，我是在報名截止前一天才送出報名，沒有庫存、沒有提前規劃，幾乎是把自己逼到沒有退路。而會想要參加的其中一個原因是我當時正好在準備 KubeSummit 的演講，索性就把那段時間對 Cilium 的學習與理解完整地記錄下來。
 
-另一個原因是受到前輩 Mao 的影響，Mao 之前也有參賽鐵人賽並且著有一本書「[**那些文件沒有告訴你的AWS EKS：解析Kubernetes背後的奧秘](https://www.kobo.com/us/zh/ebook/aws-eks-kubernetes-ithome?srsltid=AfmBOooPivO45bBDngXxkPZ3sMvs-DUjSsKNzDNno7nMdvki_rFKP7Hw)」**，我自己也是這本書的讀者，所以我也希望自己能跟上前輩的腳步 — 「拿下鐵人賽獎項、在自己的人生中出版一本書」
+另一個原因是受到前輩 Mao 的影響，Mao 之前也有參賽鐵人賽並且著有一本書「[**那些文件沒有告訴你的AWS EKS：解析Kubernetes背後的奧秘**](https://www.kobo.com/us/zh/ebook/aws-eks-kubernetes-ithome?srsltid=AfmBOooPivO45bBDngXxkPZ3sMvs-DUjSsKNzDNno7nMdvki_rFKP7Hw)」，我自己也是這本書的讀者，所以我也希望自己能跟上前輩的腳步 — 「拿下鐵人賽獎項、在自己的人生中出版一本書」
 
 而臨時決定參加會怎樣？代價很直接
 
