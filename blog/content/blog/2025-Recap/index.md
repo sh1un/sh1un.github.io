@@ -60,7 +60,7 @@ Q3～Q4，我參與 **SHOPLINE 2025 雙十一** 的系統備戰與當晚 shift�
 
 ---
 
-### 2 月｜考了到 ANS 證照，找工作比想像中慢
+### 2 月｜考到了 ANS 證照，找工作比想像中慢
 
 而這時間也很接近過年，過年前，成功考到 AWS 專家級證照 - [**AWS Certified Advanced Networking – Specialty**](https://aws.amazon.com/tw/certification/certified-advanced-networking-specialty/)
 
