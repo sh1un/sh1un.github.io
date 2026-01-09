@@ -3,7 +3,7 @@ title: '回顧我的 2025 年成長之旅'
 date: 2026-01-01T06:29:39+08:00
 draft: false
 description: "紀錄我 2025 年從剛當完兵、入職 Cloud Engineer、備戰雙十一，到站上技術舞台與拿下鐵人賽冠軍的完整一年。"
-tags: ["Career", "Community", "Professional Growth", "AWS", "SHOPLINE", "Kubernetes", "Networking", "雙十一", "KubeSummit", "Cilium", "iTHome 鐵人賽", "AWS Community Builder", "AWS Educate Cloud Ambassador"]
+tags: ["Career", "Community", "Professional Growth", "AWS", "SHOPLINE", "Kubernetes", "Networking", "雙十一", "KubeSummit", "Cilium", "iThome 鐵人賽", "AWS Community Builder", "AWS Educate Cloud Ambassador"]
 categories: ["Career", "AWS", "SHOPLINE"]
 keywords:
 - "2025 Recap"
@@ -14,7 +14,7 @@ keywords:
 - "雙十一"
 - "KubeSummit"
 - "Cilium"
-- "iTHome 鐵人賽"
+- "iThome 鐵人賽"
 - "AWS Community Builder"
 - "AWS Educate Cloud Ambassador"
 ---
@@ -32,7 +32,7 @@ Q3～Q4，我參與 **SHOPLINE 2025 雙十一** 的系統備戰與當晚 shift�
 在技術輸出與社群方面，我於 2025 年：
 
 - 於 **2025** **KubeSummit**  代表 SHOPLINE 演講「[**從零打造 eBPF CNI Plugin：揭秘 Cilium 封包處理核心原理**](https://k8s.ithome.com.tw/2025/session-page/4083)」該場次為 **全場滿意度最高演講**，內容深入底層從 Cilium 原始碼與論文出發，實作 Prototype 解構封包處理流程，並得到 **Cilium 官方轉發**
-- 首次參賽 **iTHome 鐵人賽（Cloud Native 組）獲得冠軍**，完成「[**30 天深入淺出 Cilium：從入門到實戰**](https://ithelp.ithome.com.tw/users/20178778/ironman/8746)」系列，深入淺出教學 Cilium 與實戰經驗
+- 首次參賽 **iThome 鐵人賽（Cloud Native 組）獲得冠軍**，完成「[**30 天深入淺出 Cilium：從入門到實戰**](https://ithelp.ithome.com.tw/users/20178778/ironman/8746)」系列，深入淺出教學 Cilium 與實戰經驗
 - 成為 [**AWS Community Builder（Serverless）**](https://builder.aws.com/community/@shiun)
 - 並持續以 Mentor 身份參與 [**AWS Educate Cloud Ambassador**](https://www.instagram.com/awseducatestdambtw/?hl=en)，累積 10+ 場技術與職涯培訓課程
 
@@ -99,7 +99,7 @@ Q3～Q4，我參與 **SHOPLINE 2025 雙十一** 的系統備戰與當晚 shift�
 
 面試細節就不在這裡細談 XD，如果有讀者對 SHOPLINE 職缺有興趣可以 Linkedin 找我聊聊
 
-最後的結果是，我順利成為 SHOPLINE 的一份子，加入 Cloud Team 裡的 Platform 的小組，主要專注在 Infra, Networking 的領域，需要熟悉領域的技術：
+最後的結果是，我順利成為 SHOPLINE 的一份子，加入 Cloud Team 裡的 Platform 小組，主要專注在 Infra, Networking 的領域，需要熟悉領域的技術：
 
 - CDN / Proxy Layer
 - SSL/TLS Certificates
@@ -255,11 +255,11 @@ Q3～Q4，我參與 **SHOPLINE 2025 雙十一** 的系統備戰與當晚 shift�
 
 ---
 
-### 12 月｜ iTHome 鐵人賽 Cloud Native 冠軍
+### 12 月｜ iThome 鐵人賽 Cloud Native 冠軍
 
 ![image.png](image%206.png)
 
-在台灣 IT 圈有一個非常有名、也很有代表性的 **技術寫作挑戰賽，叫做「[iTHome 鐵人賽](https://ithelp.ithome.com.tw/2025ironman/event#homeIntro)」**，由 **iTHome** 主辦，參加這個比賽的選手必須連續 30 天，每天寫一篇技術文章並成功發表，只要有一天沒發表就等同失敗！
+在台灣 IT 圈有一個非常有名、也很有代表性的 **技術寫作挑戰賽，叫做「[iThome 鐵人賽](https://ithelp.ithome.com.tw/2025ironman/event#homeIntro)」**，由 **iThome** 主辦，參加這個比賽的選手必須連續 30 天，每天寫一篇技術文章並成功發表，只要有一天沒發表就等同失敗！
 
 而每年賽制中都針對不同技術分領域開一些競賽，參賽時你要選你要比哪一個競賽主題，而寫出來的技術文章也必須切合主題，簡單舉幾個 2025 年有的競賽主題：
 
@@ -269,7 +269,7 @@ Q3～Q4，我參與 **SHOPLINE 2025 雙十一** 的系統備戰與當晚 shift�
 - Rust
 - ….
 
-這是我第一次參賽 iTHome 鐵人賽，報名的是 Cloud Native 組，系列是「[**30 天深入淺出 Cilium ：從入門到實戰**](https://ithelp.ithome.com.tw/users/20178778/ironman/8746)」
+這是我第一次參賽 iThome 鐵人賽，報名的是 Cloud Native 組，系列是「[**30 天深入淺出 Cilium ：從入門到實戰**](https://ithelp.ithome.com.tw/users/20178778/ironman/8746)」
 
 其實這次參賽的決定非常臨時，我是在報名截止前一天才送出報名，沒有庫存、沒有提前規劃，幾乎是把自己逼到沒有退路。而會想要參加的其中一個原因是我當時正好在準備 KubeSummit 的演講，索性就把那段時間對 Cilium 的學習與理解完整地記錄下來。
 
@@ -283,7 +283,7 @@ Q3～Q4，我參與 **SHOPLINE 2025 雙十一** 的系統備戰與當晚 shift�
 
 在這個過程中，我也非常感謝 Mao 與 Andy 的支持。除了鼓勵之外，Mao 也給了我很多實際的建議，像是 Mao 告訴我哪些參賽作品是很好的模範，怎樣的排版、筆風和描述是很值得學習的等等… 以及 Mao 在工作上、技術上 Deep Dive 的精神讓我鑽研 Cilium 技術時，也自然地深入底層探究原理，而不是表面的「會用」、「知道按下按鈕什麼就會怎樣跑」
 
-最終，我獲得了 **2025 年 iTHome 鐵人賽 Cloud Native 組 冠軍**。
+最終，我獲得了 **2025 年 iThome 鐵人賽 Cloud Native 組 冠軍**。
 
 最後也要感謝評審 **楊承昊 (ChengHao Yang)** 的時間與對我作品的賞識，真心感謝
 
